@@ -11,4 +11,4 @@ public class MainActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
     }
-}
+} //L@F@nciu11@De1We5t
