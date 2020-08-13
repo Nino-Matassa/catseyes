@@ -3,5 +3,6 @@
 
     <string name="app_name">catseyes</string>
     <string name="hello_world">Hello world!</string>
+	<string name="message">\nBla bla bla...</string>
 
 </resources>
