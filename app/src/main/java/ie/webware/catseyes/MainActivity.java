@@ -15,9 +15,6 @@ public class MainActivity extends Activity
 		
 		
     }
-	
-	public void my_method(TextView tview)
-	{
-		tview = findViewById(R.id.view_text);
-	}
-}
+
+}// test
+
