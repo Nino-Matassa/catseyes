@@ -20,7 +20,7 @@ public class MainActivity extends Activity
 			@Override
 			public void run(){
 				try{
-					new InternetAccess().populateDatabase();
+					new WorldOmeterDatabase().populateLocalDatabase();
 				} catch(Exception e){
 					
 				}

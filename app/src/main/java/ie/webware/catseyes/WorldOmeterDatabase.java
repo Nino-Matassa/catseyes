@@ -5,11 +5,11 @@ import java.net.*;
 import java.nio.charset.*;
 import org.json.*;
 
-class InternetAccess {
-		public InternetAccess() {}
+class WorldOmeterDatabase {
+		public WorldOmeterDatabase() {}
 
-		public Void populateDatabase() {
-				String url = "https://covid.ourworldindata.org/data/owid-covid-data.json";
+		public Void populateLocalDatabase() {
+				String url = new Constants().worldOmeterURL;
 				try {
 						readWorldometerJson(url);	
 					} catch (Exception e) {

@@ -1,8 +1,8 @@
 package ie.webware.catseyes;
 
-public class Constants
+public final class Constants
 {
 	public Constants() {}
-	
+	String worldOmeterURL = "https://covid.ourworldindata.org/data/owid-covid-data.json";
 }
 
