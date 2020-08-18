@@ -2,48 +2,35 @@ package ie.webware.catseyes;
 import android.os.*;
 import java.io.*;
 import java.net.*;
-import java.nio.charset.*;
 import org.json.*;
+import java.nio.charset.*;
 
 class WorldOmeterDatabase {
 		public WorldOmeterDatabase() {}
 
 		public Void populateLocalDatabase() {
-				String url = new Constants().worldOmeterURL;
+				BufferedReader bufferedReader = null;
 				try {
-						readWorldometerJson(url);	
-					} catch (Exception e) {
+						URL url = new URL(Constants.worldOmeterURL);
+						HttpURLConnection httpUrlConnection = (HttpURLConnection)url.openConnection();
+						InputStream inputStream =  httpUrlConnection.getInputStream();
+						bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 						
+						StringBuilder sb = new StringBuilder();
+						String line = null;
+						
+						while((line = bufferedReader.readLine()) != null) {
+							sb.append(line);
+							// Read into database...
+						}
+						
+						bufferedReader.close();
+						
+					} catch (Exception e) {
+						String err = e.toString();
 					}
 
 				return null;
 			}
-
-		public JSONObject readWorldometerJson(String url) throws Exception {
-				InputStream is = new URL(url).openStream(); // not working!
-				JSONObject json = null;
-
-				try {
-						BufferedReader reader = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-						String jsonText = readURL(reader);
-						json = new JSONObject(jsonText);
-						return json;
-					} catch (Exception e) {
-						
-					} finally {
-						is.close();
-						return json;
-					}		
-			}
-
-		private String readURL(BufferedReader reader) {
-				StringBuilder sb = new StringBuilder();
-				try {
-						while (reader.readLine() != "") {
-								sb.append(reader.toString());
-							}
-					} catch (Exception e) {}
-
-				return sb.toString();
-			}
 	}
+
