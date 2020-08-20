@@ -19,20 +19,44 @@ class WorldOmeterDatabase {
 						InputStream inputStream =  httpUrlConnection.getInputStream();
 						bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 						
-						//StringBuilder sb = new StringBuilder();
-						ArrayList<String> alDB = new ArrayList<String>();
+						ArrayList<String> jsonFragment = new ArrayList<String>();
 						String line = null;
+						String value = null;
 						
 						while((line = bufferedReader.readLine()) != null) {
-							//sb.append(line);
-							alDB.add(line);
-							// Read into database...
+							jsonFragment.add(line);
+							// Populate database...
+							value = line.replaceAll(Constants.jsonExpression," ");
 						}
 						bufferedReader.close();
+						
 					} catch (Exception e) {
 						String err = e.toString();
 					}
 				return null;
 			}
+			
+			private class TableKeyValue {
+				public String table;
+				public String key;
+				public String value;
+			}
+		
+			private TableKeyValue getTableKeyValue(String jsonFragment){
+				TableKeyValue keyValue = new TableKeyValue();
+				String value = jsonFragment.replaceAll("[^a-zA-Z0-9.]"," ");
+					String[] lines =value.split(" ");
+					
+//					String str = "Hello";
+//					switch(str) {
+//							case "Hello":
+//								// do something
+//								break;
+//					}
+				
+				keyValue.value = value;
+				return keyValue;
+			}
 	}
 
+	
