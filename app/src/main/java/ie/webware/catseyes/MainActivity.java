@@ -2,11 +2,8 @@ package ie.webware.catseyes;
 
 import android.app.*;
 import android.os.*;
-import java.io.*;
-import java.net.*;
-import java.nio.charset.*;
-import org.json.*;
-import org.apache.http.*;
+import android.widget.*;
+import ie.webware.catseyes.*;
 
 
 public class MainActivity extends Activity 
@@ -20,13 +17,14 @@ public class MainActivity extends Activity
 			@Override
 			public void run(){
 				try{
-					new WorldOmeterDatabase().populateLocalDatabase();
+						new WorldOmeterDatabase().populateLocalDatabase();
 				} catch(Exception e){
 					
 				}
 			}
 		});
 		thread.start();
+			//Toast.makeText(MainActivity.this, "Json array built", Toast.LENGTH_LONG).show();
     }	
 }
 

@@ -1,5 +1,6 @@
 package ie.webware.catseyes;
-// All sql statements go here so they can be converted to lambda expressions
+import android.database.sqlite.*;
+
 public class SQL
 {
 	private SQL(){}
