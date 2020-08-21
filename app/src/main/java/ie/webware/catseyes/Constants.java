@@ -4,8 +4,8 @@ public final class Constants
 {
 	private Constants() {}
 	public static final String worldOmeterURL = "https://covid.ourworldindata.org/data/owid-covid-data.json";
-		public static final String jsonWood = "[^a-zA-Z0-9.\\[\\]\\{\\}]";
-		public static final String jsonTree = "[^a-zA-Z0-9.]";
+		public static final String jsonWood = "[^a-zA-Z0-9._\\[\\]\\{\\}]";
+		public static final String jsonTree = "[^a-zA-Z0-9._]";
 		public static final String dbName = ":memory:";
 		public static final String tblRegion = "Region";
 		public static final String tblCountry = "Country";
