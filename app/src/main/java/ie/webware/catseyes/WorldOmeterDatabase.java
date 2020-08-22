@@ -12,7 +12,7 @@ class WorldOmeterDatabase {
 
 		public WorldOmeterDatabase() {}
 		ArrayList<String> jsonFragment = new ArrayList<String>();
-		//ArrayList<TableKeyValue> tableKeyValue = new ArrayList<TableKeyValue>();
+		
 		public Void populateLocalDatabase() {
 				BufferedReader bufferedReader = null;
 				try {

@@ -25,14 +25,22 @@ public class MainActivity extends Activity
 				}
 			}
 		});
+		Toast.makeText(MainActivity.this, "Pulling Worldometer Data", Toast.LENGTH_LONG).show();
 		thread.start();
 		try {
-			thread.join();
+			thread.join(); // wait for thread to finish
 		} catch (InterruptedException e) {
 			Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG).show();
 		} finally {
 			Toast.makeText(MainActivity.this, "Building Database", Toast.LENGTH_LONG).show();
-		}		
+		}
+//		for(int i = 0; i < tableKeyValue.size(); i++){
+//				String kv = tableKeyValue.get(i).table + " " + tableKeyValue.get(i).key + " " + tableKeyValue.get(i).value;
+//				Toast.makeText(MainActivity.this, kv, Toast.LENGTH_LONG);
+//		}
+		
+		SQL instance = SQL.getInstance(MainActivity.this);
+		instance.onCreate(instance.getWritableDatabase());
     }
 }
 
