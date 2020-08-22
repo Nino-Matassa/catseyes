@@ -11,7 +11,5 @@ public final class Constants
 		public static final String tblCountry = "Country";
 		public static final String tblData = "Data";
 		public static final String colCountry = "Country";
-		//public static final String jsonObjectOpen = "{";
-		//public static final String jsonArrayOpen = ":[";
 }
 

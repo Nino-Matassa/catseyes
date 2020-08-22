@@ -12,7 +12,7 @@ class WorldOmeterDatabase {
 
 		public WorldOmeterDatabase() {}
 		ArrayList<String> jsonFragment = new ArrayList<String>();
-		ArrayList<TableKeyValue> tableKeyValue = new ArrayList<TableKeyValue>();
+		//ArrayList<TableKeyValue> tableKeyValue = new ArrayList<TableKeyValue>();
 		public Void populateLocalDatabase() {
 				BufferedReader bufferedReader = null;
 				try {
@@ -88,8 +88,9 @@ class WorldOmeterDatabase {
 									}
 							}
 
-						tableKeyValue.add(tkv);
+						MainActivity.tableKeyValue.add(tkv);
 					}
+				jsonFragment.clear();
 				return null;
 			}
 
@@ -107,14 +108,6 @@ class WorldOmeterDatabase {
 							}
 					}
 				return key + "+" + value;
-			}
-
-		private class TableKeyValue {
-				public boolean isNumeric;
-				public boolean isDate;
-				public String table;
-				public String key;
-				public String value;
 			}
 	}
 
