@@ -1,34 +1,40 @@
 package ie.webware.catseyes;
-import android.database.sqlite.*;
 import android.content.*;
-import android.app.*;
 import android.database.*;
+import android.database.sqlite.*;
 
 public class SQL extends SQLiteOpenHelper
 	{
 		// Creating table sql
 		private String createTableRegion = "create table " + Constants.tblRegion + 
-			"(" + Constants.tblPrimaryKey + " INTEGER PRIMARY KEY AUTOINCREMENT, " + 
+			"(" + Constants.pkId + " INTEGER PRIMARY KEY AUTOINCREMENT, " + 
 			Constants.colCountry + " TEXT NOT NULL);";
 		// "create table Region(ID INTEGER PRIMARY KEY AUTOINCREMENT, Country TEXT NOT NULL);"
 		
 		private String createTableCountry = "create table " + Constants.tblCountry + 
-			"(" + Constants.tblPrimaryKey + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-			"FOREIGN KEY (" + Constants.tblFKRegion + ") REFERENCES " + Constants.tblRegion + 
-			" (" + Constants.tblPrimaryKey +"));";
-		// "create table Country(ID INTEGER PRIMARY KEY AUTOINCREMENT, FOREIGN KEY (FK_REGION) REFERENCES Region (ID));"
-		//FOREIGN KEY(customer_id) REFERENCES customers(id)
+			"(" + Constants.pkId + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+			Constants.fkRegion + " INT NOT NULL, " +
+			"FOREIGN KEY (" + Constants.fkRegion + ") REFERENCES " + Constants.tblRegion + 
+			" (" + Constants.pkId +"));";
+		//"create table Country(ID INTEGER PRIMARY KEY AUTOINCREMENT, FK_REGION INT NOT NULL, FOREIGN KEY (FK_REGION) REFERENCES Region (ID));"
 		
-		private SQL(Context context) {
+		private String createTableData = "create table " + Constants.tblData + 
+		"(" + Constants.pkId + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+		Constants.fkCountry + " INT NOT NULL, " +
+		"FOREIGN KEY (" + Constants.fkCountry + ") REFERENCES " + Constants.tblCountry + 
+		" (" + Constants.pkId +"));";
+		
+		public SQL(Context context) {
 			// passing null for the database name causes it to be created in memory
 			super(context, /*Constants.dbName*/null, null, /*DB Version*/1);
 		}
 
 		@Override
-		public void onCreate(SQLiteDatabase db) { // issue, this function is been called twice
+		public void onCreate(SQLiteDatabase db) {
 			try {
 				db.execSQL(createTableRegion);
-				db.execSQL(createTableCountry); // not working...
+				db.execSQL(createTableCountry);
+				db.execSQL(createTableData);
 			} catch (SQLException e) {
 				String s = e.toString();				
 			}
@@ -40,13 +46,15 @@ public class SQL extends SQLiteOpenHelper
 				db.execSQL("DROP TABLE IF EXISTS " + Constants.tblCountry);
 				db.execSQL("DROP TABLE IF EXISTS " + Constants.tblData);
 				onCreate(db);
-			}
+		}
 		
-		private static SQL instance = null;
-		public static SQL getInstance(Context context){
-				if(instance == null)
-					instance = new SQL(context);
+		private static SQLiteDatabase instance = null;
+
+		public SQLiteDatabase getInstance() {
+				if(instance != null)
+					return instance;
+				SQLiteDatabase instance = getWritableDatabase();
 				return instance;
 			}
-
 	}
+		

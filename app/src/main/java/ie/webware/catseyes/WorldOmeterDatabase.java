@@ -1,19 +1,30 @@
 package ie.webware.catseyes;
-import android.os.*;
+import android.content.*;
+import android.database.*;
+import android.database.sqlite.*;
 import java.io.*;
 import java.net.*;
-import org.json.*;
-import java.nio.charset.*;
-import android.widget.*;
 import java.util.*;
-import org.apache.commons.codec.binary.*;
 
 class WorldOmeterDatabase {
-
-		public WorldOmeterDatabase() {}
-		ArrayList<String> jsonFragment = new ArrayList<String>();
 		
+		private ArrayList<String> jsonFragment = new ArrayList<String>();
+		private Context context = null;
+		
+		public WorldOmeterDatabase(Context _context) {
+				context = _context;
+				populateLocalDatabase();
+			}
+			
 		public Void populateLocalDatabase() {
+				pullWorldometerJSON();
+				speedReadJSON();
+				SQLiteDatabase db = new SQL(context).getInstance();
+				addTableColumns(db);
+				return null;
+			}
+
+		private boolean pullWorldometerJSON() {
 				BufferedReader bufferedReader = null;
 				try {
 						URL url = new URL(Constants.worldOmeterURL);
@@ -30,9 +41,11 @@ class WorldOmeterDatabase {
 							}
 						bufferedReader.close();
 					} catch (Exception e) {
-						String err = e.toString();
+						return false;
 					}
-				// Speed read json
+				return true;
+			}
+		private boolean speedReadJSON() {
 				int level = 0;// 1 = Region, 2 = Country, 3 = Data
 				for (int i = 0; i < jsonFragment.size(); i++) {
 						String line = jsonFragment.get(i);
@@ -79,8 +92,8 @@ class WorldOmeterDatabase {
 								tkv.isNumeric = false;
 							} else {
 								try {
-									Double d = Double.parseDouble(value);
-									tkv.isNumeric = true;
+										Double d = Double.parseDouble(value);
+										tkv.isNumeric = true;
 									} catch (Exception e) {
 										tkv.isNumeric = false;
 									} finally {
@@ -91,7 +104,7 @@ class WorldOmeterDatabase {
 						MainActivity.tableKeyValue.add(tkv);
 					}
 				jsonFragment.clear();
-				return null;
+				return true;
 			}
 
 		private String fixStringArray(String[] keyValue) {
@@ -109,6 +122,12 @@ class WorldOmeterDatabase {
 					}
 				return key + "+" + value;
 			}
+		private boolean addTableColumns(SQLiteDatabase db) {
+			// To Read, Cursor c = db.rawQuery("select * from Region", null);
+			// To Write, db.execSQL("insert into .....");
+			
+			return true;
+		}
 	}
 
 	

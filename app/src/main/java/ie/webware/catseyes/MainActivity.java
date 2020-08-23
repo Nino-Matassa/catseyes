@@ -4,6 +4,7 @@ import android.app.*;
 import android.os.*;
 import android.widget.*;
 import java.util.*;
+import android.database.sqlite.*;
 
 
 public class MainActivity extends Activity 
@@ -19,13 +20,13 @@ public class MainActivity extends Activity
 			@Override 
 			public void run(){
 				try{
-					new WorldOmeterDatabase().populateLocalDatabase();
+						new WorldOmeterDatabase(MainActivity.this);
 				} catch(Exception e){
 					Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG).show();
 				}
 			}
 		});
-		Toast.makeText(MainActivity.this, "Pulling Worldometer Data", Toast.LENGTH_LONG).show();
+		Toast.makeText(MainActivity.this, "Initialising Worldometer Data", Toast.LENGTH_LONG).show();
 		thread.start();
 		try {
 			thread.join(); // wait for thread to finish
@@ -38,10 +39,7 @@ public class MainActivity extends Activity
 //				String kv = tableKeyValue.get(i).table + " " + tableKeyValue.get(i).key + " " + tableKeyValue.get(i).value;
 //				Toast.makeText(MainActivity.this, kv, Toast.LENGTH_LONG);
 //		}
-		
-		SQL instance = SQL.getInstance(MainActivity.this);
-		instance.onCreate(instance.getWritableDatabase());
     }
 }
 
-
+ 

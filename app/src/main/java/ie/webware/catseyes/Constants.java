@@ -10,10 +10,10 @@ public final class Constants
 		public static final String tblRegion = "Region";
 		public static final String tblCountry = "Country";
 		public static final String tblData = "Data";
-		public static final String colCountry = "Country";
-		public static final String tblPrimaryKey = "ID";
-		public static final String tblFKRegion = "FK_REGION";
-		public static final String tblFKCountry = "FK_COUNTRY";
-		public static final String tblFKData = "FK_DATA";
+		public static final String colCountry = "Country"; // tblCountry is existential
+		public static final String pkId = "ID";
+		public static final String fkRegion = "FK_REGION";
+		public static final String fkCountry = "FK_COUNTRY";
+		public static final String fkData = "FK_DATA";
 }
 
