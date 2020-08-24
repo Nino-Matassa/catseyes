@@ -62,6 +62,7 @@ class WorldOmeterDatabase {
 						String table = null;
 						String key = null;
 						String value = null;
+						boolean isData = false;
 						if (level == 1 && line.contains("{")) {
 								table = Constants.tblRegion;
 								line = line.replaceAll(Constants.jsonTree, "");
@@ -82,8 +83,10 @@ class WorldOmeterDatabase {
 								keyValue = values.split("[+]");
 								key = keyValue[0].toString();
 								value = keyValue[1].toString();
+								isData = true;
 							}
 						TableKeyValue tkv = new TableKeyValue();
+						tkv.isData = isData;
 						tkv.table = table;
 						tkv.key = key;
 						tkv.value = value;
@@ -125,8 +128,47 @@ class WorldOmeterDatabase {
 		private boolean addTableColumns(SQLiteDatabase db) {
 			// To Read, Cursor c = db.rawQuery("select * from Region", null);
 			// To Write, db.execSQL("insert into .....");
+			String colCountry = "";//"alter table Country add";
+			String colData = "";//"alter table Data add";
+			String sql = null;
+			for(int i = 0; i < MainActivity.tableKeyValue.size(); i++) {
+					boolean isData = MainActivity.tableKeyValue.get(i).isData;
+					boolean isDate = MainActivity.tableKeyValue.get(i).isDate;
+					boolean isNumeric = MainActivity.tableKeyValue.get(i).isNumeric;
+					String table = MainActivity.tableKeyValue.get(i).table;
+					String key = MainActivity.tableKeyValue.get(i).key;
+					
+					if(table.equals(Constants.tblCountry)) {
+						if(colCountry.contains(key))
+							continue;
+							colCountry += " " + key;
+							sql = "alter table Country add " + defineColumn(isDate, isNumeric, key);
+					} else if(table.equals(Constants.tblData)) {
+						if(colData.contains(key))
+							continue;
+							colData += " " + key;
+							sql = "alter table Data add " + defineColumn(isDate, isNumeric, key);
+					}
+					db.execSQL(sql);
+			}
+			
+			Cursor c = db.rawQuery("select * from Country", null);
+			Cursor d = db.rawQuery("select * from Data", null);
 			
 			return true;
+		}
+		
+		private String defineColumn(boolean isDate, boolean isNumeric, String key) {
+			String coldef = " ";
+				
+			if(isDate) {
+				coldef = key + " date";
+			} else if(isNumeric) {
+				coldef = key + " decimal (10, 3)";
+			} else { // is string
+				coldef = key + " text";
+			}
+			return coldef;
 		}
 	}
 

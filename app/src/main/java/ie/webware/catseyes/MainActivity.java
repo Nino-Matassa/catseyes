@@ -35,10 +35,6 @@ public class MainActivity extends Activity
 		} finally {
 			Toast.makeText(MainActivity.this, "Building Database", Toast.LENGTH_LONG).show();
 		}
-//		for(int i = 0; i < tableKeyValue.size(); i++){
-//				String kv = tableKeyValue.get(i).table + " " + tableKeyValue.get(i).key + " " + tableKeyValue.get(i).value;
-//				Toast.makeText(MainActivity.this, kv, Toast.LENGTH_LONG);
-//		}
     }
 }
 
