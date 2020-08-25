@@ -4,57 +4,57 @@ import android.database.*;
 import android.database.sqlite.*;
 
 public class SQL extends SQLiteOpenHelper
-	{
-		// Creating table sql
-		private String createTableRegion = "create table " + Constants.tblRegion + 
-			"(" + Constants.pkId + " INTEGER PRIMARY KEY AUTOINCREMENT, " + 
-			Constants.colCountry + " TEXT NOT NULL);";
-		// "create table Region(ID INTEGER PRIMARY KEY AUTOINCREMENT, Country TEXT NOT NULL);"
-		
-		private String createTableCountry = "create table " + Constants.tblCountry + 
-			"(" + Constants.pkId + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-			Constants.fkRegion + " INT NOT NULL, " +
-			"FOREIGN KEY (" + Constants.fkRegion + ") REFERENCES " + Constants.tblRegion + 
-			" (" + Constants.pkId +"));";
-		//"create table Country(ID INTEGER PRIMARY KEY AUTOINCREMENT, FK_REGION INT NOT NULL, FOREIGN KEY (FK_REGION) REFERENCES Region (ID));"
-		
-		private String createTableData = "create table " + Constants.tblData + 
-		"(" + Constants.pkId + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-		Constants.fkCountry + " INT NOT NULL, " +
-		"FOREIGN KEY (" + Constants.fkCountry + ") REFERENCES " + Constants.tblCountry + 
-		" (" + Constants.pkId +"));";
-		
-		public SQL(Context context) {
-			// passing null for the database name causes it to be created in memory
-			super(context, /*Constants.dbName*/null, null, /*DB Version*/1);
-		}
+ {
+  // Creating table sql
+  private String createTableRegion = "create table " + Constants.tblRegion + 
+  "(" + Constants.pkId + " INTEGER PRIMARY KEY AUTOINCREMENT, " + 
+  Constants.colContinent + " TEXT NOT NULL);";
+  // "create table Region(ID INTEGER PRIMARY KEY AUTOINCREMENT, Country TEXT NOT NULL);"
 
-		@Override
-		public void onCreate(SQLiteDatabase db) {
-			try {
-				db.execSQL(createTableRegion);
-				db.execSQL(createTableCountry);
-				db.execSQL(createTableData);
-			} catch (SQLException e) {
-				String s = e.toString();				
-			}
-		}
+  private String createTableCountry = "create table " + Constants.tblCountry + 
+  "(" + Constants.pkId + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+  Constants.fkRegion + " INT NOT NULL, " +
+  "FOREIGN KEY (" + Constants.fkRegion + ") REFERENCES " + Constants.tblRegion + 
+  " (" + Constants.pkId + "));";
+  //"create table Country(ID INTEGER PRIMARY KEY AUTOINCREMENT, FK_REGION INT NOT NULL, FOREIGN KEY (FK_REGION) REFERENCES Region (ID));"
 
-		@Override
-		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-				db.execSQL("DROP TABLE IF EXISTS " + Constants.tblRegion);
-				db.execSQL("DROP TABLE IF EXISTS " + Constants.tblCountry);
-				db.execSQL("DROP TABLE IF EXISTS " + Constants.tblData);
-				onCreate(db);
-		}
-		
-		private static SQLiteDatabase instance = null;
+  private String createTableData = "create table " + Constants.tblData + 
+  "(" + Constants.pkId + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+  Constants.fkCountry + " INT NOT NULL, " +
+  "FOREIGN KEY (" + Constants.fkCountry + ") REFERENCES " + Constants.tblCountry + 
+  " (" + Constants.pkId + "));";
 
-		public SQLiteDatabase getInstance() {
-				if(instance != null)
-					return instance;
-				SQLiteDatabase instance = getWritableDatabase();
-				return instance;
-			}
-	}
+  public SQL(Context context) {
+	// passing null for the database name causes it to be created in memory
+	super(context, /*Constants.dbName*/null, null, /*DB Version*/1);
+   }
+
+  @Override
+  public void onCreate(SQLiteDatabase db) {
+	try {
+	  db.execSQL(createTableRegion);
+	  db.execSQL(createTableCountry);
+	  db.execSQL(createTableData);
+	 } catch(SQLException e) {
+	  String s = e.toString();				
+	 }
+   }
+
+  @Override
+  public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+	db.execSQL("DROP TABLE IF EXISTS " + Constants.tblRegion);
+	db.execSQL("DROP TABLE IF EXISTS " + Constants.tblCountry);
+	db.execSQL("DROP TABLE IF EXISTS " + Constants.tblData);
+	onCreate(db);
+   }
+
+  private static SQLiteDatabase instance = null;
+
+  public SQLiteDatabase getInstance() {
+	if(instance != null)
+	 return instance;
+	SQLiteDatabase instance = getWritableDatabase();
+	return instance;
+   }
+ }
 		
