@@ -14,5 +14,7 @@ public final class Constants
   public static final String pkId = "ID";
   public static final String fkRegion = "FK_REGION";
   public static final String fkCountry = "FK_COUNTRY";
+  public static final String isCountryLead = "continent";
+  public static final String isDataLead = "date";
  }
 

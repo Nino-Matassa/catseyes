@@ -5,6 +5,8 @@ import android.database.sqlite.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import android.util.*;
+import java.security.*;
 
 class WorldOmeterDatabase
  {
@@ -22,7 +24,7 @@ class WorldOmeterDatabase
 	speedReadJSON();
 	SQLiteDatabase db = new SQL(context).getInstance();
 	addTableColumns(db);
-	populateTable(db);
+	populateDatabase(db);
 	return null;
    }
 
@@ -171,60 +173,58 @@ class WorldOmeterDatabase
 	return coldef;
    }
 
-  private boolean populateTable(SQLiteDatabase db) {
-	Cursor rs = null;
-	int fkRegion;
-	int fkCountry;
-
-	for(int i = 0; i < MainActivity.tableKeyValue.size(); i++) {
-	  TableKeyValue tkv = MainActivity.tableKeyValue.get(i);
-	  if(tkv.table.equals(Constants.tblCountry) && tkv.key.equals("continent")) {
-		String[] colCountry = db.rawQuery("select * from Country", null).getColumnNames();
-		String lastField = colCountry[colCountry.length - 1];
-		String sql = "select id from region where continent = '" + tkv.value + "'";
-		String[] row;
-		rs = db.rawQuery(sql, null);
-		if(rs.getCount() == 0) {
-		  db.execSQL("insert into region (continent) values ('" + tkv.value + "')");
-		  row = rowSql(i, tkv.table, Constants.fkRegion, 1, lastField).split("[+]");
-		 } else {
-		  int id = rs.getInt(rs.getColumnIndex(Constants.pkId));
-		  row = rowSql(i, tkv.table, Constants.fkRegion, id, lastField).split("[+]");
+  private boolean populateDatabase(SQLiteDatabase db) {
+	int foreignKey = 0;
+	ContentValues values = null;
+	int index = 0;
+	for(; index < MainActivity.tableKeyValue.size(); index++) {
+	  TableKeyValue tkv = MainActivity.tableKeyValue.get(index);
+	  if(tkv.table.equals(Constants.tblCountry)) {
+		if(tkv.key.equals(Constants.isCountryLead)) {
+		  values = new ContentValues();
+		  String sql = "select id from region where continent = '" + tkv.value + "'";
+		  Cursor rs = db.rawQuery(sql, null);
+		  if(rs.getCount() == 0) {
+			values = new ContentValues();
+			values.put(tkv.key, tkv.value);
+			db.insert(Constants.tblRegion, null, values);
+			Cursor cId = db.rawQuery("select * from region where " + tkv.key + " = '" + tkv.value + "'", null);
+			cId.moveToFirst();
+			foreignKey = cId.getInt(cId.getColumnIndex("ID"));
+			values.put(Constants.fkRegion, foreignKey);
+			continue;
+		   }		   
 		 }
-		i += Integer.parseInt(row[1]);
-		db.execSQL(row[0]);
-		Cursor c = db.rawQuery("select * from tblRegion", null); // debugging
-	   } else if(tkv.table.equals(Constants.tblData) && tkv.key.equals("date")) {
-		continue;
+		values.put(tkv.key, tkv.value);
+		if(MainActivity.tableKeyValue.get(index + 1).table.equals(Constants.tblData)) {
+		  db.insert(Constants.tblCountry, null, values);
+//		  Cursor c = db.rawQuery("select * from country", null);
+//		  c.moveToFirst();
+//		  String s = c.getString(c.getColumnIndex("location"));
+		 }
+	   } else if(tkv.table.equals(Constants.tblData)) {
+		values = new ContentValues();
+		values.put(Constants.fkCountry, foreignKey);
+		do {
+		  tkv = MainActivity.tableKeyValue.get(index);
+		  values.put(tkv.key, tkv.value);
+		  index++;
+		  if(MainActivity.tableKeyValue.get(index).table.equals(Constants.tblCountry)) {
+			db.insert(Constants.tblCountry, null, values);
+			continue;
+		   } else if(MainActivity.tableKeyValue.get(index).key.equals(Constants.isDataLead)) {
+			db.insert(Constants.tblCountry, null, values); // not inserting something missing
+			values = new ContentValues();
+			values.put(Constants.fkCountry, foreignKey);
+			Cursor c = db.rawQuery("select * from data", null);
+			c.moveToFirst();
+			String s = c.getString(c.getColumnIndex("date")); 
+			String t = c.getString(c.getColumnIndex("total_cases decimal"));
+		   }
+		 }while(tkv.table.equals(Constants.tblData));
 	   }
 	 }
 	return true;
-   }
-
-  private String rowSql(int index, String table, String fkName, int foreignKey, String lastField) {
-	String sql  = "INSERT INTO TABLE (COLUMN) values (NAME)";
-	TableKeyValue tkv;// = MainActivity.tableKeyValue.get(index);
-	String column = "";
-	String value = "";
-	int i =1;
-	tkv = MainActivity.tableKeyValue.get(index);
-	column += Constants.fkRegion + "," + tkv.key;
-	if(tkv.isNumeric)
-	 value += foreignKey + "," + tkv.value;
-	else
-	 value += foreignKey + ",'" + tkv.value + "'";
-	for(;;i++) {
-	  tkv = MainActivity.tableKeyValue.get(index + i++);
-	  column += "," + tkv.key;
-	  if(tkv.isNumeric)
-	   value += "," + tkv.value;
-	  else
-	   value += ", '" + tkv.value + "'";
-	  if(tkv.key.equals(lastField)) break;
-	 }
-	sql = sql.replace("COLUMN", column);
-	sql = sql.replace("NAME", value);
-	return sql + "+" + i;
    }
  }
 
