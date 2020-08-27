@@ -41,7 +41,7 @@ class WorldOmeterDatabase
 	  while((line = bufferedReader.readLine()) != null) {
 		jsonFragment.add(line.replaceAll(Constants.jsonWood, " "));
 		fragmentIndex++;
-		if(fragmentIndex == 1000) break; // test line
+		if(fragmentIndex == 10000) break; // test line
 	   }
 	  bufferedReader.close();
 	 } catch(Exception e) {
@@ -130,10 +130,8 @@ class WorldOmeterDatabase
 	return key + "+" + value;
    }
   private boolean addTableColumns(SQLiteDatabase db) {
-	// To Read, Cursor c = db.rawQuery("select * from Region", null);
-	// To Write, db.execSQL("insert into .....");
-	String colCountry = "";//"alter table Country add";
-	String colData = "";//"alter table Data add";
+	String colCountry = "";
+	String colData = "";
 	String sql = null;
 	for(int i = 0; i < MainActivity.tableKeyValue.size(); i++) {
 	  boolean isData = MainActivity.tableKeyValue.get(i).isData;
@@ -155,8 +153,6 @@ class WorldOmeterDatabase
 	   }
 	  db.execSQL(sql);
 	 }
-	Cursor cRegion = db.rawQuery("select * from Region", null); // debugging
-	Cursor cCountry = db.rawQuery("select * from Country", null); // debugging
 	return true;
    }
 
@@ -177,7 +173,18 @@ class WorldOmeterDatabase
 	int foreignKey = 0;
 	ContentValues values = null;
 	int index = 0;
-	for(; index < MainActivity.tableKeyValue.size(); index++) {
+	int size = MainActivity.tableKeyValue.size();
+	for(index = 0; index < size; index++) {
+	  if(MainActivity.tableKeyValue.get(index).key.equals(Constants.isCountryLead)) {
+		TableKeyValue tkv = MainActivity.tableKeyValue.get(index);
+		values = new ContentValues();
+		values.put(tkv.key, tkv.value);
+		Cursor cId = db.rawQuery("select * from region where " + tkv.key + " = '" + tkv.value + "'", null);
+		if(cId.getCount() == 0)
+		 db.insert(Constants.tblRegion, null, values);
+	  }
+	}
+	for(index = 0; index < MainActivity.tableKeyValue.size(); index++) {
 	  TableKeyValue tkv = MainActivity.tableKeyValue.get(index);
 	  if(tkv.table.equals(Constants.tblCountry)) {
 		if(tkv.key.equals(Constants.isCountryLead)) {
@@ -185,43 +192,33 @@ class WorldOmeterDatabase
 		  String sql = "select id from region where continent = '" + tkv.value + "'";
 		  Cursor rs = db.rawQuery(sql, null);
 		  if(rs.getCount() == 0) {
-			values = new ContentValues();
-			values.put(tkv.key, tkv.value);
-			db.insert(Constants.tblRegion, null, values);
 			Cursor cId = db.rawQuery("select * from region where " + tkv.key + " = '" + tkv.value + "'", null);
 			cId.moveToFirst();
 			foreignKey = cId.getInt(cId.getColumnIndex("ID"));
-			values.put(Constants.fkRegion, foreignKey);
-			continue;
+			values.put(Constants.fkRegion, foreignKey); // never hits here
 		   }		   
 		 }
 		values.put(tkv.key, tkv.value);
 		if(MainActivity.tableKeyValue.get(index + 1).table.equals(Constants.tblData)) {
 		  db.insert(Constants.tblCountry, null, values);
-//		  Cursor c = db.rawQuery("select * from country", null);
-//		  c.moveToFirst();
-//		  String s = c.getString(c.getColumnIndex("location"));
 		 }
 	   } else if(tkv.table.equals(Constants.tblData)) {
 		values = new ContentValues();
 		values.put(Constants.fkCountry, foreignKey);
-		do {
+		 while(index < MainActivity.tableKeyValue.size() && tkv.table.equals(Constants.tblData)) {
 		  tkv = MainActivity.tableKeyValue.get(index);
 		  values.put(tkv.key, tkv.value);
 		  index++;
+		  if(index == MainActivity.tableKeyValue.size()) continue;
 		  if(MainActivity.tableKeyValue.get(index).table.equals(Constants.tblCountry)) {
 			db.insert(Constants.tblCountry, null, values);
 			continue;
 		   } else if(MainActivity.tableKeyValue.get(index).key.equals(Constants.isDataLead)) {
-			db.insert(Constants.tblCountry, null, values); // not inserting something missing
+			db.insert(Constants.tblData, null, values);
 			values = new ContentValues();
 			values.put(Constants.fkCountry, foreignKey);
-			Cursor c = db.rawQuery("select * from data", null);
-			c.moveToFirst();
-			String s = c.getString(c.getColumnIndex("date")); 
-			String t = c.getString(c.getColumnIndex("total_cases decimal"));
 		   }
-		 }while(tkv.table.equals(Constants.tblData));
+		 }
 	   }
 	 }
 	return true;
