@@ -169,59 +169,71 @@ class WorldOmeterDatabase
 	return coldef;
    }
 
-  private boolean populateDatabase(SQLiteDatabase db) {
-	int foreignKey = 0;
+  private void populateDatabase(SQLiteDatabase db) {
+	populateRegionTable(db);
+	populateCountryTable(db);
+   }
+  
+  private void populateRegionTable(SQLiteDatabase db) {
 	ContentValues values = null;
 	int index = 0;
-	int size = MainActivity.tableKeyValue.size();
-	for(index = 0; index < size; index++) {
+	for(index = 0; index < MainActivity.tableKeyValue.size(); index++) { // populate table region
 	  if(MainActivity.tableKeyValue.get(index).key.equals(Constants.isCountryLead)) {
 		TableKeyValue tkv = MainActivity.tableKeyValue.get(index);
 		values = new ContentValues();
 		values.put(tkv.key, tkv.value);
-		Cursor cId = db.rawQuery("select * from region where " + tkv.key + " = '" + tkv.value + "'", null);
+		Cursor cId = db.rawQuery("select ID from region where " + tkv.key + " = '" + tkv.value + "'", null);
 		if(cId.getCount() == 0)
 		 db.insert(Constants.tblRegion, null, values);
-	  }
-	}
-	for(index = 0; index < MainActivity.tableKeyValue.size(); index++) {
+	   }
+	 }
+   }
+
+  private void populateCountryTable(SQLiteDatabase db) {
+	int index = 0;
+	ContentValues values = null;
+	for(; index + 1 < MainActivity.tableKeyValue.size(); index++) { // populate table country
 	  TableKeyValue tkv = MainActivity.tableKeyValue.get(index);
+	  int foreignKey = 0;
 	  if(tkv.table.equals(Constants.tblCountry)) {
-		if(tkv.key.equals(Constants.isCountryLead)) {
+		if(tkv.key.equals(Constants.isCountryLead)) { // set foreign key
 		  values = new ContentValues();
-		  String sql = "select id from region where continent = '" + tkv.value + "'";
-		  Cursor rs = db.rawQuery(sql, null);
-		  if(rs.getCount() == 0) {
-			Cursor cId = db.rawQuery("select * from region where " + tkv.key + " = '" + tkv.value + "'", null);
-			cId.moveToFirst();
-			foreignKey = cId.getInt(cId.getColumnIndex("ID"));
-			values.put(Constants.fkRegion, foreignKey); // never hits here
-		   }		   
+		  String sql = "select ID from region where " + tkv.key + " = '" + tkv.value + "'";
+		  Cursor cId = db.rawQuery(sql, null);
+		  cId.moveToFirst();
+		  foreignKey = cId.getInt(cId.getColumnIndex("ID"));
+		  values.put(Constants.fkRegion, foreignKey);
 		 }
 		values.put(tkv.key, tkv.value);
 		if(MainActivity.tableKeyValue.get(index + 1).table.equals(Constants.tblData)) {
 		  db.insert(Constants.tblCountry, null, values);
-		 }
-	   } else if(tkv.table.equals(Constants.tblData)) {
-		values = new ContentValues();
-		values.put(Constants.fkCountry, foreignKey);
-		 while(index < MainActivity.tableKeyValue.size() && tkv.table.equals(Constants.tblData)) {
-		  tkv = MainActivity.tableKeyValue.get(index);
-		  values.put(tkv.key, tkv.value);
-		  index++;
-		  if(index == MainActivity.tableKeyValue.size()) continue;
-		  if(MainActivity.tableKeyValue.get(index).table.equals(Constants.tblCountry)) {
-			db.insert(Constants.tblCountry, null, values);
-			continue;
-		   } else if(MainActivity.tableKeyValue.get(index).key.equals(Constants.isDataLead)) {
-			db.insert(Constants.tblData, null, values);
-			values = new ContentValues();
-			values.put(Constants.fkCountry, foreignKey);
-		   }
+		  index = populateDataTable(db, foreignKey, index + 1);
 		 }
 	   }
+	 }	
+   }
+
+  private int populateDataTable(SQLiteDatabase db, int fkCountry, int index) {
+	ContentValues values = null;
+	int i = index;
+	for(; i + 1 < MainActivity.tableKeyValue.size(); i++) { // populate table data
+	  TableKeyValue tkv = MainActivity.tableKeyValue.get(i);
+	  values = new ContentValues();
+	  if(tkv.table.equals(Constants.tblData)) {
+		if(tkv.key.equals(Constants.isDataLead)) { // set foreign key
+		  values.put(Constants.fkRegion, fkCountry);
+		 }
+		values.put(tkv.key, tkv.value);
+		if(MainActivity.tableKeyValue.get(i + 1).table.equals(Constants.tblData)) {
+		  if(MainActivity.tableKeyValue.get(i + 1).key.equals(Constants.isDataLead)) {
+			db.insert(Constants.tblData, null, values);
+		   }
+		 }
+		if(MainActivity.tableKeyValue.get(i + 1).table.equals(Constants.tblCountry))
+		 return i;
+	   }
 	 }
-	return true;
+	return i;
    }
  }
 
