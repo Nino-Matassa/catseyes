@@ -8,6 +8,95 @@ import java.util.*;
 import android.util.*;
 import java.security.*;
 
+public class WorldOmeterDatabase
+ {
+  private ArrayList<String> jsonFragment = new ArrayList<String>();
+  private SQLiteDatabase db = null;
+  private Context context = null;
+  private int fkRegion = 0;
+  private int fkCountry = 0;
+  private SerializeCountry serializeCountry = null;
+
+  public WorldOmeterDatabase(Context _context) {
+    context = _context;
+    readJSONfromURL();
+    //db = new SQL(context).getInstance();
+   }
+
+  private boolean readJSONfromURL() {
+    BufferedReader bufferedReader = null;
+    try {
+      URL url = new URL(Constants.worldOmeterURL);
+      HttpURLConnection httpUrlConnection = (HttpURLConnection)url.openConnection();
+      InputStream inputStream =  httpUrlConnection.getInputStream();
+      bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+      boolean bReadCountryCode = true;
+      boolean bReadCountryInformation = true;
+      ArrayList<String> countryColumn = new ArrayList<String>();
+      ArrayList<String> countryRow = new ArrayList<String>();
+
+      String line = null;
+      int fragmentIndex = 0;                                        // debug
+      while((line = bufferedReader.readLine().replaceAll("\\s+","")) != null) {
+        if(serializeCountry == null) serializeCountry = new SerializeCountry();
+        fragmentIndex++;                                            // debug
+        if(fragmentIndex == 10000) break;                           // debug
+
+        if(bReadCountryCode) {
+          line = line.replaceAll("[^a-zA-Z0-9._\\[\\]\\{\\}\\:]", "");
+          if(line.matches("[A-Z][A-Z][A-Z]:\\{")) {
+            serializeCountry.setCountryCode(line);
+            bReadCountryCode = false;
+           }
+           continue;
+         }
+         if(bReadCountryInformation) {
+          if(line.matches("[data]\\:\\[")) { // not working
+           bReadCountryInformation = false;
+           continue;
+          }
+           serializeCountry.setCountryDetails(line.replaceAll("\"", ""), countryColumn, countryRow);
+          continue;
+         }
+       }
+      bufferedReader.close();
+     } catch(Exception e) {
+      return false;
+     }
+    return true;
+   }
+
+
+ } // end class
+
+class SerializeCountry
+ {
+  private int fkRegion;
+  private int fkCountry;
+  private String countryCode;
+  private String continent;
+  private String location;
+
+  public SerializeCountry() {
+
+  }
+
+  public void setCountryCode(String line) {
+    String[] array = line.split("[:]");
+    countryCode = array[0];
+   }
+   public void setCountryDetails(String line, ArrayList<String> column, ArrayList<String> row) {
+    String[] keyValue = line.split("[:]");
+    column.add(keyValue[0]);
+    row.add(keyValue[1]);
+     if(keyValue[0].equals("continent")) {
+       continent = keyValue[0];
+       location = keyValue[1];
+     }
+  }
+ }
+
+/*
 class WorldOmeterDatabase
  {
 
@@ -236,5 +325,6 @@ class WorldOmeterDatabase
 	return i;
    }
  }
+*/
 
 	
