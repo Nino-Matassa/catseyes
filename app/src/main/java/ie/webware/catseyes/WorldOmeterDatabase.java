@@ -32,12 +32,15 @@ public class WorldOmeterDatabase
       bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
       boolean bReadCountryCode = true;
       boolean bReadCountryInformation = true;
+      boolean bReadCountryData = true;
       ArrayList<String> countryColumn = new ArrayList<String>();
       ArrayList<String> countryRow = new ArrayList<String>();
-
+      ArrayList<String> dataColumn = new ArrayList<String>();
+      ArrayList<String> dataRow = new ArrayList<String>();
+      
       String line = null;
       int fragmentIndex = 0;                                        // debug
-      while((line = bufferedReader.readLine().replaceAll("\\s+","")) != null) {
+      while((line = bufferedReader.readLine().trim().replaceAll("\"", "")) != null) {
         if(serializeCountry == null) serializeCountry = new SerializeCountry();
         fragmentIndex++;                                            // debug
         if(fragmentIndex == 10000) break;                           // debug
@@ -51,12 +54,28 @@ public class WorldOmeterDatabase
            continue;
          }
          if(bReadCountryInformation) {
-          if(line.matches("[data]\\:\\[")) { // not working
+          if(line.matches("data: \\[")) {
            bReadCountryInformation = false;
            continue;
           }
-           serializeCountry.setCountryDetails(line.replaceAll("\"", ""), countryColumn, countryRow);
+           serializeCountry.setCountryDetails(line, countryColumn, countryRow);
           continue;
+         }
+         if(bReadCountryData) {
+          if(line.matches("\\{"))
+           continue;
+          if(line.matches("\\},")) {
+           // add foreign key
+           // insert into
+           String s = line;
+          }
+          if(line.matches("\\}")) {
+           // add foreign key
+           // insert into
+           // country complete
+           bReadCountryData = false;
+           String s = line;
+          }
          }
        }
       bufferedReader.close();
