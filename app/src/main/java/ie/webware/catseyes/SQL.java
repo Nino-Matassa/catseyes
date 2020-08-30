@@ -9,14 +9,13 @@ public class SQL extends SQLiteOpenHelper
   private String createTableRegion = "create table " + Constants.tblRegion + 
   "(" + Constants.pkId + " INTEGER PRIMARY KEY AUTOINCREMENT, " + 
   Constants.colContinent + " TEXT NOT NULL);";
-  // "create table Region(ID INTEGER PRIMARY KEY AUTOINCREMENT, Country TEXT NOT NULL);"
 
   private String createTableCountry = "create table " + Constants.tblCountry + 
   "(" + Constants.pkId + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
   Constants.fkRegion + " INT NOT NULL, " +
+  Constants.CountryCode + " TEXT, " +
   "FOREIGN KEY (" + Constants.fkRegion + ") REFERENCES " + Constants.tblRegion + 
   " (" + Constants.pkId + "));";
-  //"create table Country(ID INTEGER PRIMARY KEY AUTOINCREMENT, FK_REGION INT NOT NULL, FOREIGN KEY (FK_REGION) REFERENCES Region (ID));"
 
   private String createTableData = "create table " + Constants.tblData + 
   "(" + Constants.pkId + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -25,19 +24,18 @@ public class SQL extends SQLiteOpenHelper
   " (" + Constants.pkId + "));";
 
   public SQL(Context context) {
-	// passing null for the database name causes it to be created in memory
 	super(context, /*Constants.dbName*/null, null, /*DB Version*/1);
    }
 
   @Override
   public void onCreate(SQLiteDatabase db) {
-	try {
-	  db.execSQL(createTableRegion);
-	  db.execSQL(createTableCountry);
-	  db.execSQL(createTableData);
-	 } catch(SQLException e) {
-	  String s = e.toString();				
-	 }
+    try {
+      db.execSQL(createTableRegion);
+      db.execSQL(createTableCountry);
+      db.execSQL(createTableData);
+     } catch(SQLException e) {
+      String s = e.toString();				
+     }
    }
 
   @Override

@@ -13,14 +13,13 @@ public class WorldOmeterDatabase
   private ArrayList<String> jsonFragment = new ArrayList<String>();
   private SQLiteDatabase db = null;
   private Context context = null;
-  private int fkRegion = 0;
-  private int fkCountry = 0;
-  private SerializeCountry serializeCountry = null;
+  //private ArrayList<SerializeCountry> serialized = new ArrayList<SerializeCountry>();
 
   public WorldOmeterDatabase(Context _context) {
     context = _context;
+    db = new SQL(context).getInstance();
     readJSONfromURL();
-    //db = new SQL(context).getInstance();
+    db.close();
    }
 
   private boolean readJSONfromURL() {
@@ -32,18 +31,13 @@ public class WorldOmeterDatabase
       bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
       boolean bReadCountryCode = true;
       boolean bReadCountryInformation = true;
-      boolean bReadCountryData = true;
-      ArrayList<String> countryColumn = new ArrayList<String>();
-      ArrayList<String> countryRow = new ArrayList<String>();
-      ArrayList<String> dataColumn = new ArrayList<String>();
-      ArrayList<String> dataRow = new ArrayList<String>();
       
       String line = null;
-      int fragmentIndex = 0;                                        // debug
+      //int fragmentIndex = 0;                                        // debug
+      SerializeCountry serializeCountry = new SerializeCountry(db);
       while((line = bufferedReader.readLine().trim().replaceAll("\"", "")) != null) {
-        if(serializeCountry == null) serializeCountry = new SerializeCountry();
-        fragmentIndex++;                                            // debug
-        if(fragmentIndex == 10000) break;                           // debug
+      //fragmentIndex++;                                            // debug
+      //if(fragmentIndex == 10000) break;                           // debug
 
         if(bReadCountryCode) {
           line = line.replaceAll("[^a-zA-Z0-9._\\[\\]\\{\\}\\:]", "");
@@ -58,24 +52,32 @@ public class WorldOmeterDatabase
            bReadCountryInformation = false;
            continue;
           }
-           serializeCountry.setCountryDetails(line, countryColumn, countryRow);
+           serializeCountry.setCountryDetails(line);
           continue;
          }
-         if(bReadCountryData) {
+         //if(bReadCountryData) {
+         {
           if(line.matches("\\{"))
+           // Start new row
            continue;
-          if(line.matches("\\},")) {
-           // add foreign key
-           // insert into
-           String s = line;
+          if(line.matches("\\},")) {  // end of country data
+           // row complete
+           serializeCountry.setCountryData("*:*");
+           serializeCountry.commitToDatabase();
+           return true; //continue; for debugging
           }
-          if(line.matches("\\}")) {
-           // add foreign key
-           // insert into
-           // country complete
-           bReadCountryData = false;
-           String s = line;
+          if(line.matches("\\}")) {  // end of all countries data
+           // row complete
+            serializeCountry.setCountryData("*:*");
+            serializeCountry.commitToDatabase();
+            return true;
+//            bReadCountryCode = true;
+//            bReadCountryInformation = true;
+//            serialized.add(serializeCountry);
+//            serializeCountry = new SerializeCountry();
+//           continue;
           }
+          serializeCountry.setCountryData(line);
          }
        }
       bufferedReader.close();
@@ -90,30 +92,64 @@ public class WorldOmeterDatabase
 
 class SerializeCountry
  {
-  private int fkRegion;
-  private int fkCountry;
+  private SQLiteDatabase db = null;
+  private long fkRegion;
+  private long fkCountry;
   private String countryCode;
   private String continent;
   private String location;
+  ArrayList<String> colCountryKey = new ArrayList<String>();
+  ArrayList<String> colCountryValue = new ArrayList<String>();
+  ArrayList<String> colDataKey = new ArrayList<String>();
+  ArrayList<String> colDataValue = new ArrayList<String>();
 
-  public SerializeCountry() {
-
+  public SerializeCountry(SQLiteDatabase _db) {
+   db = _db; 
   }
 
   public void setCountryCode(String line) {
     String[] array = line.split("[:]");
-    countryCode = array[0];
+    countryCode = array[0].trim();
    }
-   public void setCountryDetails(String line, ArrayList<String> column, ArrayList<String> row) {
+   public void setCountryDetails(String line) {
     String[] keyValue = line.split("[:]");
-    column.add(keyValue[0]);
-    row.add(keyValue[1]);
+     colCountryKey.add(keyValue[0]);
+     colCountryValue.add(keyValue[1]);
      if(keyValue[0].equals("continent")) {
-       continent = keyValue[0];
-       location = keyValue[1];
+       continent = keyValue[1].trim();
      }
+     if(keyValue[0].equals("location")) {
+       location = keyValue[1].trim();
+      }
+  }
+  public void setCountryData(String line) {
+    String[] keyValue = line.split("[:]");
+    colDataKey.add(keyValue[0]);
+    colDataValue.add(keyValue[1].trim().replace(",", ""));
+  }
+  public void commitToDatabase() {
+   populateRegion();
+   populateCountry();
+  }
+  
+  private void populateRegion() {
+    Cursor cId = db.rawQuery("select ID from region where continent = '" + continent + "'", null);
+    if(cId.getCount() == 0) {
+      ContentValues values = new ContentValues();
+      values.put("continent", continent);
+      fkRegion = db.insert(Constants.tblRegion, null, values);
+    }
+  }
+  private void populateCountry() {
+    Cursor cId = db.rawQuery("select ID from country where " + Constants.CountryCode + " = '" + countryCode + "'", null);
+    if(cId.getCount() == 0) {
+     ContentValues values = new ContentValues();
+     values.put(Constants.CountryCode, countryCode);
+     fkCountry = db.insert(Constants.tblCountry, null, values); // returning -1?
+   }
   }
  }
+ 
 
 /*
 class WorldOmeterDatabase
