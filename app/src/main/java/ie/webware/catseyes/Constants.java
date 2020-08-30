@@ -6,7 +6,7 @@ public final class Constants
   public static final String worldOmeterURL = "https://covid.ourworldindata.org/data/owid-covid-data.json";
   public static final String dbName = ":memory:";
   public static final String tblRegion = "Region";
-  public static final String CountryCode = "Code";
+  public static final String CountryCode = "Country_Code";
   public static final String tblCountry = "Country";
   public static final String tblData = "Data";
   public static final String colContinent = "Continent";

@@ -31,52 +31,44 @@ public class WorldOmeterDatabase
       bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
       boolean bReadCountryCode = true;
       boolean bReadCountryInformation = true;
-      
+
       String line = null;
-      //int fragmentIndex = 0;                                        // debug
       SerializeCountry serializeCountry = new SerializeCountry(db);
       while((line = bufferedReader.readLine().trim().replaceAll("\"", "")) != null) {
-      //fragmentIndex++;                                            // debug
-      //if(fragmentIndex == 10000) break;                           // debug
-
         if(bReadCountryCode) {
           line = line.replaceAll("[^a-zA-Z0-9._\\[\\]\\{\\}\\:]", "");
           if(line.matches("[A-Z][A-Z][A-Z]:\\{")) {
             serializeCountry.setCountryCode(line);
             bReadCountryCode = false;
            }
-           continue;
-         }
-         if(bReadCountryInformation) {
-          if(line.matches("data: \\[")) {
-           bReadCountryInformation = false;
-           continue;
-          }
-           serializeCountry.setCountryDetails(line);
           continue;
          }
-         //if(bReadCountryData) {
+        if(bReadCountryInformation) {
+          if(line.matches("data: \\[")) {
+            bReadCountryInformation = false;
+            continue;
+           }
+          serializeCountry.setCountryDetails(line);
+          continue;
+         }
+        //if(bReadCountryData) {
          {
           if(line.matches("\\{"))
-           // Start new row
+          // Start new row
            continue;
           if(line.matches("\\},")) {  // end of country data
-           // row complete
-           serializeCountry.setCountryData("*:*");
-           serializeCountry.commitToDatabase();
-           return true; //continue; for debugging
-          }
+            // row complete
+            serializeCountry.setCountryData("*:*");
+            serializeCountry.commitToDatabase();
+            return true; // for debugging
+            //continue;
+           }
           if(line.matches("\\}")) {  // end of all countries data
-           // row complete
+            // row complete
             serializeCountry.setCountryData("*:*");
             serializeCountry.commitToDatabase();
             return true;
-//            bReadCountryCode = true;
-//            bReadCountryInformation = true;
-//            serialized.add(serializeCountry);
-//            serializeCountry = new SerializeCountry();
-//           continue;
-          }
+           }
           serializeCountry.setCountryData(line);
          }
        }
@@ -98,56 +90,97 @@ class SerializeCountry
   private String countryCode;
   private String continent;
   private String location;
+  private boolean addColumns = true;
   ArrayList<String> colCountryKey = new ArrayList<String>();
   ArrayList<String> colCountryValue = new ArrayList<String>();
   ArrayList<String> colDataKey = new ArrayList<String>();
   ArrayList<String> colDataValue = new ArrayList<String>();
 
   public SerializeCountry(SQLiteDatabase _db) {
-   db = _db; 
-  }
+    db = _db; 
+   }
 
   public void setCountryCode(String line) {
     String[] array = line.split("[:]");
     countryCode = array[0].trim();
    }
-   public void setCountryDetails(String line) {
+  public void setCountryDetails(String line) {
     String[] keyValue = line.split("[:]");
-     colCountryKey.add(keyValue[0]);
-     colCountryValue.add(keyValue[1]);
-     if(keyValue[0].equals("continent")) {
-       continent = keyValue[1].trim();
+    colCountryKey.add(keyValue[0]);
+    colCountryValue.add(keyValue[1]);
+    if(keyValue[0].equals("continent")) {
+      continent = keyValue[1].trim();
      }
-     if(keyValue[0].equals("location")) {
-       location = keyValue[1].trim();
-      }
-  }
+    if(keyValue[0].equals("location")) {
+      location = keyValue[1].trim();
+     }
+   }
   public void setCountryData(String line) {
     String[] keyValue = line.split("[:]");
     colDataKey.add(keyValue[0]);
     colDataValue.add(keyValue[1].trim().replace(",", ""));
-  }
+   }
   public void commitToDatabase() {
-   populateRegion();
-   populateCountry();
-  }
-  
+    populateRegion();
+    populateCountry();
+   }
+
   private void populateRegion() {
     Cursor cId = db.rawQuery("select ID from region where continent = '" + continent + "'", null);
     if(cId.getCount() == 0) {
       ContentValues values = new ContentValues();
       values.put("continent", continent);
       fkRegion = db.insert(Constants.tblRegion, null, values);
-    }
-  }
+     } else {
+      cId.moveToFirst();
+		  fkRegion = cId.getLong(cId.getColumnIndex("ID"));
+     }
+   }
   private void populateCountry() {
     Cursor cId = db.rawQuery("select ID from country where " + Constants.CountryCode + " = '" + countryCode + "'", null);
     if(cId.getCount() == 0) {
-     ContentValues values = new ContentValues();
-     values.put(Constants.CountryCode, countryCode);
-     fkCountry = db.insert(Constants.tblCountry, null, values); // returning -1?
+      ContentValues values = new ContentValues();
+      values.put(Constants.fkRegion, fkRegion);
+      values.put(Constants.CountryCode, countryCode);
+      fkCountry = db.insert(Constants.tblCountry, null, values);
+     } else {
+      cId.moveToFirst();
+      fkCountry = cId.getLong(cId.getColumnIndex("ID"));
+     }
+    // dynamically add in all columns if needs be???
+    if(addColumns) {
+      addColumns = false;
+      for(int i = 0; i < colCountryKey.size(); i++) {
+        boolean isDouble = false;
+        boolean isDate = false;
+        boolean isString = false;
+        String type = "";
+        try {
+          Double d = Double.parseDouble(colCountryValue.get(i));
+          isDouble = true;
+         } catch(Exception e) {
+          if(colCountryKey.get(i).equals("date")) {
+            isDate = true;
+           } else { isString = true;}
+         } finally {
+          type = "TEXT";
+          if(isDouble) type = "INT";
+          if(isDate) type = "DATE";
+         }
+        // ALTER TABLE {tableName} ADD COLUMN COLNew {type};
+        String columnName = colCountryKey.get(i);
+        db.execSQL("alter table country add column " + columnName + " " + type);
+       }
+
+     }
+
+    // add in row data
+    for(int i = 0; i < colCountryKey.size(); i++) {
+      String key = colCountryKey.get(i);
+      String value = colCountryValue.get(i);
+
+     }
    }
-  }
  }
  
 
