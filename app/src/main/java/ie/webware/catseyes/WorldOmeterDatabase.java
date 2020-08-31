@@ -7,6 +7,7 @@ import java.net.*;
 import java.util.*;
 import android.util.*;
 import java.security.*;
+import android.hardware.fingerprint.*;
 
 public class WorldOmeterDatabase
  {
@@ -93,11 +94,12 @@ class SerializeCountry
   private String continent;
   private String location;
   private boolean addColumns = true;
+  ArrayList<String> lstCountryName = new ArrayList<String>(); // complete list of column names
+  ArrayList<String> lstDataName = new ArrayList<String>();  // complete list of column names
   ArrayList<String> colCountryKey = new ArrayList<String>();
   ArrayList<String> colCountryValue = new ArrayList<String>();
   ArrayList<String> colDataKey = new ArrayList<String>();
   ArrayList<String> colDataValue = new ArrayList<String>();
-
   public SerializeCountry(SQLiteDatabase _db) {
     db = _db; 
    }
@@ -131,7 +133,7 @@ class SerializeCountry
     Cursor cId = db.rawQuery("select ID from region where continent = '" + continent + "'", null);
     if(cId.getCount() == 0) {
       ContentValues values = new ContentValues();
-      values.put("continent", continent);
+      values.put("continent", continent.replace(",", ""));
       fkRegion = db.insert(Constants.tblRegion, null, values);
      } else {
       cId.moveToFirst();
@@ -149,29 +151,31 @@ class SerializeCountry
       cId.moveToFirst();
       fkCountry = cId.getLong(cId.getColumnIndex("ID"));
      }
-     addColumns = addColumnIfNotExists(Constants.tblCountry, colCountryKey, colCountryValue);
+    addColumns = addColumnIfNotExists(Constants.tblCountry, colCountryKey, colCountryValue);
     // add in row data
     ContentValues values = new ContentValues();
     for(int i = 0; i < colCountryKey.size(); i++) {
       String key = colCountryKey.get(i);
-      String value = colCountryValue.get(i);
+      String value = colCountryValue.get(i).replace(",", "");
       values.put(key, value);
      }
     long nCol = db.update(Constants.tblCountry, values, "ID = " + fkCountry, null);
+    colCountryKey.clear();
+    colCountryValue.clear();
     if(nCol == -1)
      return false;
     else
      return true;
    }
 
-   private boolean addColumnIfNotExists(String table, ArrayList<String> colList, ArrayList<String> colData) {
+  private boolean addColumnIfNotExists(String table, ArrayList<String> colList, ArrayList<String> colData) {
     for(int i = 0; i < colList.size(); i++) {
       boolean isDouble = false;
       boolean isDate = false;
       boolean isString = false;
       String type = "";
       try {
-         Double d = Double.parseDouble(colData.get(i));
+        Double d = Double.parseDouble(colData.get(i));
         isDouble = true;
        } catch(Exception e) {
         if(colCountryKey.get(i).equals("date")) {
@@ -183,9 +187,19 @@ class SerializeCountry
         if(isDate) type = "DATE";
        }
       String columnName = colList.get(i);
-      db.execSQL("alter table " + table + " add column " + columnName + " " + type);
+      if(table.equals(Constants.tblCountry)) {
+        if(!lstCountryName.contains(columnName)) {
+          lstCountryName.add(columnName);
+          db.execSQL("alter table " + table + " add column " + columnName + " " + type);
+         } 
+       } else if(table.equals(Constants.tblData)) {
+        if(!lstDataName.contains(columnName) || columnName.equals("*")) {
+          lstDataName.add(columnName);
+          db.execSQL("alter table " + table + " add column " + columnName + " " + type);
+         }
+       }
      }
-     return false; // set request to add columns to false
+    return false; // set request to add columns to false
    }
  }
  
