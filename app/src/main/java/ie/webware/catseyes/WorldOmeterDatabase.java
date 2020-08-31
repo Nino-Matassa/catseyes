@@ -58,14 +58,16 @@ public class WorldOmeterDatabase
            continue;
           if(line.matches("\\},")) {  // end of country data
             // row complete
-            serializeCountry.setCountryData("*:*");
+            //serializeCountry.setCountryData("*:*");
             serializeCountry.commitToDatabase();
-            return true; // for debugging
-            //continue;
+            bReadCountryCode = true;
+            bReadCountryInformation = true;
+            //return true; // for debugging
+            continue;
            }
           if(line.matches("\\}")) {  // end of all countries data
             // row complete
-            serializeCountry.setCountryData("*:*");
+            //serializeCountry.setCountryData("*:*");
             serializeCountry.commitToDatabase();
             return true;
            }
@@ -136,7 +138,7 @@ class SerializeCountry
 		  fkRegion = cId.getLong(cId.getColumnIndex("ID"));
      }
    }
-  private void populateCountry() {
+  private boolean populateCountry() {
     Cursor cId = db.rawQuery("select ID from country where " + Constants.CountryCode + " = '" + countryCode + "'", null);
     if(cId.getCount() == 0) {
       ContentValues values = new ContentValues();
@@ -147,41 +149,46 @@ class SerializeCountry
       cId.moveToFirst();
       fkCountry = cId.getLong(cId.getColumnIndex("ID"));
      }
-    // dynamically add in all columns if needs be???
-    if(addColumns) {
-      addColumns = false;
-      for(int i = 0; i < colCountryKey.size(); i++) {
-        boolean isDouble = false;
-        boolean isDate = false;
-        boolean isString = false;
-        String type = "";
-        try {
-          Double d = Double.parseDouble(colCountryValue.get(i));
-          isDouble = true;
-         } catch(Exception e) {
-          if(colCountryKey.get(i).equals("date")) {
-            isDate = true;
-           } else { isString = true;}
-         } finally {
-          type = "TEXT";
-          if(isDouble) type = "INT";
-          if(isDate) type = "DATE";
-         }
-        // ALTER TABLE {tableName} ADD COLUMN COLNew {type};
-        String columnName = colCountryKey.get(i);
-        db.execSQL("alter table country add column " + columnName + " " + type);
-       }
-
-     }
-
+     addColumns = addColumnIfNotExists(Constants.tblCountry, colCountryKey, colCountryValue);
     // add in row data
+    ContentValues values = new ContentValues();
     for(int i = 0; i < colCountryKey.size(); i++) {
       String key = colCountryKey.get(i);
       String value = colCountryValue.get(i);
-
+      values.put(key, value);
      }
+    long nCol = db.update(Constants.tblCountry, values, "ID = " + fkCountry, null);
+    if(nCol == -1)
+     return false;
+    else
+     return true;
+   }
+
+   private boolean addColumnIfNotExists(String table, ArrayList<String> colList, ArrayList<String> colData) {
+    for(int i = 0; i < colList.size(); i++) {
+      boolean isDouble = false;
+      boolean isDate = false;
+      boolean isString = false;
+      String type = "";
+      try {
+         Double d = Double.parseDouble(colData.get(i));
+        isDouble = true;
+       } catch(Exception e) {
+        if(colCountryKey.get(i).equals("date")) {
+          isDate = true;
+         } else { isString = true;}
+       } finally {
+        if(isString) type = "TEXT";
+        if(isDouble) type = "decimal (10, 3)";
+        if(isDate) type = "DATE";
+       }
+      String columnName = colList.get(i);
+      db.execSQL("alter table " + table + " add column " + columnName + " " + type);
+     }
+     return false; // set request to add columns to false
    }
  }
+ 
  
 
 /*
