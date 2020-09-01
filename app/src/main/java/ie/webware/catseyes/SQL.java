@@ -24,7 +24,7 @@ public class SQL extends SQLiteOpenHelper
   " (" + Constants.pkId + "));";
 
   public SQL(Context context) {
-	super(context, /*Constants.dbName*/null, null, /*DB Version*/1);
+    super(context, /*Constants.dbName*/null, null, /*DB Version*/1);
    }
 
   @Override
@@ -40,19 +40,19 @@ public class SQL extends SQLiteOpenHelper
 
   @Override
   public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-	db.execSQL("DROP TABLE IF EXISTS " + Constants.tblRegion);
-	db.execSQL("DROP TABLE IF EXISTS " + Constants.tblCountry);
-	db.execSQL("DROP TABLE IF EXISTS " + Constants.tblData);
-	onCreate(db);
+    db.execSQL("DROP TABLE IF EXISTS " + Constants.tblRegion);
+    db.execSQL("DROP TABLE IF EXISTS " + Constants.tblCountry);
+    db.execSQL("DROP TABLE IF EXISTS " + Constants.tblData);
+    onCreate(db);
    }
 
   private static SQLiteDatabase instance = null;
 
   public SQLiteDatabase getInstance() {
-	if(instance != null)
-	 return instance;
-	SQLiteDatabase instance = getWritableDatabase();
-	return instance;
+    if(instance != null)
+     return instance;
+    SQLiteDatabase instance = getWritableDatabase();
+    return instance;
    }
  }
 		

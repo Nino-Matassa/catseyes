@@ -63,7 +63,6 @@ public class WorldOmeterDatabase
           if(line.matches("\\},")) continue;
           if(line.matches("\\]")) {  // end of row
             // row complete
-            //serializeCountry.setCountryData("*:*");
             serializeCountry.commitToDatabase();
             bReadCountryCode = true;
             bReadCountryInformation = true;
@@ -72,7 +71,6 @@ public class WorldOmeterDatabase
            }
           if(line.matches("\\}") && previousLine.matches("\\]")) {  // end of all countries data
             // row complete
-            //serializeCountry.setCountryData("*:*");
             serializeCountry.commitToDatabase();
             return true;
            } else {
