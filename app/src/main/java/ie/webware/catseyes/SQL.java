@@ -24,7 +24,7 @@ public class SQL extends SQLiteOpenHelper
   " (" + Constants.pkId + "));";
 
   public SQL(Context context) {
-    super(context, /*Constants.dbName*/null, null, /*DB Version*/1);
+    super(context, /*Constants.dbName*/"DBTest", null, /*DB Version*/1);
    }
 
   @Override

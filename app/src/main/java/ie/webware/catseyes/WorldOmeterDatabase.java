@@ -5,89 +5,165 @@ import android.database.sqlite.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import android.util.*;
-import java.security.*;
-import android.hardware.fingerprint.*;
 
 public class WorldOmeterDatabase
  {
-  private ArrayList<String> jsonFragment = new ArrayList<String>();
+  //private ArrayList<String> jsonFragment = new ArrayList<String>();
   private SQLiteDatabase db = null;
   private Context context = null;
 
-  public WorldOmeterDatabase(Context _context) {
+  public WorldOmeterDatabase(Context _context) throws IOException {
     context = _context;
     db = new SQL(context).getInstance();
-    readJSONfromURL();
+    //readJSONfromURL();
+    download();
     db.close();
    }
 
-  private boolean readJSONfromURL() {
-    BufferedReader bufferedReader = null;
-    try {
-      URL url = new URL(Constants.worldOmeterURL);
-      HttpURLConnection httpUrlConnection = (HttpURLConnection)url.openConnection();
-      InputStream inputStream =  httpUrlConnection.getInputStream();
-      bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-      boolean bReadCountryCode = true;
-      boolean bReadCountryInformation = true;
-      boolean isFirstLine = true;
-      String previousLine = "";
+  private void download() throws IOException {
+    String filePath = context.getFilesDir().getPath().toString() + "/worldometer.json";
+    File file = new File(filePath);
+    if(file.exists()) file.delete();
 
-      String line = null;
-      SerializeCountry serializeCountry = new SerializeCountry(db);
-      while((line = bufferedReader.readLine().trim().replaceAll("\"", "")) != null) {
-       if(isFirstLine) {
+    FileOutputStream oStream = new FileOutputStream(new File(filePath), true);
+
+    URL url = new URL(Constants.worldOmeterURL);
+    HttpURLConnection httpUrlConnection = (HttpURLConnection)url.openConnection();
+    InputStream istream =  httpUrlConnection.getInputStream();
+    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(istream));
+    String line = null;
+    while((line = bufferedReader.readLine()) != null) {
+      oStream.write(line.getBytes());
+      oStream.write('\n');
+     }
+    oStream.close();
+    bufferedReader.close();
+    
+    boolean bReadCountryCode = true;
+    boolean bReadCountryInformation = true;
+    boolean isFirstLine = true;
+    String previousLine = "";
+    SerializeCountry serializeCountry = new SerializeCountry(db);
+
+    bufferedReader = new BufferedReader(new FileReader(filePath));
+    //long l = 0;
+    while((line = bufferedReader.readLine()) != null) {
+     //l++;
+     //if(l == 10000) break; // debugging
+     line = line.trim().replaceAll("\"", ""); 
+      
+      if(isFirstLine) {
         isFirstLine = false;
        }
-        if(bReadCountryCode) {
-          line = line.replaceAll("[^a-zA-Z0-9._\\[\\]\\{\\}\\:]", "");
-          if(line.matches("[A-Z][A-Z][A-Z]:\\{")) {
-            serializeCountry.setCountryCode(line);
-            bReadCountryCode = false;
-           }
+      if(bReadCountryCode) {
+        line = line.replaceAll("[^a-zA-Z0-9._\\[\\]\\{\\}\\:]", "");
+        if(line.matches("[A-Z][A-Z][A-Z]:\\{")) {
+          serializeCountry.setCountryCode(line);
+          bReadCountryCode = false;
+         }
+        continue;
+       }
+      if(bReadCountryInformation) {
+        if(line.matches("data: \\[")) {
+          bReadCountryInformation = false;
           continue;
          }
-        if(bReadCountryInformation) {
-          if(line.matches("data: \\[")) {
-            bReadCountryInformation = false;
-            continue;
-           }
-          serializeCountry.setCountryDetails(line);
+        serializeCountry.setCountryDetails(line);
+        continue;
+       }
+       { // bReadCountryData
+        if(line.matches("\\{"))
+        // Start new row
+         continue;
+        if(line.matches("\\},")) continue;
+        if(line.matches("\\]")) {  // end of row
+          // row complete
+          serializeCountry.commitToDatabase();
+          bReadCountryCode = true;
+          bReadCountryInformation = true;
+          //return true; // for debugging
           continue;
          }
-         { // bReadCountryData
-          if(line.matches("\\{"))
-          // Start new row
-           continue;
-          if(line.matches("\\},")) continue;
-          if(line.matches("\\]")) {  // end of row
-            // row complete
-            serializeCountry.commitToDatabase();
-            bReadCountryCode = true;
-            bReadCountryInformation = true;
-            //return true; // for debugging
-            continue;
-           }
-          if(line.matches("\\}") && previousLine.matches("\\]")) {  // end of all countries data
-            // row complete
-            serializeCountry.commitToDatabase();
-            return true;
-           } else {
-             previousLine = line;
-             if(line.matches("\\}")) continue;
-             serializeCountry.setCountryData(line);
-           }
-          
+        if(line.matches("\\}") && previousLine.matches("\\]")) {  // end of all countries data
+          // row complete
+          serializeCountry.commitToDatabase();
+          return;
+         } else {
+          previousLine = line;
+          if(line.matches("\\}")) continue;
+          serializeCountry.setCountryData(line);
          }
        }
-      bufferedReader.close();
-     } catch(Exception e) {
-      return false;
      }
-    return true;
+    bufferedReader.close();
    }
 
+//  private boolean readJSONfromURL() {
+//    BufferedReader bufferedReader = null;
+//    try {
+//      URL url = new URL(Constants.worldOmeterURL);
+//      HttpURLConnection httpUrlConnection = (HttpURLConnection)url.openConnection();
+//      InputStream inputStream =  httpUrlConnection.getInputStream();
+//      bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+//      boolean bReadCountryCode = true;
+//      boolean bReadCountryInformation = true;
+//      boolean isFirstLine = true;
+//      String previousLine = "";
+//
+//      String line = null;
+//      SerializeCountry serializeCountry = new SerializeCountry(db);
+//      while((line = bufferedReader.readLine().trim().replaceAll("\"", "")) != null) {
+//        if(isFirstLine) {
+//          isFirstLine = false;
+//         }
+//        if(bReadCountryCode) {
+//          line = line.replaceAll("[^a-zA-Z0-9._\\[\\]\\{\\}\\:]", "");
+//          if(line.matches("[A-Z][A-Z][A-Z]:\\{")) {
+//            serializeCountry.setCountryCode(line);
+//            bReadCountryCode = false;
+//           }
+//          continue;
+//         }
+//        if(bReadCountryInformation) {
+//          if(line.matches("data: \\[")) {
+//            bReadCountryInformation = false;
+//            continue;
+//           }
+//          serializeCountry.setCountryDetails(line);
+//          continue;
+//         }
+//         { // bReadCountryData
+//          if(line.matches("\\{"))
+//          // Start new row
+//           continue;
+//          if(line.matches("\\},")) continue;
+//          if(line.matches("\\]")) {  // end of row
+//            // row complete
+//            serializeCountry.commitToDatabase();
+//            bReadCountryCode = true;
+//            bReadCountryInformation = true;
+//            //return true; // for debugging
+//            continue;
+//           }
+//          if(line.matches("\\}") && previousLine.matches("\\]")) {  // end of all countries data
+//            // row complete
+//            serializeCountry.commitToDatabase();
+//            return true;
+//           } else {
+//            previousLine = line;
+//            if(line.matches("\\}")) continue;
+//            serializeCountry.setCountryData(line);
+//           }
+//
+//         }
+//       }
+//      bufferedReader.close();
+//     } catch(Exception e) {
+//      return false;
+//     }
+//    return true;
+//   }
+//
 
  } // end class
 
@@ -178,10 +254,10 @@ class SerializeCountry
   private boolean populateData() {
     long nCol = 0;
     addColumnIfNotExists(Constants.tblData, colDataKey, colDataValue);
-    
+
     ContentValues values = new ContentValues();
     values.put(Constants.fkCountry, fkCountry);
-    
+
     for(int i = 0; i < colDataKey.size(); i++) {
       String key = colDataKey.get(i);
       String value = colDataValue.get(i);
@@ -189,11 +265,11 @@ class SerializeCountry
         nCol = db.insert(Constants.tblData, null, values);
         if(nCol == -1) {
           return false;
-        } else {
+         } else {
           values = new ContentValues();
           values.put(Constants.fkCountry, fkCountry);
-        }
-      }
+         }
+       }
       values.put(key, value);
      }
     colDataKey.clear();
