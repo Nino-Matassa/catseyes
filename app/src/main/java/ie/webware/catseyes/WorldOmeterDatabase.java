@@ -8,23 +8,21 @@ import java.util.*;
 
 public class WorldOmeterDatabase
  {
-  //private ArrayList<String> jsonFragment = new ArrayList<String>();
   private SQLiteDatabase db = null;
   private Context context = null;
 
   public WorldOmeterDatabase(Context _context) throws IOException {
     context = _context;
     db = new SQL(context).getInstance();
-    //readJSONfromURL();
-    download();
+    readJSONfromURL();
+    serializeJson();
     db.close();
    }
 
-  private void download() throws IOException {
-    String filePath = context.getFilesDir().getPath().toString() + "/worldometer.json";
+  private void readJSONfromURL() throws IOException {
+    String filePath = context.getFilesDir().getPath().toString() + Constants.dbPath;
     File file = new File(filePath);
     if(file.exists()) file.delete();
-
     FileOutputStream oStream = new FileOutputStream(new File(filePath), true);
 
     URL url = new URL(Constants.worldOmeterURL);
@@ -38,6 +36,10 @@ public class WorldOmeterDatabase
      }
     oStream.close();
     bufferedReader.close();
+  }
+  
+  private void serializeJson() throws IOException {
+    String filePath = context.getFilesDir().getPath().toString() + Constants.dbPath;
     
     boolean bReadCountryCode = true;
     boolean bReadCountryInformation = true;
@@ -45,10 +47,11 @@ public class WorldOmeterDatabase
     String previousLine = "";
     SerializeCountry serializeCountry = new SerializeCountry(db);
 
-    bufferedReader = new BufferedReader(new FileReader(filePath));
-    //long l = 0;
+    BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath));
+    long l = 0;
+    String line = null;
     while((line = bufferedReader.readLine()) != null) {
-     //l++;
+     l++;
      //if(l == 10000) break; // debugging
      line = line.trim().replaceAll("\"", ""); 
       
