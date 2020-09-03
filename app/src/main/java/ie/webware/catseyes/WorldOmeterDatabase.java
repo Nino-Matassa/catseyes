@@ -99,6 +99,8 @@ public class WorldOmeterDatabase
        }
      }
     bufferedReader.close();
+    File file = new File(filePath); // file currently 30 mb in size
+    if(file.exists()) file.delete();
    }
  } // end class
 
@@ -237,7 +239,7 @@ class SerializeCountry
           db.execSQL("alter table " + table + " add column " + columnName + " " + type);
          } 
        } else if(table.equals(Constants.tblData)) {
-        if(!lstDataName.contains(columnName) && !columnName.equals("*")) {
+        if(!lstDataName.contains(columnName)/* && !columnName.equals("*")*/) {
           lstDataName.add(columnName);
           db.execSQL("alter table " + table + " add column " + columnName + " " + type);
          }

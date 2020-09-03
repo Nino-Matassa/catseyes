@@ -9,17 +9,6 @@
         ]						    									          close key value array
 	}, || }								        						        end of country data || end of all countries data
 	
-Data for country AAA read in...
-(a)	Read in from "AAA: {"   to "data: [", read in key value pairs between { and } into array list.
-	(1)	Populate the Region table and remember fkRegion.
-	(2)	Populate the Country table and remember fkCountry.
-(b)	Read in from "{" to "}," || "}. This will be the countries entire data set.
-(c)	Read in each subset, "{" to "}," || "}" as a single row.
-	(1)	For each row, add fkCountry and populate the Data table.
-(d)	The next line will show "]", this signifies the end of this countries data..
-(e)	The next line will show either "},", signifing end of this countries data || "}" signifing end of all countrries data at this point the database is built.
-
-Remember fkRegion & fkCountry to save database activity
 
 
 "IRL": {								                Split string with space, colon signifies key, ie, key = "IRL": value = {	Read as country

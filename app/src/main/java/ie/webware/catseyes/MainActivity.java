@@ -12,8 +12,6 @@ import android.database.*;
 
 public class MainActivity extends Activity 
  {
-  static ArrayList<TableKeyValue> tableKeyValue = new ArrayList<TableKeyValue>();
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -22,16 +20,17 @@ public class MainActivity extends Activity
    }
    
   public void playWithDatabase() throws SQLiteFullException {
-    SQLiteDatabase db = null;
-    String pathDB = Environment.getExternalStorageDirectory().toString() + "/AppProjects/catseyesDB/DBTest";
+    SQLiteDatabase db = Database.getTestInstance();
+    String continent = null;
    try {
-     db = SQLiteDatabase.openDatabase(pathDB.toString(), null, SQLiteDatabase.OPEN_READWRITE);
      Cursor c = db.rawQuery("select continent from region", null);
-     String continent = null;
+     long l = c.getCount();
      c.moveToFirst();
-     do {
-      continent = c.getString(c.getColumnIndex("continent"));
-     } while(c.moveToNext());
+     for(int i = 0; i < c.getCount() && c.getCount() > 0; i++) {
+      continent = c.getString(c.getColumnIndex("Continent"));
+      c.moveToNext();
+     }
+     
    } catch (Exception e) {
      Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG).show();
    } finally {
@@ -40,6 +39,7 @@ public class MainActivity extends Activity
   }
 
   public boolean buildDatabase() {
+   
     Thread thread = new Thread(new Runnable() {
        @Override 
        public void run() {
