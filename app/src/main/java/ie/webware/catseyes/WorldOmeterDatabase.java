@@ -13,7 +13,7 @@ public class WorldOmeterDatabase
 
   public WorldOmeterDatabase(Context _context) throws IOException {
     context = _context;
-    db = new SQL(context).getInstance();
+    db = Database.getInstance(context);
     readJSONfromURL();
     serializeJson();
     db.close();
@@ -100,74 +100,6 @@ public class WorldOmeterDatabase
      }
     bufferedReader.close();
    }
-
-//  private boolean readJSONfromURL() {
-//    BufferedReader bufferedReader = null;
-//    try {
-//      URL url = new URL(Constants.worldOmeterURL);
-//      HttpURLConnection httpUrlConnection = (HttpURLConnection)url.openConnection();
-//      InputStream inputStream =  httpUrlConnection.getInputStream();
-//      bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-//      boolean bReadCountryCode = true;
-//      boolean bReadCountryInformation = true;
-//      boolean isFirstLine = true;
-//      String previousLine = "";
-//
-//      String line = null;
-//      SerializeCountry serializeCountry = new SerializeCountry(db);
-//      while((line = bufferedReader.readLine().trim().replaceAll("\"", "")) != null) {
-//        if(isFirstLine) {
-//          isFirstLine = false;
-//         }
-//        if(bReadCountryCode) {
-//          line = line.replaceAll("[^a-zA-Z0-9._\\[\\]\\{\\}\\:]", "");
-//          if(line.matches("[A-Z][A-Z][A-Z]:\\{")) {
-//            serializeCountry.setCountryCode(line);
-//            bReadCountryCode = false;
-//           }
-//          continue;
-//         }
-//        if(bReadCountryInformation) {
-//          if(line.matches("data: \\[")) {
-//            bReadCountryInformation = false;
-//            continue;
-//           }
-//          serializeCountry.setCountryDetails(line);
-//          continue;
-//         }
-//         { // bReadCountryData
-//          if(line.matches("\\{"))
-//          // Start new row
-//           continue;
-//          if(line.matches("\\},")) continue;
-//          if(line.matches("\\]")) {  // end of row
-//            // row complete
-//            serializeCountry.commitToDatabase();
-//            bReadCountryCode = true;
-//            bReadCountryInformation = true;
-//            //return true; // for debugging
-//            continue;
-//           }
-//          if(line.matches("\\}") && previousLine.matches("\\]")) {  // end of all countries data
-//            // row complete
-//            serializeCountry.commitToDatabase();
-//            return true;
-//           } else {
-//            previousLine = line;
-//            if(line.matches("\\}")) continue;
-//            serializeCountry.setCountryData(line);
-//           }
-//
-//         }
-//       }
-//      bufferedReader.close();
-//     } catch(Exception e) {
-//      return false;
-//     }
-//    return true;
-//   }
-//
-
  } // end class
 
 class SerializeCountry

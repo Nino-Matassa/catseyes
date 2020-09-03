@@ -6,6 +6,8 @@ import android.widget.*;
 import java.util.*;
 import android.database.sqlite.*;
 import android.util.*;
+import java.io.*;
+import android.database.*;
 
 
 public class MainActivity extends Activity 
@@ -20,8 +22,21 @@ public class MainActivity extends Activity
    }
    
   public void playWithDatabase() throws SQLiteFullException {
-    SQLiteDatabase db = SQLiteDatabase.openDatabase("/storage/sdcard0/AppProjects/catseyesDB/DBTest", null, 0);
-    db.close();
+    SQLiteDatabase db = null;
+    String pathDB = Environment.getExternalStorageDirectory().toString() + "/AppProjects/catseyesDB/DBTest";
+   try {
+     db = SQLiteDatabase.openDatabase(pathDB.toString(), null, SQLiteDatabase.OPEN_READWRITE);
+     Cursor c = db.rawQuery("select continent from region", null);
+     String continent = null;
+     c.moveToFirst();
+     do {
+      continent = c.getString(c.getColumnIndex("continent"));
+     } while(c.moveToNext());
+   } catch (Exception e) {
+     Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+   } finally {
+     db.close();    
+   }
   }
 
   public boolean buildDatabase() {

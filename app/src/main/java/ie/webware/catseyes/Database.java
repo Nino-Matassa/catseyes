@@ -2,8 +2,9 @@ package ie.webware.catseyes;
 import android.content.*;
 import android.database.*;
 import android.database.sqlite.*;
+import android.os.*;
 
-public class SQL extends SQLiteOpenHelper
+class SQL extends SQLiteOpenHelper
  {
   // Creating table sql
   private String createTableRegion = "create table " + Constants.tblRegion + 
@@ -33,7 +34,7 @@ public class SQL extends SQLiteOpenHelper
     db.execSQL(createTableCountry);
     db.execSQL(createTableData);
    }
-  
+
   @Override
   public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) throws SQLiteFullException {
 //    db.execSQL("DROP TABLE IF EXISTS " + Constants.tblRegion);
@@ -41,14 +42,25 @@ public class SQL extends SQLiteOpenHelper
 //    db.execSQL("DROP TABLE IF EXISTS " + Constants.tblData);
 //    onCreate(db);
    }
+ }
 
+class Database
+ {
+  private Database() {}
   private static SQLiteDatabase instance = null;
 
-  public SQLiteDatabase getInstance() {
+  public static SQLiteDatabase getInstance(Context context) {
     if(instance != null)
      return instance;
-    SQLiteDatabase instance = getWritableDatabase();
+    SQLiteDatabase instance = new SQL(context).getWritableDatabase();
+    return instance;
+   }
+
+  public static SQLiteDatabase getTestInstance() {
+    if(instance == null) {
+      String pathDB = Environment.getExternalStorageDirectory().toString() + "/AppProjects/catseyesDB/DBTest";
+      instance = SQLiteDatabase.openDatabase(pathDB.toString(), null, SQLiteDatabase.OPEN_READWRITE);
+     }
     return instance;
    }
  }
-		
