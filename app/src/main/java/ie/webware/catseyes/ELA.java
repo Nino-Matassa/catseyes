@@ -5,7 +5,7 @@ import android.view.*;
 import android.widget.*;
 import java.util.*;
 
-public class ExpandableListAdapter extends BaseExpandableListAdapter
+public class ELA extends BaseExpandableListAdapter
  {
 
   private Context _context;
@@ -13,7 +13,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter
   // child data in format of header title, child title
   private HashMap<String, List<String>> _listDataChild;
 
-  public ExpandableListAdapter(Context context, List<String> listDataHeader,
+  public ELA(Context context, List<String> listDataHeader,
                                HashMap<String, List<String>> listChildData) {
     this._context = context;
     this._listDataHeader = listDataHeader;
