@@ -81,9 +81,4 @@ public class ELA extends BaseExpandableListAdapter
   public boolean isChildSelectable(int iGroup, int iChild) {
     return true;
    }
-   
-//  @Override
-//  public boolean OnChildClickListener(ExpandableListView parent, View v, int iGroup, int iChild, long id) {
-//   return true;
-//  }
-}
+ }

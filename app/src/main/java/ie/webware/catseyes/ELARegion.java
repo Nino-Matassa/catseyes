@@ -6,6 +6,7 @@ import android.database.*;
 import android.database.sqlite.*;
 import android.widget.*;
 import java.util.*;
+import android.view.*;
 
 public class ELARegion
 {
@@ -23,6 +24,23 @@ public class ELARegion
     populateELV();
     elaByRegion = new ELA(context, lstRegion, hLstCountry);
     elvByRegion.setAdapter(elaByRegion);
+    
+    elvByRegion.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+       @Override
+       public boolean onChildClick(ExpandableListView elv, View view, int iGroup, int iChild, long id) {
+         String continent = lstRegion.get(iGroup);
+         String country = hLstCountry.get(continent).get(iChild);
+         Cursor p = db.rawQuery("select id, continent from region where continent = '" + continent + "'", null);
+         Cursor c = db.rawQuery("select id, location from country where location = '" + country + "'", null);
+         p.moveToFirst(); 
+         c.moveToFirst();
+         long lp = p.getInt(p.getColumnIndex("ID"));
+         long lc = c.getInt(c.getColumnIndex("ID"));
+         continent = p.getString(p.getColumnIndex("Continent"));
+         country = c.getString(c.getColumnIndex("location"));
+         return true; // default as false?
+        }
+    });
   }
   
   private void populateELV() {
@@ -60,8 +78,15 @@ public class ELARegion
        } catch(Exception e) {
         Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
        } finally {
-        db.close();    
+        //db.close();    
        }
      }
    }
+//  elvByRegion.setOnChildClickListener(new OnChildClickListener() {
+//  @Override
+//  public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+//    // Handle clicks on the children here...
+//    return false;
+//   }
+//  });
 }
