@@ -8,6 +8,7 @@ import android.database.sqlite.*;
 import android.util.*;
 import java.io.*;
 import android.database.*;
+import android.widget.SearchView.*;
 
 
 public class MainActivity extends Activity 
@@ -17,10 +18,16 @@ public class MainActivity extends Activity
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main);
-    ELARegion elaRegion = new ELARegion(MainActivity.this);
     //buildDatabase();
+    ELV elv = new ELV(MainActivity.this);
    }
 
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    SQLiteDatabase db = Database.getInstance(MainActivity.this);
+    db.close();
+   }
 
   public boolean buildDatabase() {
 

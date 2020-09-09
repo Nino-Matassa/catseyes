@@ -16,7 +16,7 @@ public class WorldOmeterDatabase
     db = Database.getInstance(context);
     readJSONfromURL();
     serializeJson();
-    db.close();
+    //db.close();
    }
 
   private void readJSONfromURL() throws IOException {
@@ -84,8 +84,8 @@ public class WorldOmeterDatabase
           serializeCountry.commitToDatabase();
           bReadCountryCode = true;
           bReadCountryInformation = true;
-          //return true; // for debugging
-          continue;
+          return; // for debugging 1 country only
+          //continue;
          }
         if(line.matches("\\}") && previousLine.matches("\\]")) {  // end of all countries data
           // row complete
