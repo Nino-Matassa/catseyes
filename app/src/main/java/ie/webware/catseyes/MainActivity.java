@@ -18,15 +18,15 @@ public class MainActivity extends Activity
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main);
-    //buildDatabase();
+    buildDatabase();
     ELV elv = new ELV(MainActivity.this);
    }
 
   @Override
   protected void onDestroy() {
-    super.onDestroy();
     SQLiteDatabase db = Database.getInstance(MainActivity.this);
     db.close();
+    super.onDestroy();
    }
 
   public boolean buildDatabase() {

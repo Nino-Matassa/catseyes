@@ -36,11 +36,11 @@ public class WorldOmeterDatabase
      }
     oStream.close();
     bufferedReader.close();
-  }
-  
+   }
+
   private void serializeJson() throws IOException {
     String filePath = context.getFilesDir().getPath().toString() + Constants.dbPath;
-    
+
     boolean bReadCountryCode = true;
     boolean bReadCountryInformation = true;
     boolean isFirstLine = true;
@@ -48,43 +48,37 @@ public class WorldOmeterDatabase
     SerializeCountry serializeCountry = new SerializeCountry(db);
 
     BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath));
-    long l = 0;
+    int nCountry = 0; // debugging, limit db build to 2 countries
     String line = null;
     while((line = bufferedReader.readLine()) != null) {
-     l++;
-     //if(l == 10000) break; // debugging
-     line = line.trim().replaceAll("\"", ""); 
-      
+      line = line.trim().replaceAll("\"", ""); 
+
       if(isFirstLine) {
         isFirstLine = false;
-       }
+       } // not sure if I need this
       if(bReadCountryCode) {
-        line = line.replaceAll("[^a-zA-Z0-9._\\[\\]\\{\\}\\:]", "");
-        if(line.matches("[A-Z][A-Z][A-Z]:\\{")) {
-          serializeCountry.setCountryCode(line);
-          bReadCountryCode = false;
-         }
+        bReadCountryCode = ifCountryCode(line);
+        serializeCountry.setCountryCode(line);
         continue;
        }
       if(bReadCountryInformation) {
-        if(line.matches("data: \\[")) {
-          bReadCountryInformation = false;
+        bReadCountryInformation = ifCountryInformation(line);
+        if(!bReadCountryInformation) {
           continue;
          }
         serializeCountry.setCountryDetails(line);
         continue;
        }
        { // bReadCountryData
-        if(line.matches("\\{"))
-        // Start new row
-         continue;
-        if(line.matches("\\},")) continue;
-        if(line.matches("\\]")) {  // end of row
-          // row complete
+        if(ifStartOfDataRowMarker(line)) continue; // rows are seperated by SerializeCountry class
+        if(ifEndOfDataRowMarker(line)) continue;
+        if(ifEndOfCountryDataMarker(line)) {  // end of country rows
           serializeCountry.commitToDatabase();
           bReadCountryCode = true;
           bReadCountryInformation = true;
-          return; // for debugging 1 country only
+          if(nCountry++ < 2)
+           continue;
+          else return; // this way the database can be kept in memory
           //continue;
          }
         if(line.matches("\\}") && previousLine.matches("\\]")) {  // end of all countries data
@@ -101,6 +95,42 @@ public class WorldOmeterDatabase
     bufferedReader.close();
     File file = new File(filePath); // file currently 30 mb in size
     if(file.exists()) file.delete();
+   }
+
+  private boolean ifCountryCode(String _line) {
+    String line = _line;
+    line = line.replaceAll("[^a-zA-Z0-9._\\[\\]\\{\\}\\:]", "");
+    if(line.matches("[A-Z][A-Z][A-Z]:\\{")) {
+      return false;
+     } else {
+      return true;
+     }
+   }
+  private boolean ifCountryInformation(String _line) {
+    String line = _line;
+    if(line.matches("data: \\[")) {
+      return false;
+     } else {
+      return true;
+     }
+   }
+  private boolean ifStartOfDataRowMarker(String line) {
+    if(line.matches("\\{"))
+     return true;
+    else
+     return false;
+   }
+  private boolean ifEndOfDataRowMarker(String line) {
+    if(line.matches("\\},"))
+     return true;
+    else
+     return false;
+   }
+  private boolean ifEndOfCountryDataMarker(String line) {
+    if(line.matches("\\]"))
+     return true;
+    else
+     return false;
    }
  } // end class
 
@@ -224,7 +254,7 @@ class SerializeCountry
         Double d = Double.parseDouble(colData.get(i));
         isDouble = true;
        } catch(Exception e) {
-        if(i == 0) {
+         if(colList.get(i).equals("date")) {
           isDate = true;
          } else { isString = true;}
        } finally {
@@ -239,7 +269,7 @@ class SerializeCountry
           db.execSQL("alter table " + table + " add column " + columnName + " " + type);
          } 
        } else if(table.equals(Constants.tblData)) {
-        if(!lstDataName.contains(columnName)/* && !columnName.equals("*")*/) {
+        if(!lstDataName.contains(columnName)) {
           lstDataName.add(columnName);
           db.execSQL("alter table " + table + " add column " + columnName + " " + type);
          }

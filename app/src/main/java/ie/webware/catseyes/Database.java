@@ -56,11 +56,11 @@ class Database
     return instance;
    }
 
-  public static SQLiteDatabase getTestInstance() {
-    if(instance == null) {
-      String pathDB = Environment.getExternalStorageDirectory().toString() + "/AppProjects/catseyesDB/DBTest";
-      instance = SQLiteDatabase.openDatabase(pathDB.toString(), null, SQLiteDatabase.OPEN_READWRITE);
-     }
-    return instance;
-   }
+//  public static SQLiteDatabase getTestInstance() {
+//    if(instance == null) {
+//      String pathDB = Environment.getExternalStorageDirectory().toString() + "/AppProjects/catseyesDB/DBTest";
+//      instance = SQLiteDatabase.openDatabase(pathDB.toString(), null, SQLiteDatabase.OPEN_READWRITE);
+//     }
+//    return instance;
+//   }
  }

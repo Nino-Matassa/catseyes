@@ -11,7 +11,7 @@ import android.view.*;
 public class ELV
 {
   Context context = null;
-  SQLiteDatabase db = Database.getTestInstance();
+  SQLiteDatabase db = null;
 
   ELA ela;
   ExpandableListView elv;
@@ -20,6 +20,7 @@ public class ELV
   
   public ELV(Context _context) {
     context = _context;
+    db = Database.getInstance(context);
     elv = (ExpandableListView) ((Activity)context).findViewById(R.id.elvParent);
     populateELV();
     ela = new ELA(context, lstParent, hLstChild);

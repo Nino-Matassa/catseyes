@@ -4,8 +4,8 @@ public final class Constants
  {
   private Constants() {}
   public static final String worldOmeterURL = "https://covid.ourworldindata.org/data/owid-covid-data.json";
-  //public static final String dbName = "worldometer.db";
-  public static final String dbName = null; // in memory
+  public static final String dbName = "worldometer.db";
+  //public static final String dbName = null; // in memory
   public static final String dbPath = "/worldometer.json";
   public static final String tblRegion = "Region";
   public static final String CountryCode = "Country_Code";
