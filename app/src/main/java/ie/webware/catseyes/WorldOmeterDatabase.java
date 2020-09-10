@@ -15,7 +15,7 @@ public class WorldOmeterDatabase
     context = _context;
     db = Database.getInstance(context);
     readJSONfromURL();
-    serializeJson();
+    speedReadJSON();
     //db.close();
    }
 
@@ -38,31 +38,32 @@ public class WorldOmeterDatabase
     bufferedReader.close();
    }
 
-  private void serializeJson() throws IOException {
+  private void speedReadJSON() throws IOException {
     String filePath = context.getFilesDir().getPath().toString() + Constants.dbPath;
 
     boolean bReadCountryCode = true;
     boolean bReadCountryInformation = true;
-    boolean isFirstLine = true;
     String previousLine = "";
     SerializeCountry serializeCountry = new SerializeCountry(db);
 
     BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath));
-    int nCountry = 0; // debugging, limit db build to 2 countries
     String line = null;
+    long l = 0;
     while((line = bufferedReader.readLine()) != null) {
-      line = line.trim().replaceAll("\"", ""); 
+      if(l++ == 0) continue; // if this is the first line ignore it
 
-      if(isFirstLine) {
-        isFirstLine = false;
-       } // not sure if I need this
+      line = line.trim().replaceAll("\"", ""); 
+      
+      if(bReadCountryCode && !inCountryCodeList(line)) // ignore most countries
+       continue;
+
       if(bReadCountryCode) {
-        bReadCountryCode = ifCountryCode(line);
+        bReadCountryCode = ifCountryCodeRead(line);
         serializeCountry.setCountryCode(line);
         continue;
        }
       if(bReadCountryInformation) {
-        bReadCountryInformation = ifCountryInformation(line);
+        bReadCountryInformation = ifCountryInformationRead(line);
         if(!bReadCountryInformation) {
           continue;
          }
@@ -76,18 +77,14 @@ public class WorldOmeterDatabase
           serializeCountry.commitToDatabase();
           bReadCountryCode = true;
           bReadCountryInformation = true;
-          if(nCountry++ < 2)
-           continue;
-          else return; // this way the database can be kept in memory
-          //continue;
+          continue;
          }
-        if(line.matches("\\}") && previousLine.matches("\\]")) {  // end of all countries data
-          // row complete
+        if(ifEndOfDataMarker(line, previousLine)) {  // and this was the last of all countries data
           serializeCountry.commitToDatabase();
           return;
          } else {
           previousLine = line;
-          if(line.matches("\\}")) continue;
+          if(line.matches("\\}")) continue; 
           serializeCountry.setCountryData(line);
          }
        }
@@ -97,17 +94,14 @@ public class WorldOmeterDatabase
     if(file.exists()) file.delete();
    }
 
-  private boolean ifCountryCode(String _line) {
-    String line = _line;
-    line = line.replaceAll("[^a-zA-Z0-9._\\[\\]\\{\\}\\:]", "");
-    if(line.matches("[A-Z][A-Z][A-Z]:\\{")) {
+  private boolean ifCountryCodeRead(String line) {
+    if(line.matches("[A-Z][A-Z][A-Z]: \\{")) {  //line = "AFG: {"
       return false;
      } else {
       return true;
      }
    }
-  private boolean ifCountryInformation(String _line) {
-    String line = _line;
+  private boolean ifCountryInformationRead(String line) {
     if(line.matches("data: \\[")) {
       return false;
      } else {
@@ -131,6 +125,24 @@ public class WorldOmeterDatabase
      return true;
     else
      return false;
+   }
+  private boolean ifEndOfDataMarker(String line, String previousLine) {
+    if(line.matches("\\}") && previousLine.matches("\\]"))
+     return true;
+    else
+     return false;
+   }
+  public boolean inCountryCodeList(String line) {
+    if(line.matches("[A-Z][A-Z][A-Z]: \\{")) {
+      String[] array = line.split("[:]");
+      String countryCode = array[0].trim();
+      List<String> lstCC = Arrays.asList(Constants.lstCountry);
+      if(lstCC.contains(countryCode))
+       return true;
+      else
+       return false;
+    }
+    return false;
    }
  } // end class
 
@@ -254,7 +266,7 @@ class SerializeCountry
         Double d = Double.parseDouble(colData.get(i));
         isDouble = true;
        } catch(Exception e) {
-         if(colList.get(i).equals("date")) {
+        if(colList.get(i).equals("date")) {
           isDate = true;
          } else { isString = true;}
        } finally {

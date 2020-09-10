@@ -17,5 +17,11 @@ public final class Constants
   public static final String fkCountry = "FK_COUNTRY";
   public static final String isCountryLead = "continent";
   public static final String isDataLead = "date";
+  public static final String[] lstCountry = new String[] {
+   "AUS",
+   "IRL",
+   "ITA",
+   "GBR"
+  };
  }
 
