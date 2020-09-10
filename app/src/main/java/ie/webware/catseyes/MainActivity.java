@@ -13,18 +13,19 @@ import android.widget.SearchView.*;
 
 public class MainActivity extends Activity 
  {
+  SQLiteDatabase db = null;
   
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main);
-    buildDatabase();
+    if((db = Database.getInstance(MainActivity.this)) == null) // if there isn't one...
+      buildDatabase();
     ELV elv = new ELV(MainActivity.this);
    }
 
   @Override
   protected void onDestroy() {
-    SQLiteDatabase db = Database.getInstance(MainActivity.this);
     db.close();
     super.onDestroy();
    }
