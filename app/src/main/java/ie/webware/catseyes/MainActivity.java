@@ -11,51 +11,63 @@ import android.database.*;
 import android.widget.SearchView.*;
 
 
-public class MainActivity extends Activity 
+public class MainActivity extends Activity  
+{
+ SQLiteDatabase db = null;
+
+ @Override
+ protected void onCreate(Bundle savedInstanceState)
  {
-  SQLiteDatabase db = null;
-  
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.main);
-    if((db = Database.getInstance(MainActivity.this)) == null) // if there isn't one...
-      buildDatabase();
-    ELV elv = new ELV(MainActivity.this);
-   }
-
-  @Override
-  protected void onDestroy() {
-    db.close();
-    super.onDestroy();
-   }
-
-  public boolean buildDatabase() {
-
-    Thread thread = new Thread(new Runnable() {
-       @Override 
-       public void run() {
-         try {
-           new WorldOmeterDatabase(MainActivity.this);
-          } catch(Exception e) {
-           Log.d("MainActivity", e.toString());
-          }
-        }
-      });
-
-    Toast.makeText(MainActivity.this, "Initialising Worldometer Data", Toast.LENGTH_LONG).show();
-    thread.start();
-    try {
-      thread.join(); // wait for thread to finish
-     } catch(InterruptedException e) {
-      Log.d(MainActivity.this.toString(), e.toString());
-      return false;
-     } finally {
-      Log.d("General", "Thread complete");
-     }
-    Toast.makeText(MainActivity.this, "All done", Toast.LENGTH_LONG).show();
-    return true;
-   }
+  super.onCreate(savedInstanceState);
+  setContentView(R.layout.main);
+  if((db = Database.getExistingInstance(MainActivity.this)) == null) // if there isn't one...
+   buildDatabase();
+  ELV elv = new ELV(MainActivity.this);
  }
+
+ @Override
+ protected void onDestroy()
+ {
+  //db.close();
+  super.onDestroy();
+ }
+
+ public boolean buildDatabase()
+ {
+
+  Thread thread = new Thread(new Runnable() {
+	@Override 
+	public void run()
+	{
+	 try
+	 {
+	  new WorldOmeterDatabase(MainActivity.this);
+	 }
+	 catch (Exception e)
+	 {
+	  Log.d("MainActivity", e.toString());
+	 }
+	}
+   });
+
+  Toast.makeText(MainActivity.this, "Initialising Worldometer Data", Toast.LENGTH_LONG).show();
+  thread.start();
+  try
+  {
+   thread.join(); // wait for thread to finish
+  }
+  catch (InterruptedException e)
+  {
+   Log.d(MainActivity.this.toString(), e.toString());
+   return false;
+  }
+  finally
+  {
+   Log.d("General", "Thread complete");
+  }
+  Toast.makeText(MainActivity.this, "All done", Toast.LENGTH_LONG).show();
+  return true;
+ }
+}
 
 

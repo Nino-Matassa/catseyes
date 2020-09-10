@@ -20,7 +20,7 @@ public class ELV
   
   public ELV(Context _context) {
     context = _context;
-    db = Database.getInstance(context);
+    db = Database.getExistingInstance(context);//Database.getInstance(context);
     elv = (ExpandableListView) ((Activity)context).findViewById(R.id.elvParent);
     populateELV();
     ela = new ELA(context, lstParent, hLstChild);
