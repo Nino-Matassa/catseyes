@@ -22,6 +22,7 @@ public class MainActivity extends Activity
   setContentView(R.layout.main);
   if(!Database.databaseExists(MainActivity.this))
    buildDatabase();
+  // Ok, only the first widget in main is available, right now its ELV xor LV
   //ELV elv = new ELV(MainActivity.this);
   new LV(MainActivity.this, new String[]{"Terra"});
  }
