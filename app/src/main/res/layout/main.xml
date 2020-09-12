@@ -11,5 +11,12 @@
 		android:id="@+id/elvParent"
 		android:alpha="1.0"/>
 
+    <ListView
+        android:id="@+id/lstView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </ListView>
+
 </LinearLayout>
+
 

@@ -20,7 +20,7 @@ public class ELV
   
   public ELV(Context _context) {
     context = _context;
-    db = Database.getExistingInstance(context);//Database.getInstance(context);
+    db = Database.getInstance(context);
     elv = (ExpandableListView) ((Activity)context).findViewById(R.id.elvParent);
     populateELV();
     ela = new ELA(context, lstParent, hLstChild);
@@ -40,17 +40,14 @@ public class ELV
          continent = p.getString(p.getColumnIndex("Continent"));
          country = c.getString(c.getColumnIndex("location"));
          String countryCode = c.getString(c.getColumnIndex("Country_Code"));
-         Toast.makeText(context, continent + " + " + country, Toast.LENGTH_LONG).show();
+         //Toast.makeText(context, continent + " + " + country, Toast.LENGTH_LONG).show();
          { // Populate list view
           String[] values = new String[] {
            continent,
            country,
            countryCode
           };
-//          ((Activity)context).setContentView(R.layout.list_data);
-//          ListView lstData = (ListView)((Activity)context).findViewById(R.id.dlData);
-//          ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, R.layout.list_data, R.id.dlData, values);
-//          lstData.setAdapter(adapter);
+          new LV(context, values);
          }
          return false; // default as false?
         }

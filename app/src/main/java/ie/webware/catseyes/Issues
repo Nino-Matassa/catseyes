@@ -1,22 +1,5 @@
 /*
 
-Issue: Is setting db variable to null causing a new instance to be created?
-Should only be created once in the main activity
-
-Issue: The on click event doesn't like it
-
-         { // Populate list view
-          String[] values = new String[] {
-           continent,
-           country,
-           countryCode
-          };
-//          ((Activity)context).setContentView(R.layout.list_data);
-//          ListView lstData = (ListView)((Activity)context).findViewById(R.id.dlData);
-//          ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, R.layout.list_data, R.id.dlData, values);
-//          lstData.setAdapter(adapter);
-         }
-
 
 */
 

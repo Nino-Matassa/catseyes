@@ -20,9 +20,10 @@ public class MainActivity extends Activity
  {
   super.onCreate(savedInstanceState);
   setContentView(R.layout.main);
-  if((db = Database.getExistingInstance(MainActivity.this)) == null) // if there isn't one...
+  if(!Database.databaseExists(MainActivity.this))
    buildDatabase();
-  ELV elv = new ELV(MainActivity.this);
+  //ELV elv = new ELV(MainActivity.this);
+  new LV(MainActivity.this, new String[]{"Terra"});
  }
 
  @Override
