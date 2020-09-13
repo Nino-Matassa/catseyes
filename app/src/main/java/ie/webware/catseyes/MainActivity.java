@@ -23,10 +23,18 @@ public class MainActivity extends Activity
   if(!Database.databaseExists(MainActivity.this))
    buildDatabase();
   // Ok, only the first widget in main is available, right now its ELV xor LV
-  //ELV elv = new ELV(MainActivity.this);
-  new LV(MainActivity.this, new String[]{"Terra"});
+  new ELV(MainActivity.this);
+  //new LV(MainActivity.this, new String[]{"Terra"});
  }
 
+@Override
+public void onBackPressed() {
+  // TODO: Implement this method
+  //super.onBackPressed();
+  super.finish();
+ }
+
+ 
  @Override
  protected void onDestroy()
  {

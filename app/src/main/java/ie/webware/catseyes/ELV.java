@@ -9,7 +9,7 @@ import java.util.*;
 import android.view.*;
 
 public class ELV
-{
+ {
   Context context = null;
   SQLiteDatabase db = null;
 
@@ -17,15 +17,16 @@ public class ELV
   ExpandableListView elv;
   List<String> lstParent;
   HashMap<String, List<String>> hLstChild;
-  
+
   public ELV(Context _context) {
     context = _context;
     db = Database.getInstance(context);
+    ((Activity)context).setContentView(R.layout.elv_main);
     elv = (ExpandableListView) ((Activity)context).findViewById(R.id.elvParent);
     populateELV();
     ela = new ELA(context, lstParent, hLstChild);
     elv.setAdapter(ela);
-    
+
     elv.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
        @Override
        public boolean onChildClick(ExpandableListView elv, View view, int iGroup, int iChild, long id) {
@@ -41,19 +42,27 @@ public class ELV
          country = c.getString(c.getColumnIndex("location"));
          String countryCode = c.getString(c.getColumnIndex("Country_Code"));
          //Toast.makeText(context, continent + " + " + country, Toast.LENGTH_LONG).show();
-         { // Populate list view
-          String[] values = new String[] {
-           continent,
-           country,
-           countryCode
-          };
-          new LV(context, values);
-         }
+//         { // Populate list view
+//          String[] values = new String[] {
+//           continent,
+//           countryCode,
+//           country
+//          };
+         LVKeyValue lvKeyValue = new LVKeyValue();
+         lvKeyValue.key.add(lp);
+         lvKeyValue.value.add(continent);
+         lvKeyValue.key.add(lc);
+         lvKeyValue.value.add(country);
+         lvKeyValue.key.add(lc);
+         lvKeyValue.value.add(countryCode);
+
+         new LV(context, lvKeyValue);
+         //}
          return false; // default as false?
         }
-    });
-  }
-  
+      });
+   }
+
   private void populateELV() {
     lstParent = new ArrayList<String>();
     hLstChild = new HashMap<String, List<String>>();
@@ -93,4 +102,4 @@ public class ELV
        }
      }
    }
-}
+ }

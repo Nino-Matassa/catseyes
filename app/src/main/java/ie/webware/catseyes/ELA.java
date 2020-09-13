@@ -58,7 +58,7 @@ public class ELA extends BaseExpandableListAdapter
     // populate group view at position, called for each position
     if(vPopulate == null) {
      LayoutInflater lInflater = (LayoutInflater)this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-     vPopulate = lInflater.inflate(R.layout.list_group, null);
+     vPopulate = lInflater.inflate(R.layout.elv_group, null);
     }
     TextView vTxtParent = (TextView)vPopulate.findViewById(R.id.vTxtParent);
     vTxtParent.setText((String)getGroup(position));
@@ -70,7 +70,7 @@ public class ELA extends BaseExpandableListAdapter
     // Called for each child in the hash list
     if(vPopulate == null) {
      LayoutInflater lInflater = (LayoutInflater)this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-     vPopulate = lInflater.inflate(R.layout.list_item, null);
+     vPopulate = lInflater.inflate(R.layout.elv_item, null);
     }
     TextView vTxtChild = (TextView)vPopulate.findViewById(R.id.vTxtChild);
     vTxtChild.setText((String)getChild(iParent, iChild));
