@@ -16,7 +16,6 @@ public class WorldOmeterDatabase
     db = Database.getInstance(context);
     readJSONfromURL();
     speedReadJSON();
-    //db.close();
    }
 
   private void readJSONfromURL() throws IOException {
@@ -186,8 +185,10 @@ class SerializeCountry
     colDataValue.add(keyValue[1].trim().replaceAll(",", ""));
    }
   public void commitToDatabase() {
-    populateRegion();
-    populateCountry();
+   if(!Database.isExistingDatabase) {
+     populateRegion();
+     populateCountry();
+   }
     populateData();
    }
 
@@ -237,6 +238,7 @@ class SerializeCountry
     ContentValues values = new ContentValues();
     values.put(Constants.fkCountry, fkCountry);
 
+    // ToDo: if existing database, check the last date entry and ignore all entries till after that
     for(int i = 0; i < colDataKey.size(); i++) {
       String key = colDataKey.get(i);
       String value = colDataValue.get(i);

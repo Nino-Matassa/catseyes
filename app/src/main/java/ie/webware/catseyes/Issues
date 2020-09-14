@@ -1,7 +1,10 @@
 /*
 
-Only one widget from main.xml will be recognised, ELV xor LV. One or both need a seperate xml file.
-Should they each have their own context, or one of them?
-
+Create stack in main activity to ensure back button calls the previous object with the correct data
+Eg.
+ELV,
+LV,
+LV,
+etc
 */
 

@@ -32,22 +32,16 @@ public class ELV
        public boolean onChildClick(ExpandableListView elv, View view, int iGroup, int iChild, long id) {
          String continent = lstParent.get(iGroup);
          String country = hLstChild.get(continent).get(iChild);
-         Cursor p = db.rawQuery("select id, continent from region where continent = '" + continent + "'", null);
-         Cursor c = db.rawQuery("select id, location, country_code from country where location = '" + country + "'", null);
-         p.moveToFirst(); 
-         c.moveToFirst();
-         long lp = p.getInt(p.getColumnIndex("ID"));
-         long lc = c.getInt(c.getColumnIndex("ID"));
-         continent = p.getString(p.getColumnIndex("Continent"));
-         country = c.getString(c.getColumnIndex("location"));
-         String countryCode = c.getString(c.getColumnIndex("Country_Code"));
-         //Toast.makeText(context, continent + " + " + country, Toast.LENGTH_LONG).show();
-//         { // Populate list view
-//          String[] values = new String[] {
-//           continent,
-//           countryCode,
-//           country
-//          };
+         Cursor cParent = db.rawQuery("select id, continent from region where continent = '" + continent + "'", null);
+         Cursor cChild = db.rawQuery("select id, location, country_code from country where location = '" + country + "'", null);
+         cParent.moveToFirst(); 
+         cChild.moveToFirst();
+         long lp = cParent.getInt(cParent.getColumnIndex("ID"));
+         long lc = cChild.getInt(cChild.getColumnIndex("ID"));
+         continent = cParent.getString(cParent.getColumnIndex("Continent"));
+         country = cChild.getString(cChild.getColumnIndex("location"));
+         String countryCode = cChild.getString(cChild.getColumnIndex("Country_Code"));
+
          LVKeyValue lvKeyValue = new LVKeyValue();
          lvKeyValue.key.add(lp);
          lvKeyValue.value.add(continent);

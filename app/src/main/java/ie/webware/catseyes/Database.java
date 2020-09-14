@@ -47,6 +47,7 @@ class Database
  {
   private Database() {}
   private static SQLiteDatabase instance = null;
+  public static boolean isExistingDatabase = true;
 
   public static SQLiteDatabase getInstance(Context context) {
     File fPathDB = null;
@@ -56,6 +57,7 @@ class Database
         instance = SQLiteDatabase.openDatabase(fPathDB.getPath(), null, SQLiteDatabase.OPEN_READWRITE);
        } else {
         instance = new SQL(context).getWritableDatabase();
+        isExistingDatabase = false;
        }
      }
     return instance;
