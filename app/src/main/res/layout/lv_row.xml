@@ -7,7 +7,6 @@
 	android:padding="8dip"
 	android:textSize="14dip"
 	style="@style/AppTheme"
-	android:background="#FFFFFF"
 	android:ellipsize="middle">
 
 </TextView>

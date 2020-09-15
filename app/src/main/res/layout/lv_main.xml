@@ -10,8 +10,7 @@
 		android:id="@+id/lstView"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:alpha="1.0"
-		android:background="#FFFFFF">
+		android:alpha="1.0" >
 
 	</ListView>
 
