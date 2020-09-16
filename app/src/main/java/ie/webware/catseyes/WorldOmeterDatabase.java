@@ -1,22 +1,29 @@
 package ie.webware.catseyes;
 import android.content.*;
+import android.database.*;
 import android.database.sqlite.*;
 import java.io.*;
 import java.net.*;
 import java.nio.channels.*;
+import java.text.*;
 import java.util.*;
 
 public class WorldOmeterDatabase
  {
   private SQLiteDatabase db = null;
   private Context context = null;
-
+  ArrayList<String> listOfCountryColumns = new ArrayList<String>(); // complete list of column names
+  ArrayList<String> listOfDataColumns = new ArrayList<String>();  // complete list of column names
+  
   public WorldOmeterDatabase(Context _context) throws IOException {
     context = _context;
     db = Database.getInstance(context);
     readJSONfromURL();
-    speedReadJSON();
-    //speedReadJSON();
+    try {
+      speedReadJSON();
+     } catch(Exception e) {
+      String s = e.toString();
+     }
    }
 
   private void readJSONfromURL() throws IOException {
@@ -32,49 +39,111 @@ public class WorldOmeterDatabase
     readChannel.close();
    }
 
-  private void speedReadJSON() throws IOException {
+  private void speedReadJSON() throws Exception {
     String filePath = context.getFilesDir().getPath().toString() + Constants.dbPath;
     BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath));
     ArrayList<String> rows = new ArrayList<String>();
     String line = null;
     String countryCode = null;
+    Date lastDate = new SimpleDateFormat("yyyy-mm-dd").parse("2000-01-01");
     String table = null;
     String row = "";
     boolean isFirstLine = true;
 
     while((line = bufferedReader.readLine()) != null) {
-     if(isFirstLine) {isFirstLine = false; continue;}
+      if(isFirstLine) {isFirstLine = false; continue;}
       if(line == null || line.isEmpty()) continue;
       line = line.replaceAll("\"", "").trim();
-      
+
       if(isCountryCode(line)) {
         countryCode = getCountryCode(line);
         table = Constants.tblCountry;
+        if(rows.size() > 0)
+         serializeCountry(rows, countryCode);
+        rows = new ArrayList<String>();
+        //if(Database.isExistingDatabase) { // untested ignore if the country data is already there
+          //"select date from data join country on data.fk_country = country.id where country_code = '#' order by date desc limit 1";
+          //String sql = "select date from data join country on data.fk_country = country.id where country_code = '#' order by date desc limit 1";
+//          sql = sql.replace("#", countryCode);
+//          Cursor cDate = db.rawQuery(sql, null);
+//          cDate.moveToFirst();
+//          lastDate = new SimpleDateFormat("yyyy-mm-dd").parse(cDate.ge//tString(cDate.getColumnIndex("date")));
+         //}
         continue;
        }
       if(isTableData(line)) {
-        rows.add(table + ": " + countryCode + ", " + row);
+        if(!rowAlreadyExists(row, lastDate))
+         rows.add(table + ": " + countryCode + ", " + row);
         row = "";
         table = Constants.tblData;
         continue;
        }
       if(newDataRowMarker(line) && !row.isEmpty()) {
-        rows.add(table + ": " + countryCode + ", " + row);
+        if(!rowAlreadyExists(row, lastDate))
+         rows.add(table + ": " + countryCode + ", " + row);
         row = "";
         continue;
        }
-      //if(isTableData(line)) continue;
-      //if(newDataRowMarker(line)) continue;
-      //if(isCountryCode(line)) continue;
       row += line;
-
-//      ContentValues values = new ContentValues();
-//      values.put(Constants.colCountryCode, countryCode);
-//      values.put(Constants.colJSONTable, table);
-//      values.put(Constants.colJSON, line);
-//      long id = db.insert(Constants.tblJSON, null, values);
      }
     bufferedReader.close();
+   }
+  private boolean serializeCountry(ArrayList<String> rows, String countryCode) {
+    String continent = null;
+    String country = null;
+    long fkRegion = 0;
+    long fkCountry = 0;
+    long idData = 0;
+    // populate table region
+    String colCountry = rows.get(0);//rows.toArray(new String[0]);
+    String[] columns = colCountry.split(",");
+    String[] kvRegion = columns[1].split(":");
+    String[] kvCountry = columns[2].split(":");
+    continent = kvRegion[1].trim();
+    country = kvCountry[1].trim();
+    Cursor cId = db.rawQuery("select ID from region where continent = '" + continent + "'", null);
+    if(cId.getCount() == 0) {
+      ContentValues values = new ContentValues();
+      values.put("continent", continent);
+      fkRegion = db.insert(Constants.tblRegion, null, values);
+     } else {
+      cId.moveToFirst();
+      fkRegion = cId.getLong(cId.getColumnIndex("ID"));
+     }
+     // populate country table
+    cId = db.rawQuery("select ID from country where country_code = '" + countryCode + "'", null);
+    if(cId.getCount() == 0) {
+      ContentValues values = new ContentValues();
+      values.put(Constants.fkRegion, fkRegion);
+      values.put(Constants.colCountryCode, countryCode);
+      fkCountry = db.insert(Constants.tblCountry, null, values);
+     } else {
+      cId.moveToFirst();
+      fkCountry = cId.getLong(cId.getColumnIndex("ID"));
+     }
+     ArrayList<String> colName = new ArrayList<String>();
+     ArrayList<String> colData = new ArrayList<String>();
+     ContentValues values = new ContentValues();
+     for(int i = 1; i < columns.length; i++) { // start at 1 because the first element is meta info
+      String[] kv = columns[i].split(":");
+      String key = kv[0].trim();
+      String value = kv[1].replace(",", "").trim();
+      colName.add(key);
+      colData.add(value);
+      values.put(key, value);
+     }
+    addColumnIfNotExists(Constants.tblCountry, colName, colData);
+    idData = db.update(Constants.tblCountry, values, "ID = " + fkCountry, null);
+    return true;
+   }
+  private boolean rowAlreadyExists(String row, Date lastDate) throws Exception {
+    if(!row.contains("date:")) return false;
+    if(!Database.isExistingDatabase) return false; // if so save some cycles
+    String[] keyValueA = row.split(",");
+    String[] keyValueB = keyValueA[0].split(":");
+    Date date = new SimpleDateFormat("yyyy-mm-dd").parse(keyValueB[1].toString().trim());
+    if(date.after(lastDate)) return false;
+    return true;
    }
   private boolean newDataRowMarker(String line) {
     if(line.matches("\\{"))
@@ -354,39 +423,39 @@ public class WorldOmeterDatabase
 //    return true;
 //   }
 //
-//  private boolean addColumnIfNotExists(String table, ArrayList<String> colList, ArrayList<String> colData) {
-//    for(int i = 0; i < colList.size(); i++) {
-//      boolean isDouble = false;
-//      boolean isDate = false;
-//      boolean isString = false;
-//      String type = "";
-//      try {
-//        Double d = Double.parseDouble(colData.get(i));
-//        isDouble = true;
-//       } catch(Exception e) {
-//        if(colList.get(i).equals("date")) {
-//          isDate = true;
-//         } else { isString = true;}
-//       } finally {
-//        if(isString) type = "TEXT";
-//        if(isDouble) type = "decimal (10, 3)";
-//        if(isDate) type = "DATE";
-//       }
-//      String columnName = colList.get(i);
-//      if(table.equals(Constants.tblCountry)) {
-//        if(!lstCountryName.contains(columnName)) {
-//          lstCountryName.add(columnName);
-//          db.execSQL("alter table " + table + " add column " + columnName + " " + type);
-//         } 
-//       } else if(table.equals(Constants.tblData)) {
-//        if(!lstDataName.contains(columnName)) {
-//          lstDataName.add(columnName);
-//          db.execSQL("alter table " + table + " add column " + columnName + " " + type);
-//         }
-//       }
-//     }
-//    return false;
-//   }
+  private boolean addColumnIfNotExists(String table, ArrayList<String> colList, ArrayList<String> colData) {
+    for(int i = 0; i < colList.size(); i++) {
+      boolean isDouble = false;
+      boolean isDate = false;
+      boolean isString = false;
+      String type = "";
+      try {
+        Double d = Double.parseDouble(colData.get(i));
+        isDouble = true;
+       } catch(Exception e) {
+        if(colList.get(i).equals("date")) {
+          isDate = true;
+         } else { isString = true;}
+       } finally {
+        if(isString) type = "TEXT";
+        if(isDouble) type = "decimal (10, 3)";
+        if(isDate) type = "DATE";
+       }
+      String columnName = colList.get(i);
+      if(table.equals(Constants.tblCountry)) {
+        if(!listOfCountryColumns.contains(columnName)) {
+          listOfCountryColumns.add(columnName);
+          db.execSQL("alter table " + table + " add column " + columnName + " " + type);
+         } 
+       } else if(table.equals(Constants.tblData)) {
+        if(!listOfDataColumns.contains(columnName)) {
+          listOfDataColumns.add(columnName);
+          db.execSQL("alter table " + table + " add column " + columnName + " " + type);
+         }
+       }
+     }
+    return false;
+   }
  }
  
  
