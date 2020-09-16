@@ -7,16 +7,19 @@ public final class Constants
   public static final String dbName = "worldometer.db";
   //public static final String dbName = null; // in memory
   public static final String dbPath = "/worldometer.json";
-  public static final String tblRegion = "Region";
-  public static final String CountryCode = "Country_Code";
-  public static final String tblCountry = "Country";
-  public static final String tblData = "Data";
-  public static final String colContinent = "Continent";
+  public static final String tblJSON = "JSON";
+  public static final String colJSON = "JSON";
+  public static final String colJSONTable = "TABLE_NAME";
+  public static final String tblRegion = "REGION";
+  public static final String colCountryCode = "COUNTRY_CODE";
+  public static final String tblCountry = "COUNTRY";
+  public static final String tblData = "DATA";
+  public static final String colContinent = "CONTINENT";
   public static final String pkId = "ID";
   public static final String fkRegion = "FK_REGION";
   public static final String fkCountry = "FK_COUNTRY";
-  public static final String isCountryLead = "continent";
-  public static final String isDataLead = "date";
+  //public static final String isCountryLead = "continent";
+  //public static final String isDataLead = "date";
   public static final String[] lstCountry = new String[] {
    "AUS",
    "IRL",

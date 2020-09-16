@@ -19,10 +19,10 @@ public class MainActivity extends Activity
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main);
-    if(!Database.databaseExists(MainActivity.this))
+    //if(!Database.databaseExists(MainActivity.this))
      buildDatabase();
     // Ok, only the first widget in main is available, right now its ELV xor LV
-    new ELV(MainActivity.this);
+    //new ELV(MainActivity.this);
     //new LV(MainActivity.this, new String[]{"Terra"});
    }
 
