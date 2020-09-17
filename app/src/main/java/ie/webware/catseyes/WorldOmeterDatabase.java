@@ -27,6 +27,7 @@ public class WorldOmeterDatabase
    }
 
   private void readJSONfromURL() throws IOException {
+   // Need to find last modified timestamp nio acting up.
     String filePath = context.getFilesDir().getPath().toString() + Constants.dbPath;
     File file = new File(filePath);
     if(file.exists()) file.delete();
@@ -56,19 +57,16 @@ public class WorldOmeterDatabase
       line = line.replaceAll("\"", "").trim();
 
       if(isCountryCode(line)) {
-        countryCode = getCountryCode(line);
-        table = Constants.tblCountry;
-        if(rows.size() > 0)
+       if(countryCode == null) {
+         countryCode = getCountryCode(line);
+         table = Constants.tblCountry;
+       } else {
          serializeCountry(rows, countryCode);
-        rows = new ArrayList<String>();
-        //if(Database.isExistingDatabase) { // untested ignore if the country data is already there
-          //"select date from data join country on data.fk_country = country.id where country_code = '#' order by date desc limit 1";
-          //String sql = "select date from data join country on data.fk_country = country.id where country_code = '#' order by date desc limit 1";
-//          sql = sql.replace("#", countryCode);
-//          Cursor cDate = db.rawQuery(sql, null);
-//          cDate.moveToFirst();
-//          lastDate = new SimpleDateFormat("yyyy-mm-dd").parse(cDate.ge//tString(cDate.getColumnIndex("date")));
-         //}
+         rows = new ArrayList<String>();
+         row = "";
+         countryCode = getCountryCode(line);
+         table = Constants.tblCountry;
+       }
         continue;
        }
       if(isTableData(line)) {
@@ -94,7 +92,7 @@ public class WorldOmeterDatabase
     long fkRegion = 0;
     long fkCountry = 0;
     long idData = 0;
-    // populate table region
+    // populate table region and country if not already populated. Row Zero is the region/country row
     String colCountry = rows.get(0);//rows.toArray(new String[0]);
     String[] columns = colCountry.split(",");
     String[] kvRegion = columns[1].split(":");
@@ -110,30 +108,59 @@ public class WorldOmeterDatabase
       cId.moveToFirst();
       fkRegion = cId.getLong(cId.getColumnIndex("ID"));
      }
-     // populate country table
+     // populate country table if not already populated
     cId = db.rawQuery("select ID from country where country_code = '" + countryCode + "'", null);
     if(cId.getCount() == 0) {
       ContentValues values = new ContentValues();
       values.put(Constants.fkRegion, fkRegion);
       values.put(Constants.colCountryCode, countryCode);
       fkCountry = db.insert(Constants.tblCountry, null, values);
+      ArrayList<String> colName = new ArrayList<String>();
+      ArrayList<String> colData = new ArrayList<String>();
+      values = new ContentValues();
+      for(int i = 1; i < columns.length; i++) { // start at 1 because the first element is meta info
+        String[] kv = columns[i].split(":");
+        String key = kv[0].trim();
+        String value = kv[1].replace(",", "").trim();
+        colName.add(key);
+        colData.add(value);
+        values.put(key, value);
+       }
+      addColumnIfNotExists(Constants.tblCountry, colName, colData);
+      idData = db.update(Constants.tblCountry, values, "ID = " + fkCountry, null);
      } else {
       cId.moveToFirst();
       fkCountry = cId.getLong(cId.getColumnIndex("ID"));
      }
-     ArrayList<String> colName = new ArrayList<String>();
-     ArrayList<String> colData = new ArrayList<String>();
-     ContentValues values = new ContentValues();
-     for(int i = 1; i < columns.length; i++) { // start at 1 because the first element is meta info
-      String[] kv = columns[i].split(":");
-      String key = kv[0].trim();
-      String value = kv[1].replace(",", "").trim();
-      colName.add(key);
-      colData.add(value);
-      values.put(key, value);
+     // populate data if not already populated check for date
+    cId = db.rawQuery("select id from data limit 1", null);
+    if(cId.getCount() == 0) { // The table is empty
+      ContentValues values = new ContentValues();
+      values.put(Constants.fkCountry, fkCountry);
+      idData = db.insert(Constants.tblData, null, values);
+      for(int o = 1; o < rows.size(); o++) { // the first row is for country table, ignore it
+       String row = rows.get(o);
+       columns = row.split(",");
+        ArrayList<String> colName = new ArrayList<String>();
+        ArrayList<String> colData = new ArrayList<String>();
+        values = new ContentValues();
+        for(int i = 1; i < columns.length; i++) { // start at 1 because the first element is meta info
+          String[] kv = columns[i].split(":");
+          String key = kv[0].trim();
+          if(i == 1) key = key.replace("{", ""); // rogue character..
+          String value = kv[1].replace(",", "").trim();
+          colName.add(key);
+          colData.add(value);
+          values.put(key, value);
+         }
+        addColumnIfNotExists(Constants.tblData, colName, colData);
+        idData = db.insert(Constants.tblData, null, values);
+      }
+     } else { // Check against the time stamp, if already there ignore the entry otherwise insert it
+      cId.moveToFirst();
+//      fkRegion = cId.getLong(cId.getColumnIndex("ID"));
      }
-    addColumnIfNotExists(Constants.tblCountry, colName, colData);
-    idData = db.update(Constants.tblCountry, values, "ID = " + fkCountry, null);
+     
     return true;
    }
   private boolean rowAlreadyExists(String row, Date lastDate) throws Exception {

@@ -1,11 +1,6 @@
 /*
-Region is being populated incorrectly, randomly.
 
-Create stack in main activity to ensure back button calls the previous object with the correct data
-Eg.
-ELV,
-LV,
-LV,
-etc
+Inserting into the data table ongoing, not there yet.
+
 */
 
