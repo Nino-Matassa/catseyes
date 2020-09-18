@@ -18,7 +18,7 @@ public class WorldOmeterDatabase
   public WorldOmeterDatabase(Context _context) throws IOException {
     context = _context;
     db = Database.getInstance(context);
-    
+
     //    String filePath = context.getFilesDir().getPath().toString() + Constants.dbPath;
 //    File file = new File(filePath);
 //    long lastModified = file.lastModified();
@@ -42,16 +42,27 @@ public class WorldOmeterDatabase
 //      ;
     String filePath = context.getFilesDir().getPath().toString() + Constants.dbPath;
     File file = new File(filePath);
-    if(!file.exists())
-     readJSONfromURL();
-    
-    
+//    if(!file.exists())
+//     readJSONfromURL();
+
+    if(Database.isExistingDatabase) {
+     populateTableColumnNames();
+    }
     try {
       speedReadJSON();
      } catch(Exception e) {
       String s = e.toString();
      }
    }
+   
+  private void populateTableColumnNames() {
+    Cursor cCountryCols = db.query(Constants.tblCountry, null, null, null, null, null, null);
+    String[] lstCountryCols = cCountryCols.getColumnNames();
+    Cursor cDataCols = db.query(Constants.tblData, null, null, null, null, null, null);
+    String[] lstDataCols = cDataCols.getColumnNames();
+    listOfCountryColumns = new ArrayList<String>(Arrays.asList(lstCountryCols));
+    listOfDataColumns = new ArrayList<String>(Arrays.asList(lstDataCols));
+  }
 
   private void readJSONfromURL() throws IOException {
     // Need to find last modified timestamp nio acting up.
@@ -97,15 +108,13 @@ public class WorldOmeterDatabase
         continue;
        }
       if(isTableData(line)) {
-        if(!rowAlreadyExists(row, lastDate))
-         rows.add(table + ": " + countryCode + ", " + row);
+        rows.add(table + ": " + countryCode + ", " + row);
         row = "";
         table = Constants.tblData;
         continue;
        }
       if(newDataRowMarker(line) && !row.isEmpty()) {
-        if(!rowAlreadyExists(row, lastDate))
-         rows.add(table + ": " + countryCode + ", " + row);
+        rows.add(table + ": " + countryCode + ", " + row);
         row = "";
         continue;
        }
@@ -119,6 +128,7 @@ public class WorldOmeterDatabase
     long fkRegion = 0;
     long fkCountry = 0;
     long idData = 0;
+    Date lastDate = null;
     // populate table region and country if not already populated. Row Zero is the region/country row
     String colCountry = rows.get(0);//rows.toArray(new String[0]);
     String[] columns = colCountry.split(",");
@@ -159,41 +169,58 @@ public class WorldOmeterDatabase
       cId.moveToFirst();
       fkCountry = cId.getLong(cId.getColumnIndex("ID"));
      }
-    // populate data if not already populated check for date
-    //cId = db.rawQuery("select id from data limit 1", null);
-    if(!Database.isExistingDatabase/*cId.getCount() == 0*/) { // The table is empty
-      for(int o = 1; o < rows.size(); o++) { // the first row is for country table, ignore it
-        String row = rows.get(o);
-        columns = row.split(",");
-        ArrayList<String> colName = new ArrayList<String>();
-        ArrayList<String> colData = new ArrayList<String>();
-        ContentValues values = new ContentValues();
-        values.put(Constants.fkCountry, fkCountry);
-        for(int i = 1; i < columns.length; i++) { // start at 1 because the first element is meta info
-          String[] kv = columns[i].split(":");
-          String key = kv[0].trim();
-          String value = kv[1].replace(",", "").trim();
-          colName.add(key);
-          colData.add(value);
-          values.put(key, value);
-         }
-        addColumnIfNotExists(Constants.tblData, colName, colData);
-        idData = db.insert(Constants.tblData, null, values);
-       }
-     } else { // Check against the time stamp, if already there ignore the entry otherwise insert it
-      cId.moveToFirst();
-//      fkRegion = cId.getLong(cId.getColumnIndex("ID"));
+    // populate data if not already populated check for lastDate
+    if(Database.isExistingDatabase) {
+      try {
+        String sql = "select date from data where fk_country = # order by date desc limit 1";
+        sql = sql.replace("#", new Long(fkCountry).toString());
+        Cursor cDate = db.rawQuery(sql, null);
+        cDate.moveToFirst();
+        String sDate = cDate.getString(cDate.getColumnIndex("date"));
+        lastDate = new SimpleDateFormat("yyyy-MM-dd").parse(sDate);
+       } catch(ParseException e) {
+        String s = e.toString();
+       } 
      }
-
+    for(int o = 1; o < rows.size(); o++) { // the first row is for country table, ignore it
+      String row = rows.get(o);
+      columns = row.split(",");
+      ArrayList<String> colName = new ArrayList<String>();
+      ArrayList<String> colData = new ArrayList<String>();
+      ContentValues values = new ContentValues();
+      values.put(Constants.fkCountry, fkCountry);
+      for(int i = 1; i < columns.length; i++) { // start at 1 because the first element is meta info
+        String[] kv = columns[i].split(":");
+        String key = kv[0].trim();
+        String value = kv[1].replace(",", "").trim();
+        colName.add(key);
+        colData.add(value);
+        values.put(key, value);
+       }
+      addColumnIfNotExists(Constants.tblData, colName, colData);
+      try {
+        if(Database.isExistingDatabase && !rowAlreadyExists(rows.get(o), lastDate)) {
+          idData = db.insert(Constants.tblData, null, values);
+         }
+       } catch(Exception e) {
+        String s = e.toString();
+       }
+       if(!Database.isExistingDatabase) {
+         idData = db.insert(Constants.tblData, null, values);
+       }
+     }
     return true;
    }
   private boolean rowAlreadyExists(String row, Date lastDate) throws Exception {
-    if(!row.contains("date:")) return false;
-    if(!Database.isExistingDatabase) return false; // if so save some cycles
+    if(!row.contains("date:"))
+     return false;
+    if(!Database.isExistingDatabase)
+     return false; // if so save some cycles
     String[] keyValueA = row.split(",");
-    String[] keyValueB = keyValueA[0].split(":");
-    Date date = new SimpleDateFormat("yyyy-mm-dd").parse(keyValueB[1].toString().trim());
-    if(date.after(lastDate)) return false;
+    String[] keyValueB = keyValueA[1].split(":");
+    Date date = new SimpleDateFormat("yyyy-MM-dd").parse(keyValueB[1].toString().trim());
+    if(date.after(lastDate))
+     return false;
     return true;
    }
   private boolean newDataRowMarker(String line) {
