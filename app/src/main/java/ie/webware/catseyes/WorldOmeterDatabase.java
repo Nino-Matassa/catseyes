@@ -1,7 +1,10 @@
 package ie.webware.catseyes;
+import android.app.*;
 import android.content.*;
 import android.database.*;
 import android.database.sqlite.*;
+import android.widget.*;
+import ie.webware.catseyes.*;
 import java.io.*;
 import java.net.*;
 import java.nio.channels.*;
@@ -18,21 +21,19 @@ public class WorldOmeterDatabase
   public WorldOmeterDatabase(Context _context) throws IOException {
     context = _context;
     db = Database.getInstance(context);
-    { // Test code, read timestamp from json url
-//     URL url = new URL(Constants.worldOmeterURL);
-//     URLConnection connection = url.openConnection();
-//     long timestamp = connection.getLastModified();
-    }
-
+    // Test code, read timestamp from json url
+    
     String filePath = context.getFilesDir().getPath().toString() + Constants.dbPath;
     File file = new File(filePath);
-//    if(!file.exists( ))
-//     readJSONfromURL();
-
+    if(!file.exists( )) {
+      DatabaseStatus.setStatus("Reading " + Constants.worldOmeterURL);
+      readJSONfromURL(); 
+    }
     if(Database.isExistingDatabase) {
      populateTableColumnNames();
     }
     try {
+     DatabaseStatus.setStatus("Updating Database");
       speedReadJSON();
      } catch(Exception e) {
       String s = e.toString();
@@ -67,7 +68,7 @@ public class WorldOmeterDatabase
     ArrayList<String> rows = new ArrayList<String>();
     String line = null;
     String countryCode = null;
-    Date lastDate = new SimpleDateFormat("yyyy-mm-dd").parse("2000-01-01");
+    Date lastDate = new SimpleDateFormat("yyyy-MM-dd").parse("2000-01-01");
     String table = null;
     String row = "";
     boolean isFirstLine = true;
@@ -89,6 +90,7 @@ public class WorldOmeterDatabase
           table = Constants.tblCountry;
          }
         lastDate = setLastDateForThisCountry(countryCode);
+        //DatabaseStatus.setStatus("Updating " + countryCode); throws an exception, wrong thread
         continue;
        }
       if(isTableData(line)) {

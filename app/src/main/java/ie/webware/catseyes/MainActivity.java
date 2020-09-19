@@ -1,14 +1,11 @@
 package ie.webware.catseyes;
 
 import android.app.*;
-import android.os.*;
-import android.widget.*;
-import java.util.*;
 import android.database.sqlite.*;
+import android.os.*;
 import android.util.*;
-import java.io.*;
-import android.database.*;
-import android.widget.SearchView.*;
+import android.view.*;
+import android.widget.*;
 
 
 public class MainActivity extends Activity  
@@ -19,11 +16,21 @@ public class MainActivity extends Activity
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main);
-    //if(!Database.databaseExists(MainActivity.this))
-     buildDatabase();
     // Ok, only the first widget in main is available, right now its ELV xor LV
-    new ELV(MainActivity.this);
+    //new ELV(MainActivity.this);
     //new LV(MainActivity.this, new String[]{"Terra"});
+    final TextView vInformation = findViewById(R.id.mainTextID);
+    vInformation.setText("Checking for new data...");
+    
+    DatabaseStatus.addStatusListener(new StatusChangedListener() {
+       @Override
+       public void onStatusChanged() {
+         vInformation.setText(DatabaseStatus.getStatus());
+        }
+      });
+    //if(!Database.databaseExists(MainActivity.this))
+   buildDatabase();
+  
    }
 
   @Override
@@ -53,17 +60,15 @@ public class MainActivity extends Activity
         }
       });
 
-    Toast.makeText(MainActivity.this, "Initialising Worldometer Data", Toast.LENGTH_LONG).show();
     thread.start();
-    try {
-      thread.join(); // wait for thread to finish
-     } catch(InterruptedException e) {
-      Log.d(MainActivity.this.toString(), e.toString());
-      return false;
-     } finally {
-      Log.d("General", "Thread complete");
-     }
-    Toast.makeText(MainActivity.this, "All done", Toast.LENGTH_LONG).show();
+//    try {
+//      thread.join(); // wait for thread to finish
+//     } catch(InterruptedException e) {
+//      Log.d(MainActivity.this.toString(), e.toString());
+//      return false;
+//     } finally {
+//      Log.d("General", "Thread complete");
+//     }
     return true;
    }
  }
