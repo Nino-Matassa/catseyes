@@ -6,30 +6,33 @@ import android.os.*;
 import android.util.*;
 import android.view.*;
 import android.widget.*;
+import java.util.*;
 
 
-public class MainActivity extends Activity  
+public class MainActivity extends Activity
  {
   SQLiteDatabase db = null;
-
+  TextView view = null;
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main);
+    view = findViewById(R.id.mainTextID);
     // Ok, only the first widget in main is available, right now its ELV xor LV
-    //new ELV(MainActivity.this);
+    //if(Database.isExistingDatabase)
+     //new ELV(MainActivity.this);
     //new LV(MainActivity.this, new String[]{"Terra"});
-    final TextView vInformation = findViewById(R.id.mainTextID);
-    vInformation.setText("Checking for new data...");
-    
-    DatabaseStatus.addStatusListener(new StatusChangedListener() {
+    //view = findViewById(R.id.mainTextID);
+    DBStatus.addStatusListener(new StatusChangedListener() {
        @Override
        public void onStatusChanged() {
-         vInformation.setText(DatabaseStatus.getStatus());
+         view.setText(DBStatus.getStatus());
         }
       });
+
+    
     //if(!Database.databaseExists(MainActivity.this))
-   buildDatabase();
+   //buildDatabase();
   
    }
 
@@ -47,9 +50,10 @@ public class MainActivity extends Activity
     super.onDestroy();
    }
 
-  public boolean buildDatabase() {
+  public void buildDatabase() {
 
     Thread thread = new Thread(new Runnable() {
+     //runOnUiThread(new Runnable() {
        @Override 
        public void run() {
          try {
@@ -65,11 +69,9 @@ public class MainActivity extends Activity
 //      thread.join(); // wait for thread to finish
 //     } catch(InterruptedException e) {
 //      Log.d(MainActivity.this.toString(), e.toString());
-//      return false;
 //     } finally {
 //      Log.d("General", "Thread complete");
 //     }
-    return true;
    }
  }
 

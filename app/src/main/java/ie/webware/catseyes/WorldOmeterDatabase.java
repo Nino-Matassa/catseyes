@@ -4,42 +4,43 @@ import android.content.*;
 import android.database.*;
 import android.database.sqlite.*;
 import android.widget.*;
-import ie.webware.catseyes.*;
 import java.io.*;
 import java.net.*;
 import java.nio.channels.*;
 import java.text.*;
 import java.util.*;
 
-public class WorldOmeterDatabase 
+public class WorldOmeterDatabase
  {
+
+  private static String staticCountryCode = "";
   private SQLiteDatabase db = null;
   private Context context = null;
   ArrayList<String> listOfCountryColumns = new ArrayList<String>(); // complete list of column names
   ArrayList<String> listOfDataColumns = new ArrayList<String>();  // complete list of column names
-
+  
   public WorldOmeterDatabase(Context _context) throws IOException {
     context = _context;
     db = Database.getInstance(context);
-    // Test code, read timestamp from json url
     
     String filePath = context.getFilesDir().getPath().toString() + Constants.dbPath;
     File file = new File(filePath);
-    if(!file.exists( )) {
-      DatabaseStatus.setStatus("Reading " + Constants.worldOmeterURL);
+    // Test code, read timestamp from json url and delete to update
+    if(!file.exists()) {
+      DBStatus.setStatus("Downloading " + Constants.worldOmeterURL);
       readJSONfromURL(); 
-    }
+     }
     if(Database.isExistingDatabase) {
-     populateTableColumnNames();
-    }
+      populateTableColumnNames();
+     }
     try {
-     DatabaseStatus.setStatus("Updating Database");
+      DBStatus.setStatus("Updating Data");
       speedReadJSON();
      } catch(Exception e) {
       String s = e.toString();
      }
    }
-   
+
   private void populateTableColumnNames() {
     Cursor cCountryCols = db.query(Constants.tblCountry, null, null, null, null, null, null);
     String[] lstCountryCols = cCountryCols.getColumnNames();
@@ -47,7 +48,7 @@ public class WorldOmeterDatabase
     String[] lstDataCols = cDataCols.getColumnNames();
     listOfCountryColumns = new ArrayList<String>(Arrays.asList(lstCountryCols));
     listOfDataColumns = new ArrayList<String>(Arrays.asList(lstDataCols));
-  }
+   }
 
   private void readJSONfromURL() throws IOException {
     String filePath = context.getFilesDir().getPath().toString() + Constants.dbPath;
@@ -78,6 +79,13 @@ public class WorldOmeterDatabase
       if(line == null || line.isEmpty()) continue;
       line = line.replaceAll("\"", "").trim();
 
+//      try {
+//        DBStatus.setStatus("Updating " + countryCode);
+//       } catch(Exception e) {
+//        String s = e.toString();
+//       }
+
+
       if(isCountryCode(line)) {
         if(countryCode == null) {
           countryCode = getCountryCode(line);
@@ -90,7 +98,7 @@ public class WorldOmeterDatabase
           table = Constants.tblCountry;
          }
         lastDate = setLastDateForThisCountry(countryCode);
-        //DatabaseStatus.setStatus("Updating " + countryCode); throws an exception, wrong thread
+        staticCountryCode = countryCode;
         continue;
        }
       if(isTableData(line)) {
@@ -103,9 +111,9 @@ public class WorldOmeterDatabase
         row = table + ": " + countryCode + ", " + row;
         if(Database.isExistingDatabase && !rowAlreadyExists(row, lastDate)) {
           rows.add(row); 
-        } else if(!Database.isExistingDatabase){
+         } else if(!Database.isExistingDatabase) {
           rows.add(row); 
-        }
+         }
         row = "";
         continue;
        }
@@ -184,8 +192,8 @@ public class WorldOmeterDatabase
        } catch(Exception e) {
         String s = e.toString();
        }
-       if(!Database.isExistingDatabase) {
-         idData = db.insert(Constants.tblData, null, values);
+      if(!Database.isExistingDatabase) {
+        idData = db.insert(Constants.tblData, null, values);
        }
      }
     return true;
@@ -204,8 +212,8 @@ public class WorldOmeterDatabase
         String s = e.toString();
        } 
      }
-     return lastDate;
-  }
+    return lastDate;
+   }
   private boolean rowAlreadyExists(String row, Date lastDate) throws Exception {
     if(!row.contains("date:"))
      return false;

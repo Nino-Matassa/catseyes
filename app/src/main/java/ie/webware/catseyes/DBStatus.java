@@ -6,7 +6,7 @@ interface StatusChangedListener
   public void onStatusChanged();
  }
 
-public class DatabaseStatus extends Observable
+public class DBStatus extends Observable
  {
   private static List<StatusChangedListener> listeners = new ArrayList<StatusChangedListener>();
   private static String status = null;

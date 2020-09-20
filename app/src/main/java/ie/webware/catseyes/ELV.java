@@ -38,9 +38,9 @@ public class ELV
          cChild.moveToFirst();
          long lp = cParent.getInt(cParent.getColumnIndex("ID"));
          long lc = cChild.getInt(cChild.getColumnIndex("ID"));
-         continent = cParent.getString(cParent.getColumnIndex("Continent"));
+         continent = cParent.getString(cParent.getColumnIndex("CONTINENT"));
          country = cChild.getString(cChild.getColumnIndex("location"));
-         String countryCode = cChild.getString(cChild.getColumnIndex("Country_Code"));
+         String countryCode = cChild.getString(cChild.getColumnIndex("COUNTRY_CODE"));
 
          LVKeyValue lvKeyValue = new LVKeyValue();
          lvKeyValue.key.add(lp);
@@ -67,7 +67,7 @@ public class ELV
         long l = cRegion.getCount();
         cRegion.moveToFirst(); // add region to parent
         for(int I = 0; I < cRegion.getCount(); I++) {
-          String continent = cRegion.getString(cRegion.getColumnIndex("Continent"));
+          String continent = cRegion.getString(cRegion.getColumnIndex("CONTINENT"));
           lstParent.add(continent);
           cRegion.moveToNext();
          }
