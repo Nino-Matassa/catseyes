@@ -17,16 +17,9 @@ public class MainActivity extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main);
     view = findViewById(R.id.mainTextID);
-    
-    DBStatus.addStatusListener(new StatusChangedListener() {
-       @Override
-       public void onStatusChanged() {
-         view.setText(DBStatus.getStatus());
-        }
-      });
-      
-    buildDatabase();
-    //if(Database.isExistingDatabase)
+    new LayoutTable(MainActivity.this, 1);
+    //buildDatabase();
+    //if(Database.isExistingDatabase) // no point until the json url shows a date
     //new ELV(MainActivity.this);
     //new LV(MainActivity.this, new String[]{"Terra"});
     //view = findViewById(R.id.mainTextID);

@@ -17,10 +17,12 @@ public class WorldOmeterDatabase
   private Context context = null;
   ArrayList<String> listOfCountryColumns = new ArrayList<String>(); // complete list of column names
   ArrayList<String> listOfDataColumns = new ArrayList<String>();  // complete list of column names
+  TextView view = null;
   
   public WorldOmeterDatabase(Context _context) throws IOException {
     context = _context;
     db = Database.getInstance(context);
+    view = ((Activity)context).findViewById(R.id.mainTextID);
     
      { // Copy db & json from root to download
       String srcPath = context.getDatabasePath(Constants.dbName).getPath();
@@ -35,16 +37,16 @@ public class WorldOmeterDatabase
     File jsonFile = new File(jsonFilePath);
     // Test code, read timestamp from json url and delete to update
     if(!jsonFile.exists()) {
-      DBStatus.setStatus("Downloading " + Constants.worldOmeterURL);
+      //DBStatus.setStatus("Downloading " + Constants.worldOmeterURL);
       readJSONfromURL(); 
      }
     if(Database.isExistingDatabase) {
       populateTableColumnNames();
      }
     try {
-      DBStatus.setStatus("Updating Data");
+      //DBStatus.setStatus("Updating Data");
       speedReadJSON();
-      DBStatus.setStatus("Update Complete");
+      //DBStatus.setStatus("Update Complete");
      } catch(Exception e) {
       String s = e.toString();
      }
@@ -97,7 +99,12 @@ public class WorldOmeterDatabase
           row = "";
           countryCode = getCountryCode(line);
           table = Constants.tblCountry;
-           //DBStatus.setStatus("Updating " + countryCode); //Thread exception from here
+           try {
+             //DBStatus.setStatus("Updating " + countryCode); //Thread exception from here
+             //view.setText("Updating " + countryCode);
+           } catch(Exception e) {
+            String s = e.toString();
+           }
          }
         lastDate = setLastDateForThisCountry(countryCode);
         continue;
