@@ -6,7 +6,7 @@ public final class Constants
   public static final String worldOmeterURL = "https://covid.ourworldindata.org/data/owid-covid-data.json";
   public static final String dbName = "worldometer.db";
   //public static final String dbName = null; // in memory
-  public static final String dbPath = "/worldometer.json";
+  public static final String jsonPath = "/worldometer.json";
   public static final String tblJSON = "JSON";
   public static final String colJSON = "JSON";
   public static final String colJSONTable = "TABLE_NAME";

@@ -9,11 +9,10 @@ import java.net.*;
 import java.nio.channels.*;
 import java.text.*;
 import java.util.*;
+import android.os.*;
 
 public class WorldOmeterDatabase
  {
-
-  private static String staticCountryCode = "";
   private SQLiteDatabase db = null;
   private Context context = null;
   ArrayList<String> listOfCountryColumns = new ArrayList<String>(); // complete list of column names
@@ -23,10 +22,19 @@ public class WorldOmeterDatabase
     context = _context;
     db = Database.getInstance(context);
     
-    String filePath = context.getFilesDir().getPath().toString() + Constants.dbPath;
-    File file = new File(filePath);
+     { // Copy db & json from root to download
+      String srcPath = context.getDatabasePath(Constants.dbName).getPath();
+      String dstPath = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/" +  Constants.dbName;
+      copyFile(srcPath, dstPath);
+      srcPath = context.getFilesDir().getPath().toString() + Constants.jsonPath;
+      dstPath = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + Constants.jsonPath;
+      copyFile(srcPath, dstPath);
+     }
+    
+    String jsonFilePath = context.getFilesDir().getPath().toString() + Constants.jsonPath;
+    File jsonFile = new File(jsonFilePath);
     // Test code, read timestamp from json url and delete to update
-    if(!file.exists()) {
+    if(!jsonFile.exists()) {
       DBStatus.setStatus("Downloading " + Constants.worldOmeterURL);
       readJSONfromURL(); 
      }
@@ -36,6 +44,7 @@ public class WorldOmeterDatabase
     try {
       DBStatus.setStatus("Updating Data");
       speedReadJSON();
+      DBStatus.setStatus("Update Complete");
      } catch(Exception e) {
       String s = e.toString();
      }
@@ -51,7 +60,7 @@ public class WorldOmeterDatabase
    }
 
   private void readJSONfromURL() throws IOException {
-    String filePath = context.getFilesDir().getPath().toString() + Constants.dbPath;
+    String filePath = context.getFilesDir().getPath().toString() + Constants.jsonPath;
     File file = new File(filePath);
     if(file.exists()) file.delete();
 
@@ -64,7 +73,7 @@ public class WorldOmeterDatabase
    }
 
   private void speedReadJSON() throws Exception {
-    String filePath = context.getFilesDir().getPath().toString() + Constants.dbPath;
+    String filePath = context.getFilesDir().getPath().toString() + Constants.jsonPath;
     BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath));
     ArrayList<String> rows = new ArrayList<String>();
     String line = null;
@@ -78,14 +87,6 @@ public class WorldOmeterDatabase
       if(isFirstLine) {isFirstLine = false; continue;}
       if(line == null || line.isEmpty()) continue;
       line = line.replaceAll("\"", "").trim();
-
-//      try {
-//        DBStatus.setStatus("Updating " + countryCode);
-//       } catch(Exception e) {
-//        String s = e.toString();
-//       }
-
-
       if(isCountryCode(line)) {
         if(countryCode == null) {
           countryCode = getCountryCode(line);
@@ -96,9 +97,9 @@ public class WorldOmeterDatabase
           row = "";
           countryCode = getCountryCode(line);
           table = Constants.tblCountry;
+           //DBStatus.setStatus("Updating " + countryCode); //Thread exception from here
          }
         lastDate = setLastDateForThisCountry(countryCode);
-        staticCountryCode = countryCode;
         continue;
        }
       if(isTableData(line)) {
@@ -294,6 +295,21 @@ public class WorldOmeterDatabase
        }
      }
     return false;
+   }
+  public void copyFile(String srcPath, String dstPath) throws IOException {
+    File srcFile = new File(srcPath);
+    File dstFile = new File(dstPath);
+    if(srcFile.exists()) {
+      if(!dstFile.exists()) {
+        FileInputStream iStream = new FileInputStream(srcFile);
+        FileOutputStream oStream = new FileOutputStream(dstFile);
+        FileChannel iChannel = iStream.getChannel();
+        FileChannel oChannel = oStream.getChannel();
+        iChannel.transferTo(0, iChannel.size(), oChannel);
+        iStream.close();
+        oStream.close();
+       }
+     }
    }
  }
  

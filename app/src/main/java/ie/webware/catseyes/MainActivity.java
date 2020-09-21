@@ -4,36 +4,33 @@ import android.app.*;
 import android.database.sqlite.*;
 import android.os.*;
 import android.util.*;
-import android.view.*;
 import android.widget.*;
 import java.util.*;
 
 
-public class MainActivity extends Activity
- {
+public class MainActivity extends Activity {
   SQLiteDatabase db = null;
   TextView view = null;
+  
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main);
     view = findViewById(R.id.mainTextID);
-    // Ok, only the first widget in main is available, right now its ELV xor LV
-    //if(Database.isExistingDatabase)
-     //new ELV(MainActivity.this);
-    //new LV(MainActivity.this, new String[]{"Terra"});
-    //view = findViewById(R.id.mainTextID);
+    
     DBStatus.addStatusListener(new StatusChangedListener() {
        @Override
        public void onStatusChanged() {
          view.setText(DBStatus.getStatus());
         }
       });
-
-    
+      
+    buildDatabase();
+    //if(Database.isExistingDatabase)
+    //new ELV(MainActivity.this);
+    //new LV(MainActivity.this, new String[]{"Terra"});
+    //view = findViewById(R.id.mainTextID);
     //if(!Database.databaseExists(MainActivity.this))
-   //buildDatabase();
-  
    }
 
   @Override
