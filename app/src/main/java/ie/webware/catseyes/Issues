@@ -1,7 +1,7 @@
 /*
 
-Database update to be tested, looks fine so far
-TODO Read url timestamp from json, unresolved
-TODO observer/observed messaging to be understood...
+Database update to be tested, looks fine so far..
+readJSONfromURL(); uncommented for TVStatus
+TVStatusTable firing every 10 seconds
 */
 

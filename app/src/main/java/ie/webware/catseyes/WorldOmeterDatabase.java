@@ -3,13 +3,17 @@ import android.app.*;
 import android.content.*;
 import android.database.*;
 import android.database.sqlite.*;
+import android.os.*;
+import android.util.*;
 import android.widget.*;
 import java.io.*;
 import java.net.*;
 import java.nio.channels.*;
+import java.sql.*;
 import java.text.*;
 import java.util.*;
-import android.os.*;
+
+import java.util.Date;
 
 public class WorldOmeterDatabase
  {
@@ -18,37 +22,38 @@ public class WorldOmeterDatabase
   ArrayList<String> listOfCountryColumns = new ArrayList<String>(); // complete list of column names
   ArrayList<String> listOfDataColumns = new ArrayList<String>();  // complete list of column names
   TextView view = null;
-  
+
   public WorldOmeterDatabase(Context _context) throws IOException {
     context = _context;
     db = Database.getInstance(context);
     view = ((Activity)context).findViewById(R.id.mainTextID);
-    
-     { // Copy db & json from root to download
-      String srcPath = context.getDatabasePath(Constants.dbName).getPath();
-      String dstPath = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/" +  Constants.dbName;
-      copyFile(srcPath, dstPath);
-      srcPath = context.getFilesDir().getPath().toString() + Constants.jsonPath;
-      dstPath = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + Constants.jsonPath;
-      copyFile(srcPath, dstPath);
-     }
-    
-    String jsonFilePath = context.getFilesDir().getPath().toString() + Constants.jsonPath;
-    File jsonFile = new File(jsonFilePath);
-    // Test code, read timestamp from json url and delete to update
-    if(!jsonFile.exists()) {
-      //DBStatus.setStatus("Downloading " + Constants.worldOmeterURL);
-      readJSONfromURL(); 
-     }
+    // Copy json & db to application download because tablet and phone not rooted
+    copyDBtoDownload();
+    // If the database already exists populate the country and data column name lists
     if(Database.isExistingDatabase) {
       populateTableColumnNames();
      }
-    try {
-      //DBStatus.setStatus("Updating Data");
-      speedReadJSON();
-      //DBStatus.setStatus("Update Complete");
-     } catch(Exception e) {
-      String s = e.toString();
+    // Unless the json file doesn't exist or isn't new don't read it
+    String jsonFilePath = context.getFilesDir().getPath().toString() + Constants.jsonPath;
+    File jsonFile = new File(jsonFilePath);
+    if(!jsonFile.exists()) {
+      readJSONfromURL(); 
+     } else {
+       URL url = new URL(Constants.worldOmeterURL);
+       URLConnection urlConnection = url.openConnection();
+       urlConnection.connect();
+       Long urlTimeStamp = urlConnection.getDate();
+       Long jsonTimeStamp = jsonFile.lastModified();
+       try {
+         Date urlTS = new SimpleDateFormat("yyyy-MM-dd").parse(new Timestamp(urlTimeStamp).toString());
+         Date jsonTS = new SimpleDateFormat("yyyy-MM-dd").parse(new Timestamp(jsonTimeStamp).toString());
+         if(urlTS.after(jsonTS)) {
+           //readJSONfromURL();
+         }
+         speedReadJSON();
+       } catch(Exception e) {
+         Log.d("WorldOmeterDatabase", e.toString());
+       }
      }
    }
 
@@ -99,12 +104,6 @@ public class WorldOmeterDatabase
           row = "";
           countryCode = getCountryCode(line);
           table = Constants.tblCountry;
-           try {
-             //DBStatus.setStatus("Updating " + countryCode); //Thread exception from here
-             //view.setText("Updating " + countryCode);
-           } catch(Exception e) {
-            String s = e.toString();
-           }
          }
         lastDate = setLastDateForThisCountry(countryCode);
         continue;
@@ -303,19 +302,32 @@ public class WorldOmeterDatabase
      }
     return false;
    }
+  private void copyDBtoDownload() throws IOException {
+     {
+      String srcPath = context.getDatabasePath(Constants.dbName).getPath();
+      String dstPath = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/" +  Constants.dbName;
+      copyFile(srcPath, dstPath);
+      srcPath = context.getFilesDir().getPath().toString() + Constants.jsonPath;
+      dstPath = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + Constants.jsonPath;
+      copyFile(srcPath, dstPath);
+     }
+   }
+
   public void copyFile(String srcPath, String dstPath) throws IOException {
     File srcFile = new File(srcPath);
     File dstFile = new File(dstPath);
+
+    if(dstFile.exists())
+     dstFile.delete();
+
     if(srcFile.exists()) {
-      if(!dstFile.exists()) {
-        FileInputStream iStream = new FileInputStream(srcFile);
-        FileOutputStream oStream = new FileOutputStream(dstFile);
-        FileChannel iChannel = iStream.getChannel();
-        FileChannel oChannel = oStream.getChannel();
-        iChannel.transferTo(0, iChannel.size(), oChannel);
-        iStream.close();
-        oStream.close();
-       }
+      FileInputStream iStream = new FileInputStream(srcFile);
+      FileOutputStream oStream = new FileOutputStream(dstFile);
+      FileChannel iChannel = iStream.getChannel();
+      FileChannel oChannel = oStream.getChannel();
+      iChannel.transferTo(0, iChannel.size(), oChannel);
+      iStream.close();
+      oStream.close();
      }
    }
  }

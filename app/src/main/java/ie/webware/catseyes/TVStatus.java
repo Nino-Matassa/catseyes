@@ -2,30 +2,52 @@ package ie.webware.catseyes;
 
 import android.app.*;
 import android.content.*;
+import android.util.*;
 import android.view.*;
 import android.view.View.*;
 import android.widget.*;
+import java.util.*;
 
-public class LayoutTable {
- private Context context = null;
- private long countryId = 0;
- private TableLayout tableLayout = null;
- 
- public LayoutTable(Context _context, long _countryId) {
-  context = _context;
-  countryId = _countryId;
-  
-   ((Activity)context).setContentView(R.layout.table_layout);
-   tableLayout = (TableLayout) ((Activity)context).findViewById(R.id.layoutTable);
-   
-  countryFromELV();
+public class TVStatus
+ {
+
+  private Context context = null;
+  private Timer timer = null;
+  TVStatusTask tvStatusTask = null;
+
+  public TVStatus(Context _context) {
+    context = _context;
+    tvStatusTask = new TVStatusTask(context);
+    timer = new Timer();
+    timer.schedule(tvStatusTask,
+                   1 * 1000,   //initial delay
+                   1 * 10000);  //subsequent rate
+   }
  }
- 
-  public void countryFromELV() {
-    
-    LinearLayout.LayoutParams tableRowParams = new LinearLayout.LayoutParams(
-     LinearLayout.LayoutParams.MATCH_PARENT,
-     LinearLayout.LayoutParams.WRAP_CONTENT);
+
+class TVStatusTask extends TimerTask
+ {
+  private Context context = null;
+  private TableLayout tableLayout = null;
+
+  public TVStatusTask(Context _context) {
+    context = _context;
+
+    ((Activity)context).setContentView(R.layout.table_layout);
+    tableLayout = (TableLayout) ((Activity)context).findViewById(R.id.layoutTable);
+
+    dbStatusTable();
+   }
+
+  @Override
+  public void run() {
+    dbStatusTable();
+   }
+
+  public void dbStatusTable() {
+
+    LinearLayout.LayoutParams tableRowParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                                                             LinearLayout.LayoutParams.WRAP_CONTENT);
 
     /* create a table row */
     TableRow tableRow = new TableRow(context);
@@ -69,6 +91,10 @@ public class LayoutTable {
     tableRow.addView(btn);
 
     /* add the row to the table */
-    tableLayout.addView(tableRow);
+    try {
+      tableLayout.addView(tableRow);
+     } catch(Exception e) {
+      Log.d("TVStatus", e.toString());
+     }
    }
-}
+ }

@@ -9,7 +9,6 @@ import java.util.*;
 
 
 public class MainActivity extends Activity {
-  SQLiteDatabase db = null;
   TextView view = null;
   
   @Override
@@ -17,33 +16,26 @@ public class MainActivity extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main);
     view = findViewById(R.id.mainTextID);
-    new LayoutTable(MainActivity.this, 1);
-    //buildDatabase();
-    //if(Database.isExistingDatabase) // no point until the json url shows a date
-    //new ELV(MainActivity.this);
-    //new LV(MainActivity.this, new String[]{"Terra"});
-    //view = findViewById(R.id.mainTextID);
-    //if(!Database.databaseExists(MainActivity.this))
+    buildDatabase();
+    new TVStatus(MainActivity.this);
    }
 
   @Override
   public void onBackPressed() {
-    // if not empty pull from stack otherwise call super.onBackPressed();
+    // Simulate object stack
     new ELV(MainActivity.this);
     // TODO: Implement this method
-    //super.onBackPressed();
+    //super.onBackPressed(); // if no objects on stack exit app
    }
 
   @Override
   protected void onDestroy() {
-    //db.close();
+    Database.getInstance(MainActivity.this).close();
     super.onDestroy();
    }
 
   public void buildDatabase() {
-
     Thread thread = new Thread(new Runnable() {
-     //runOnUiThread(new Runnable() {
        @Override 
        public void run() {
          try {
@@ -53,15 +45,7 @@ public class MainActivity extends Activity {
           }
         }
       });
-
     thread.start();
-//    try {
-//      thread.join(); // wait for thread to finish
-//     } catch(InterruptedException e) {
-//      Log.d(MainActivity.this.toString(), e.toString());
-//     } finally {
-//      Log.d("General", "Thread complete");
-//     }
    }
  }
 
