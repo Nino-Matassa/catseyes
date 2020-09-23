@@ -16,7 +16,7 @@ public class MainActivity extends Activity {
     setContentView(R.layout.main);
     view = findViewById(R.id.mainTextID);
     buildDatabase();
-    //new TVStatus(MainActivity.this);
+    new ELV(MainActivity.this);
    }
 
   @Override
@@ -34,23 +34,17 @@ public class MainActivity extends Activity {
    }
    
   public void buildDatabase() {
-    new Thread(new Runnable() {
+    Thread thread = new Thread(new Runnable() {
        @Override 
        public void run() {
-        //getMainLooper().prepare();
          try {
            new WorldOmeterDatabase(MainActivity.this);
           } catch(Exception e) {
            Log.d("MainActivity", e.toString());
           }
         }
-      }).start();
-    //thread.start();
-//    try {
-//     thread.join();
-//    } catch (Exception e) {
-//     Log.d("MainActivity", e.toString());
-//    }
+      });
+    thread.start();
    }
  }
 

@@ -38,8 +38,8 @@ public class WorldOmeterDatabase
     File jsonFile = new File(jsonFilePath);
     try {
       if(!jsonFile.exists()) {
-        //readJSONfromURL();
-        //speedReadJSON();
+        readJSONfromURL();
+        speedReadJSON();
        } else {
         URL url = new URL(Constants.worldOmeterURL);
         URLConnection urlConnection = url.openConnection();
@@ -50,11 +50,11 @@ public class WorldOmeterDatabase
         Date urlTS = new SimpleDateFormat("yyyy-MM-dd").parse(new Timestamp(urlTimeStamp).toString());
         Date jsonTS = new SimpleDateFormat("yyyy-MM-dd").parse(new Timestamp(jsonTimeStamp).toString());
         if(urlTS.after(jsonTS)) {
-          //readJSONfromURL();
-          //speedReadJSON();
+          readJSONfromURL();
+          speedReadJSON();
          }
        }
-      speedReadJSON(); // debugging
+      //speedReadJSON(); // debugging
      } catch(Exception e) {
       Log.d("WorldOmeterDatabase", e.toString());
      }
@@ -97,8 +97,8 @@ public class WorldOmeterDatabase
 
     while((line = bufferedReader.readLine()) != null) {
       if(isFirstLine) {
-       isFirstLine = false; 
-       continue;
+        isFirstLine = false; 
+        continue;
        }
       if(line == null || line.isEmpty()) continue;
       line = line.replaceAll("\"", "").trim();
@@ -107,8 +107,13 @@ public class WorldOmeterDatabase
           countryCode = getCountryCode(line);
           table = Constants.tblCountry;
          } else {
-          serializeCountry(rows, countryCode);
-          toast("Serializing " + countryCode, Toast.LENGTH_LONG, context);
+          if(rows.size() > 1) {
+            serializeCountry(rows, countryCode);
+            toast("Serializing " + countryCode, Toast.LENGTH_LONG, context);
+           } else {
+            toast("No update for " + countryCode, Toast.LENGTH_LONG, context);
+           }
+
           rows = new ArrayList<String>();
           row = "";
           countryCode = getCountryCode(line);
@@ -125,7 +130,7 @@ public class WorldOmeterDatabase
        }
       if(newDataRowMarker(line) && !row.isEmpty()) {
         row = table + ": " + countryCode + ", " + row;
-        if(Database.isExistingDatabase && !rowAlreadyExists(row, lastDate)) {
+        if(Database.isExistingDatabase && rowDateIsGreaterThanLastDate(row, lastDate)) {
           rows.add(row); 
          } else if(!Database.isExistingDatabase) {
           rows.add(row); 
@@ -136,6 +141,7 @@ public class WorldOmeterDatabase
       row += line.replace("{", "").replace("}", ""); // json formatting unaccounted for
      }
     bufferedReader.close();
+    toast("Serialization finished", Toast.LENGTH_LONG, context);
    }
   private boolean serializeCountry(ArrayList<String> rows, String countryCode) {
     String continent = null;
@@ -143,7 +149,7 @@ public class WorldOmeterDatabase
     long fkRegion = 0;
     long fkCountry = 0;
     long idData = 0;
-    Date lastDate = null;
+
     // populate table region and country if not already populated. Row Zero is the region/country row
     String colCountry = rows.get(0);//rows.toArray(new String[0]);
     String[] columns = colCountry.split(",");
@@ -201,16 +207,7 @@ public class WorldOmeterDatabase
         values.put(key, value);
        }
       addColumnIfNotExists(Constants.tblData, colName, colData);
-      try {
-        if(Database.isExistingDatabase && !rowAlreadyExists(rows.get(o), lastDate)) {
-          idData = db.insert(Constants.tblData, null, values);
-         }
-       } catch(Exception e) {
-        String s = e.toString();
-       }
-      if(!Database.isExistingDatabase) {
-        idData = db.insert(Constants.tblData, null, values);
-       }
+      idData = db.insert(Constants.tblData, null, values);
      }
     return true;
    }
@@ -230,7 +227,7 @@ public class WorldOmeterDatabase
      }
     return lastDate;
    }
-  private boolean rowAlreadyExists(String row, Date lastDate) throws Exception {
+  private boolean rowDateIsGreaterThanLastDate(String row, Date lastDate) throws Exception {
     if(!row.contains("date:"))
      return false;
     if(!Database.isExistingDatabase)
@@ -239,8 +236,8 @@ public class WorldOmeterDatabase
     String[] keyValueB = keyValueA[1].split(":");
     Date date = new SimpleDateFormat("yyyy-MM-dd").parse(keyValueB[1].toString().trim());
     if(date.after(lastDate))
-     return false;
-    return true;
+     return true;
+    return false;
    }
   private boolean newDataRowMarker(String line) {
     if(line.matches("\\{"))

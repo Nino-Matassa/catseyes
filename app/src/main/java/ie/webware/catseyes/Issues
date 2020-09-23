@@ -1,9 +1,10 @@
 /*
 
-Database update to be tested, looks fine so far..
-readJSONfromURL(); uncommented for TVStatus
-Back to square one, sqlite doesn't like concurent use...
+Database update testing to finish, need to wait for real updates this time. The last
+test is to check if a new build is fine. Code tidied up and hopefully the last of the
+bugs fixed.
 
-When db status is complete set TVStatus to null
+TVStatus may yet have a future... Concurrent seems to be ok under some conditions. Calling
+it from serializeCountry may work.
 */
 

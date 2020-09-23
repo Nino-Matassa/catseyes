@@ -7,44 +7,27 @@ import android.view.*;
 import android.view.View.*;
 import android.widget.*;
 import java.util.*;
+import android.database.sqlite.*;
 
-//public class TVStatus
-// {
-//
-//  private Context context = null;
-//  private Timer timer = null;
-//  TVStatusTask tvStatusTask = null;
-//
-//  public TVStatus(Context _context) {
-//    context = _context;
-//    tvStatusTask = new TVStatusTask(context);
-//    timer = new Timer();
-//    timer.schedule(tvStatusTask,
-//                   1 * 1000,   //initial delay
-//                   1 * 10000);  //subsequent rate
-//   }
-// }
-//
-class TVStatus//Task extends TimerTask
+class TVCountry
  {
   private Context context = null;
   private TableLayout tableLayout = null;
-
-  public TVStatus(Context _context) {
+  private long countryId = 0;
+  SQLiteDatabase db = null;
+  
+  public TVCountry(Context _context, long _countryId) {
     context = _context;
+    countryId = _countryId;
+    db = Database.getInstance(context);
 
     ((Activity)context).setContentView(R.layout.table_layout);
     tableLayout = (TableLayout) ((Activity)context).findViewById(R.id.layoutTable);
 
-    dbStatusTable();
+    getCountry();
    }
 
-//  @Override
-//  public void run() {
-//    dbStatusTable();
-//   }
-
-  public void dbStatusTable() {
+  public void getCountry() {
 
     LinearLayout.LayoutParams tableRowParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                                                                              LinearLayout.LayoutParams.WRAP_CONTENT);
