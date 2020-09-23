@@ -2,6 +2,8 @@
 
 Database update to be tested, looks fine so far..
 readJSONfromURL(); uncommented for TVStatus
-TVStatusTable firing every 10 seconds
+Back to square one, sqlite doesn't like concurent use...
+
+When db status is complete set TVStatus to null
 */
 

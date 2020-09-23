@@ -1,11 +1,10 @@
 package ie.webware.catseyes;
 
 import android.app.*;
-import android.database.sqlite.*;
+import android.content.*;
 import android.os.*;
 import android.util.*;
 import android.widget.*;
-import java.util.*;
 
 
 public class MainActivity extends Activity {
@@ -17,7 +16,7 @@ public class MainActivity extends Activity {
     setContentView(R.layout.main);
     view = findViewById(R.id.mainTextID);
     buildDatabase();
-    new TVStatus(MainActivity.this);
+    //new TVStatus(MainActivity.this);
    }
 
   @Override
@@ -33,19 +32,25 @@ public class MainActivity extends Activity {
     Database.getInstance(MainActivity.this).close();
     super.onDestroy();
    }
-
+   
   public void buildDatabase() {
-    Thread thread = new Thread(new Runnable() {
+    new Thread(new Runnable() {
        @Override 
        public void run() {
+        //getMainLooper().prepare();
          try {
            new WorldOmeterDatabase(MainActivity.this);
           } catch(Exception e) {
            Log.d("MainActivity", e.toString());
           }
         }
-      });
-    thread.start();
+      }).start();
+    //thread.start();
+//    try {
+//     thread.join();
+//    } catch (Exception e) {
+//     Log.d("MainActivity", e.toString());
+//    }
    }
  }
 

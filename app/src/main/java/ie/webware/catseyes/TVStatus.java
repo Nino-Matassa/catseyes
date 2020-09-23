@@ -8,29 +8,29 @@ import android.view.View.*;
 import android.widget.*;
 import java.util.*;
 
-public class TVStatus
- {
-
-  private Context context = null;
-  private Timer timer = null;
-  TVStatusTask tvStatusTask = null;
-
-  public TVStatus(Context _context) {
-    context = _context;
-    tvStatusTask = new TVStatusTask(context);
-    timer = new Timer();
-    timer.schedule(tvStatusTask,
-                   1 * 1000,   //initial delay
-                   1 * 10000);  //subsequent rate
-   }
- }
-
-class TVStatusTask extends TimerTask
+//public class TVStatus
+// {
+//
+//  private Context context = null;
+//  private Timer timer = null;
+//  TVStatusTask tvStatusTask = null;
+//
+//  public TVStatus(Context _context) {
+//    context = _context;
+//    tvStatusTask = new TVStatusTask(context);
+//    timer = new Timer();
+//    timer.schedule(tvStatusTask,
+//                   1 * 1000,   //initial delay
+//                   1 * 10000);  //subsequent rate
+//   }
+// }
+//
+class TVStatus//Task extends TimerTask
  {
   private Context context = null;
   private TableLayout tableLayout = null;
 
-  public TVStatusTask(Context _context) {
+  public TVStatus(Context _context) {
     context = _context;
 
     ((Activity)context).setContentView(R.layout.table_layout);
@@ -39,10 +39,10 @@ class TVStatusTask extends TimerTask
     dbStatusTable();
    }
 
-  @Override
-  public void run() {
-    dbStatusTable();
-   }
+//  @Override
+//  public void run() {
+//    dbStatusTable();
+//   }
 
   public void dbStatusTable() {
 
