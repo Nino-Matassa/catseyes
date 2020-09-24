@@ -141,7 +141,6 @@ public class WorldOmeterDatabase
       row += line.replace("{", "").replace("}", ""); // json formatting unaccounted for
      }
     bufferedReader.close();
-    toast("Serialization finished", Toast.LENGTH_LONG, context);
    }
   private boolean serializeCountry(ArrayList<String> rows, String countryCode) {
     String continent = null;

@@ -50,7 +50,8 @@ public class ELV
          lvKeyValue.key.add(lc);
          lvKeyValue.value.add(countryCode);
 
-         new LV(context, lvKeyValue);
+         //new LV(context, lvKeyValue);
+         new TVCountry(context, lc);
          //}
          return false; // default as false?
         }
