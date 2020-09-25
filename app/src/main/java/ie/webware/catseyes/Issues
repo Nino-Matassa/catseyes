@@ -1,10 +1,4 @@
 /*
 
-Database update testing to finish, need to wait for real updates this time. The last
-test is to check if a new build is fine. Code tidied up and hopefully the last of the
-bugs fixed.
-
-TVStatus may yet have a future... Concurrent seems to be ok under some conditions. Calling
-it from serializeCountry may work.
 */
 
