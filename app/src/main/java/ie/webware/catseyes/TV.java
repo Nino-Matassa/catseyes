@@ -8,6 +8,8 @@ import android.util.*;
 import android.widget.*;
 import java.text.*;
 import java.util.*;
+import android.view.View.*;
+import android.view.*;
 
 class TV
  {
@@ -26,7 +28,7 @@ class TV
    
   public ArrayList<TableRow> getTableRows(ArrayList<TableKeyValue> tkvs) {
     ArrayList<TableRow> tableRows = new ArrayList<TableRow>();
-    for(TableKeyValue tkv: tkvs) {
+    for(final TableKeyValue tkv: tkvs) {
       TableRow tableRow = new TableRow(context);
       LinearLayout.LayoutParams tableRowParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
       tableRow.setLayoutParams(tableRowParams);
@@ -36,6 +38,15 @@ class TV
       TextView textViewKey = new TextView(context);
       textViewKey.setTextSize(18);
       TextView textViewValue = new TextView(context);
+      textViewValue.setOnClickListener(new OnClickListener() {
+         @Override
+         public void onClick(View p1) {
+           //Toast.makeText(context,tkv.countryId.toString() + " : " + tkv.field + " : " + tkv.key + " : " + tkv.value, Toast.LENGTH_LONG).show();
+           if(tkv.value.contains("[...]")) {
+             new TVData(context, tkv.countryId, tkv.field);
+           }
+          }
+      });
       textViewValue.setTextSize(18);
       textViewKey.setLayoutParams(cellParams);
       textViewValue.setLayoutParams(cellParams);

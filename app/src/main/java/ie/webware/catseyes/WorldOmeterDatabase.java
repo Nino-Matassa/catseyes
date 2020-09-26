@@ -190,8 +190,14 @@ public class WorldOmeterDatabase
       fkCountry = cId.getLong(cId.getColumnIndex("ID"));
      }
     // populate data if not already populated check for lastDate
-    for(int o = 1; o < rows.size(); o++) { // the first row is for country table, ignore it
-      String row = rows.get(o);
+    //for(int o = 1; o < rows.size(); o++) { // the first row is for country table, ignore it
+      //String row = rows.get(o);
+    boolean isFirstRow = true;
+    for(String  row: rows) {
+     if(isFirstRow) {
+      isFirstRow = false;
+      continue; // ignore the first row, it for the country table
+     }
       columns = row.split(",");
       ArrayList<String> colName = new ArrayList<String>();
       ArrayList<String> colData = new ArrayList<String>();
