@@ -68,7 +68,7 @@ public class LVData
        }
       nCases = cData.getDouble(cData.getColumnIndex(field));
       lvKeyValue.key.add(id);
-      String row = date + ": # ".replace("#", field + "#") + nCases.toString();
+      String row = date + ":\t #\t ".replace("#", field + "#\t") + nCases.toString();
       lvKeyValue.value.add(row);
       cData.moveToNext();
      }

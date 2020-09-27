@@ -43,8 +43,8 @@ class TV
          public void onClick(View p1) {
            //Toast.makeText(context,tkv.countryId.toString() + " : " + tkv.field + " : " + tkv.key + " : " + tkv.value, Toast.LENGTH_LONG).show();
            if(tkv.value.contains("[...]")) {
-             //new TVData(context, tkv.countryId, tkv.field);
-             new LVData(context, tkv.countryId, tkv.field);
+             new TVData(context, tkv.countryId, tkv.field);
+             //new LVData(context, tkv.countryId, tkv.field);
            }
           }
       });
