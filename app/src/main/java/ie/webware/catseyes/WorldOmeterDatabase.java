@@ -141,6 +141,7 @@ public class WorldOmeterDatabase
       row += line.replace("{", "").replace("}", ""); // json formatting unaccounted for
      }
     bufferedReader.close();
+    toast("Update completed", Toast.LENGTH_LONG, context);
    }
   private boolean serializeCountry(ArrayList<String> rows, String countryCode) {
     String continent = null;
@@ -190,8 +191,6 @@ public class WorldOmeterDatabase
       fkCountry = cId.getLong(cId.getColumnIndex("ID"));
      }
     // populate data if not already populated check for lastDate
-    //for(int o = 1; o < rows.size(); o++) { // the first row is for country table, ignore it
-      //String row = rows.get(o);
     boolean isFirstRow = true;
     for(String  row: rows) {
      if(isFirstRow) {

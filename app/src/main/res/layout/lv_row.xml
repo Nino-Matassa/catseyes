@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal"
+    >   
+ <TextView
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/lstRow"
 	android:layout_width="fill_parent"
@@ -10,4 +16,17 @@
 	android:ellipsize="middle">
 
 </TextView>
+<!--
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lstRowR"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="8dip"
+    android:textSize="14dip"
+    style="@style/AppTheme"
+    android:ellipsize="middle">
 
+</TextView>
+-->
+</LinearLayout>  

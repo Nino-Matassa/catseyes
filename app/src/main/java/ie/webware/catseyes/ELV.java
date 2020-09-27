@@ -36,22 +36,22 @@ public class ELV
          Cursor cChild = db.rawQuery("select id, location, country_code from country where location = '" + country + "'", null);
          cParent.moveToFirst(); 
          cChild.moveToFirst();
-         long lp = cParent.getInt(cParent.getColumnIndex("ID"));
-         long lc = cChild.getInt(cChild.getColumnIndex("ID"));
+         long parentId = cParent.getInt(cParent.getColumnIndex("ID"));
+         long childId = cChild.getInt(cChild.getColumnIndex("ID"));
          continent = cParent.getString(cParent.getColumnIndex("CONTINENT"));
          country = cChild.getString(cChild.getColumnIndex("location"));
          String countryCode = cChild.getString(cChild.getColumnIndex("COUNTRY_CODE"));
 
-         LVKeyValue lvKeyValue = new LVKeyValue();
-         lvKeyValue.key.add(lp);
-         lvKeyValue.value.add(continent);
-         lvKeyValue.key.add(lc);
-         lvKeyValue.value.add(country);
-         lvKeyValue.key.add(lc);
-         lvKeyValue.value.add(countryCode);
-
-         //new LV(context, lvKeyValue);
-         new TVCountry(context, lc);
+//         LVKeyValue lvKeyValue = new LVKeyValue();
+//         lvKeyValue.key.add(parentId);
+//         lvKeyValue.value.add(continent);
+//         lvKeyValue.key.add(childId);
+//         lvKeyValue.value.add(country);
+//         lvKeyValue.key.add(childId);
+//         lvKeyValue.value.add(countryCode);
+//
+//         new LV(context, lvKeyValue);
+         new TVCountry(context, childId);
          //}
          return false; // default as false?
         }
