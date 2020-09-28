@@ -36,13 +36,13 @@ public class TVCountry extends TV
     cursor = db.rawQuery(sql, null);
     cursor.moveToFirst();
     tkv.key = "Last Updated"; tkv.value = cursor.getString(cursor.getColumnIndex("date")); try { tkv.value = new SimpleDateFormat("yyyy-MM-dd").parse(tkv.value).toString(); String[] arrDate = tkv.value.split(" "); tkv.value = arrDate[0] + " " + arrDate[1] + " " + arrDate[2] + " " + arrDate[5]; } catch(ParseException e) { Log.d("TVCountry", e.toString()); } finally { tkvs.add(tkv);} tkv.countryId = id; tkv.field = "date"; tkv = new TableKeyValue();
-    tkv.key = "New Cases"; tkv.value = String.valueOf(formatter.format(cursor.getLong(cursor.getColumnIndex("new_cases")))) + " [...]"; tkvs.add(tkv); tkv.countryId = id; tkv.field = "new_cases"; tkv = new TableKeyValue();
-    tkv.key = "New Deaths"; tkv.value = String.valueOf(formatter.format(cursor.getLong(cursor.getColumnIndex("new_deaths")))) + " [...]"; tkvs.add(tkv); tkv.countryId = id; tkv.field = "new_deaths"; tkv = new TableKeyValue();
-    tkv.key = "Total Cases"; tkv.value = String.valueOf(formatter.format(cursor.getLong(cursor.getColumnIndex("total_cases")))) + " [...]"; tkvs.add(tkv); tkv.countryId = id; tkv.field = "total_cases"; tkv = new TableKeyValue();
-    tkv.key = "Total Deaths"; tkv.value = String.valueOf(formatter.format(cursor.getLong(cursor.getColumnIndex("total_deaths")))) + " [...]"; tkvs.add(tkv); tkv.countryId = id; tkv.field = "total_deaths"; tkv = new TableKeyValue();
-    tkv.key = "Case/Million"; tkv.value = String.valueOf(formatter.format(cursor.getLong(cursor.getColumnIndex("total_cases_per_million")))) + " [...]"; tkvs.add(tkv); tkv.countryId = id; tkv.field = "total_cases_per_million"; tkv = new TableKeyValue();
-    tkv.key = "New Case/Million"; tkv.value = String.valueOf(formatter.format(cursor.getLong(cursor.getColumnIndex("new_cases_per_million")))) + " [...]"; tkvs.add(tkv); tkv.countryId = id; tkv.field = "new_cases_per_million"; tkv = new TableKeyValue();
-    tkv.key = "Death/Million"; tkv.value = String.valueOf(formatter.format(cursor.getLong(cursor.getColumnIndex("total_deaths_per_million")))) + " [...]"; tkvs.add(tkv); tkv.countryId = id; tkv.field = "total_deaths_per_million"; tkv = new TableKeyValue();
+    tkv.key = "New Cases"; tkv.value = String.valueOf(formatter.format(cursor.getLong(cursor.getColumnIndex("new_cases")))); tkvs.add(tkv); tkv.countryId = id; tkv.field = "new_cases"; tkv = new TableKeyValue();
+    tkv.key = "New Deaths"; tkv.value = String.valueOf(formatter.format(cursor.getLong(cursor.getColumnIndex("new_deaths")))); tkvs.add(tkv); tkv.countryId = id; tkv.field = "new_deaths"; tkv = new TableKeyValue();
+    tkv.key = "Total Cases"; tkv.value = String.valueOf(formatter.format(cursor.getLong(cursor.getColumnIndex("total_cases")))); tkvs.add(tkv); tkv.countryId = id; tkv.field = "total_cases"; tkv = new TableKeyValue();
+    tkv.key = "Total Deaths"; tkv.value = String.valueOf(formatter.format(cursor.getLong(cursor.getColumnIndex("total_deaths")))); tkvs.add(tkv); tkv.countryId = id; tkv.field = "total_deaths"; tkv = new TableKeyValue();
+    tkv.key = "Case/Million"; tkv.value = String.valueOf(formatter.format(cursor.getLong(cursor.getColumnIndex("total_cases_per_million")))); tkvs.add(tkv); tkv.countryId = id; tkv.field = "total_cases_per_million"; tkv = new TableKeyValue();
+    tkv.key = "New Case/Million"; tkv.value = String.valueOf(formatter.format(cursor.getLong(cursor.getColumnIndex("new_cases_per_million")))); tkvs.add(tkv); tkv.countryId = id; tkv.field = "new_cases_per_million"; tkv = new TableKeyValue();
+    tkv.key = "Death/Million"; tkv.value = String.valueOf(formatter.format(cursor.getLong(cursor.getColumnIndex("total_deaths_per_million")))); tkvs.add(tkv); tkv.countryId = id; tkv.field = "total_deaths_per_million"; tkv = new TableKeyValue();
     
     setTableLayout(getTableRows(tkvs));
    }

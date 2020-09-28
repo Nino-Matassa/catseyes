@@ -10,6 +10,8 @@ import java.text.*;
 import java.util.*;
 import android.view.View.*;
 import android.view.*;
+import android.text.style.*;
+import android.graphics.*;
 
 class TV
  {
@@ -25,7 +27,7 @@ class TV
     ((Activity)context).setContentView(R.layout.table_layout);
     tableLayout = (TableLayout) ((Activity)context).findViewById(R.id.layoutTable);
    }
-   
+
   public ArrayList<TableRow> getTableRows(ArrayList<TableKeyValue> tkvs) {
     ArrayList<TableRow> tableRows = new ArrayList<TableRow>();
     for(final TableKeyValue tkv: tkvs) {
@@ -41,18 +43,19 @@ class TV
       textViewValue.setOnClickListener(new OnClickListener() {
          @Override
          public void onClick(View p1) {
-           //Toast.makeText(context,tkv.countryId.toString() + " : " + tkv.field + " : " + tkv.key + " : " + tkv.value, Toast.LENGTH_LONG).show();
-           if(tkv.value.contains("[...]")) {
+           try {
+             Double.parseDouble(tkv.value.replace(",", ""));
              new TVData(context, tkv.countryId, tkv.field);
-             //new LVData(context, tkv.countryId, tkv.field);
-           }
+            } catch(Exception e) {}
           }
-      });
+        });
       textViewValue.setTextSize(18);
       textViewKey.setLayoutParams(cellParams);
       textViewValue.setLayoutParams(cellParams);
       textViewKey.setText(tkv.key);
       textViewValue.setText(tkv.value);
+      textViewKey.setTypeface(Typeface.MONOSPACE);
+      textViewValue.setTypeface(Typeface.MONOSPACE);
       tableRow.addView(textViewKey);
       tableRow.addView(textViewValue);
       tableRows.add(tableRow);
