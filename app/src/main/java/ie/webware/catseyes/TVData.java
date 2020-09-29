@@ -21,6 +21,10 @@ public class TVData extends TV
     formatter = new DecimalFormat("#,###.##");
 
     populateTableData();
+    String fieldDescription = null;
+    if(field.equals("new_cases"))
+     fieldDescription = "New Cases";
+    setHeader("Recent History", fieldDescription);
    }
 
   private void populateTableData() {

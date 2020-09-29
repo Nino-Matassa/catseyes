@@ -30,7 +30,7 @@ class TV
     tableLayoutHeader = (TableLayout)((Activity)context).findViewById(R.id.layoutTableHeader);
    }
 
-  public ArrayList<TableRow> getTableRows(ArrayList<TableKeyValue> tkvs) {
+  protected ArrayList<TableRow> getTableRows(ArrayList<TableKeyValue> tkvs) {
     ArrayList<TableRow> tableRows = new ArrayList<TableRow>();
     for(final TableKeyValue tkv: tkvs) {
       TableRow tableRow = new TableRow(context);
@@ -86,8 +86,30 @@ class TV
 
     return tableRows;
    }
+   
+  protected void setHeader(String keyDescription, String valueDescription) {
+    TableRow tableRow = new TableRow(context);
+    LinearLayout.LayoutParams tableRowParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+    tableRow.setLayoutParams(tableRowParams);
 
-  public void setTableLayout(ArrayList<TableRow> tableRows) {
+    TableRow.LayoutParams cellParams = new TableRow.LayoutParams(0, TableRow.LayoutParams.MATCH_PARENT);
+    cellParams.weight = 9;
+    TextView textViewL = new TextView(context);
+    textViewL.setTextSize(18);
+    TextView textViewR = new TextView(context);
+    textViewR.setTextSize(18);
+    textViewL.setLayoutParams(cellParams);
+    textViewR.setLayoutParams(cellParams);
+    textViewL.setText(keyDescription);
+    textViewL.setTypeface(null, Typeface.BOLD);
+    textViewR.setText(valueDescription);
+    textViewR.setTypeface(null, Typeface.BOLD);
+    tableRow.addView(textViewL);
+    tableRow.addView(textViewR);
+    tableLayoutHeader.addView(tableRow);
+   }
+
+  protected void setTableLayout(ArrayList<TableRow> tableRows) {
     for(TableRow tableRow: tableRows) {
       tableLayout.addView(tableRow);
      }

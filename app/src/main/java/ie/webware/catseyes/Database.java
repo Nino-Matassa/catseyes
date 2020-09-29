@@ -23,13 +23,6 @@ class SQL extends SQLiteOpenHelper
   "FOREIGN KEY (" + Constants.fkCountry + ") REFERENCES " + Constants.tblCountry + 
   " (" + Constants.pkId + "));";
   
-//  private String createTableJSON = "create table " + Constants.tblJSON + 
-//  "(" + Constants.pkId + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-//  Constants.colCountryCode + " TEXT, " +
-//  Constants.colJSONTable + " TEXT, " +
-//  Constants.colJSON + " TEXT);";
-  
-
   public SQL(Context context) {
     super(context, Constants.dbName, null, /*DB Version*/1);
    }
@@ -39,7 +32,6 @@ class SQL extends SQLiteOpenHelper
     db.execSQL(createTableRegion);
     db.execSQL(createTableCountry);
     db.execSQL(createTableData);
-    //db.execSQL(createTableJSON);
    }
 
   @Override
