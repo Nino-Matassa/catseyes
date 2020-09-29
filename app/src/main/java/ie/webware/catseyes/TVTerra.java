@@ -18,6 +18,7 @@ public class TVTerra extends TV {
     formatter = new DecimalFormat("#,###.##");
 
     populateTerra();
+   setHeader("Region", "Population");
    }
 
   private void populateTerra() {

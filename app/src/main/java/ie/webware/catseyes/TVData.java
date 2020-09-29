@@ -24,7 +24,9 @@ public class TVData extends TV
     String fieldDescription = null;
     if(field.equals("new_cases"))
      fieldDescription = "New Cases";
-    setHeader("Recent History", fieldDescription);
+	 else
+	  fieldDescription = field;
+    setHeader("Recent History Of...", fieldDescription);
    }
 
   private void populateTableData() {
@@ -36,13 +38,13 @@ public class TVData extends TV
       TableKeyValue tkv = new TableKeyValue();
       tkv.subClass = "TVData";
       tkv.key = cursor.getString(cursor.getColumnIndex("date"));
-      try { 
-        tkv.key = new SimpleDateFormat("yyyy-MM-dd").parse(tkv.key).toString();
-        String[] arrDate = tkv.key.split(" ");
-        tkv.key = arrDate[0] + " " + arrDate[1] + " " + arrDate[2] + " " + arrDate[5];
-       } catch(ParseException e) {
-        Log.d("TVData", e.toString());
-       }
+      //try { 
+        //tkv.key = new SimpleDateFormat("yyyy-MM-dd").parse(tkv.key).toString();
+        //String[] arrDate = tkv.key.split(" ");
+        //tkv.key = arrDate[0] + " " + arrDate[1] + " " + arrDate[2] + " " + arrDate[5];
+       //} catch(ParseException e) {
+        //Log.d("TVData", e.toString());
+       //}
       tkv.value = String.valueOf(formatter.format(cursor.getLong(cursor.getColumnIndex(field))));
       tkvs.add(tkv);
      } while(cursor.moveToNext());

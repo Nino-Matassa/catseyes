@@ -16,6 +16,7 @@ public class TVRegion extends TV {
     formatter = new DecimalFormat("#,###.##");
 
     populateTerra();
+   setHeader("Country", "Population");
    }
   private void populateTerra() {
     ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();
