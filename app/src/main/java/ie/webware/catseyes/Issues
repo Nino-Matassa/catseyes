@@ -1,5 +1,7 @@
 /*
- I'm pretty sure the data build and update if fine, 99%
- Need to implement the stack next the country and data tables are working goodo.
+ 100% certainty database is updating correctly...
+ Stack to be implemented for table classes.
+ Row header needs to be added to the table view
+ 
 */
 

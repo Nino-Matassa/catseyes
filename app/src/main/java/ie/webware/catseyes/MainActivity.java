@@ -16,7 +16,11 @@ public class MainActivity extends Activity {
     setContentView(R.layout.main);
     view = findViewById(R.id.mainTextID);
     buildDatabase();
-    new ELV(MainActivity.this);
+    try {
+      new TVTerra(MainActivity.this, 0);
+    } catch (Exception e) {
+     Log.d("MainActivity", e.toString());
+    }
    }
 
   @Override

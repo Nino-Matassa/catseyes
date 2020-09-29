@@ -30,6 +30,7 @@ public class TVData extends TV
     cursor.moveToFirst();
     do {
       TableKeyValue tkv = new TableKeyValue();
+      tkv.subClass = "TVData";
       tkv.key = cursor.getString(cursor.getColumnIndex("date"));
       try { 
         tkv.key = new SimpleDateFormat("yyyy-MM-dd").parse(tkv.key).toString();

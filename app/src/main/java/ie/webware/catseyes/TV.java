@@ -45,7 +45,13 @@ class TV
          public void onClick(View p1) {
            try {
              Double.parseDouble(tkv.value.replace(",", ""));
-             new TVData(context, tkv.countryId, tkv.field);
+             if(tkv.subClass.equals("TVTerra")) {
+               new TVRegion(context, tkv.tableId);
+             } else if(tkv.subClass.equals("TVRegion")) {
+               new TVCountry(context, tkv.tableId);
+              } else if(tkv.subClass.equals("TVCountry")) {
+               new TVData(context, tkv.tableId, tkv.field); 
+             }
             } catch(Exception e) {}
           }
         });
