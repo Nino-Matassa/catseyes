@@ -17,6 +17,7 @@ class TV
  {
   private Context context = null;
   private TableLayout tableLayout = null;
+  private TableLayout tableLayoutHeader = null;
   private long id = 0;
   SQLiteDatabase db = null;
 
@@ -26,6 +27,7 @@ class TV
     db = Database.getInstance(context);
     ((Activity)context).setContentView(R.layout.table_layout);
     tableLayout = (TableLayout) ((Activity)context).findViewById(R.id.layoutTable);
+    tableLayoutHeader = (TableLayout)((Activity)context).findViewById(R.id.layoutTableHeader);
    }
 
   public ArrayList<TableRow> getTableRows(ArrayList<TableKeyValue> tkvs) {
@@ -40,11 +42,26 @@ class TV
       TextView textViewKey = new TextView(context);
       textViewKey.setTextSize(18);
       TextView textViewValue = new TextView(context);
+      textViewKey.setOnClickListener(new OnClickListener() {
+         @Override
+         public void onClick(View p1) {
+           try {
+             //Double.parseDouble(tkv.value.replace(",", ""));
+             if(tkv.subClass.equals("TVTerra")) {
+               new TVRegion(context, tkv.tableId);
+              } else if(tkv.subClass.equals("TVRegion")) {
+               new TVCountry(context, tkv.tableId);
+              } else if(tkv.subClass.equals("TVCountry")) {
+               new TVData(context, tkv.tableId, tkv.field); 
+              }
+            } catch(Exception e) {}
+          }
+        });
       textViewValue.setOnClickListener(new OnClickListener() {
          @Override
          public void onClick(View p1) {
            try {
-             Double.parseDouble(tkv.value.replace(",", ""));
+             //Double.parseDouble(tkv.value.replace(",", ""));
              if(tkv.subClass.equals("TVTerra")) {
                new TVRegion(context, tkv.tableId);
              } else if(tkv.subClass.equals("TVRegion")) {
@@ -60,8 +77,8 @@ class TV
       textViewValue.setLayoutParams(cellParams);
       textViewKey.setText(tkv.key);
       textViewValue.setText(tkv.value);
-      textViewKey.setTypeface(Typeface.MONOSPACE);
-      textViewValue.setTypeface(Typeface.MONOSPACE);
+      //textViewKey.setTypeface(Typeface.MONOSPACE);
+      //textViewValue.setTypeface(Typeface.MONOSPACE);
       tableRow.addView(textViewKey);
       tableRow.addView(textViewValue);
       tableRows.add(tableRow);

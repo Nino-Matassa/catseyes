@@ -26,7 +26,8 @@ public class MainActivity extends Activity {
   @Override
   public void onBackPressed() {
     // Simulate object stack
-    new ELV(MainActivity.this);
+    //new ELV(MainActivity.this);
+    new TVTerra(MainActivity.this, 0);
     // TODO: Implement this method
     //super.onBackPressed(); // if no objects on stack exit app
    }
