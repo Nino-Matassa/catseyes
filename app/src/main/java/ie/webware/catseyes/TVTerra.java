@@ -6,7 +6,8 @@ import java.util.*;
 import android.database.*;
 import android.util.*;
 
-public class TVTerra extends TV {
+public class TVTerra extends TV
+ {
   Context context = null;
   long id = 0;
   DecimalFormat formatter = null;
@@ -18,7 +19,8 @@ public class TVTerra extends TV {
     formatter = new DecimalFormat("#,###.##");
 
     populateTerra();
-   setHeader("Region", "Population");
+    setHeader("Region", "Population");
+    stackRegister("TVTerra", context, id);
    }
 
   private void populateTerra() {

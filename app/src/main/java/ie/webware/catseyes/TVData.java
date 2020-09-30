@@ -9,42 +9,59 @@ import java.util.*;
 public class TVData extends TV
  {
   Context context = null;
-  long id = 0;
+  long idData = 0;
   String field = null;
   DecimalFormat formatter = null;
 
-  public TVData(Context _context, long _id, String _field) {
-    super(_context, _id);
+  public TVData(Context _context, long _idData, String _field) {
+    super(_context, _idData);
     context = _context;
-    id = _id;
+    idData = _idData;
     field = _field;
     formatter = new DecimalFormat("#,###.##");
 
     populateTableData();
     String fieldDescription = null;
-    if(field.equals("new_cases"))
-     fieldDescription = "New Cases";
-	 else
-	  fieldDescription = field;
+    switch(field) {
+      case "new_cases":
+       fieldDescription = "New Cases";
+       break;
+      case "new_deaths":
+       fieldDescription = "New Deaths";
+       break;
+      case "total_cases":
+       fieldDescription = "Total Cases";
+       break;
+      case "total_deaths":
+       fieldDescription = "Total Deaths";
+       break;
+      case "total_cases_per_million":
+       fieldDescription = "Cases/Million";
+       break;
+      case "total_deaths_per_million":
+       fieldDescription = "Deaths/Million";
+       break;
+      case "new_cases_per_million":
+       fieldDescription = "Total Cases/Million";
+       break;
+      case "new_deaths_per_million":
+       fieldDescription = "Total Deaths/Million";
+       break;
+      default:
+     }
     setHeader("Recent History Of...", fieldDescription);
+    //stackRegister("TVData", context, idData);
    }
 
   private void populateTableData() {
     ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();
-    String sql = "select date, $ from data where fk_country = # order by date desc".replace("$", field).replace("#", String.valueOf(id));
+    String sql = "select date, $ from data where fk_country = # order by date desc".replace("$", field).replace("#", String.valueOf(idData));
     Cursor cursor = db.rawQuery(sql, null);
     cursor.moveToFirst();
     do {
       TableKeyValue tkv = new TableKeyValue();
       tkv.subClass = "TVData";
       tkv.key = cursor.getString(cursor.getColumnIndex("date"));
-      //try { 
-        //tkv.key = new SimpleDateFormat("yyyy-MM-dd").parse(tkv.key).toString();
-        //String[] arrDate = tkv.key.split(" ");
-        //tkv.key = arrDate[0] + " " + arrDate[1] + " " + arrDate[2] + " " + arrDate[5];
-       //} catch(ParseException e) {
-        //Log.d("TVData", e.toString());
-       //}
       tkv.value = String.valueOf(formatter.format(cursor.getLong(cursor.getColumnIndex(field))));
       tkvs.add(tkv);
      } while(cursor.moveToNext());

@@ -21,7 +21,7 @@ class TV
   private long id = 0;
   SQLiteDatabase db = null;
 
-  public TV(Context _context, long _id) {
+  protected TV(Context _context, long _id) {
     context = _context;
     id = _id;
     db = Database.getInstance(context);
@@ -113,5 +113,10 @@ class TV
     for(TableRow tableRow: tableRows) {
       tableLayout.addView(tableRow);
      }
+   }
+   
+   protected void stackRegister(String _TV, Context _context, long _id) {
+    //MainActivity.stack.addElement(new TVStackInfo(_TV, _context, _id));
+     MainActivity.stack.push(new TVStackInfo(_TV, _context, _id));
    }
  }
