@@ -50,7 +50,7 @@ public class TVData extends TV
       default:
      }
     setHeader("Recent History Of...", fieldDescription);
-    //stackRegister("TVData", context, idData);
+    registerOnStack("TVData", context, idData);
    }
 
   private void populateTableData() {

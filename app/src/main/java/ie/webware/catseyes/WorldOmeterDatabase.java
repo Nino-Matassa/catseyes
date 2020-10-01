@@ -268,18 +268,18 @@ public class WorldOmeterDatabase
       return false;
      }
    }
-  public boolean inCountryCodeList(String line) {
-    if(line.matches("[A-Z][A-Z][A-Z]: \\{")) {
-      String[] array = line.split("[:]");
-      String countryCode = array[0].trim();
-      List<String> lstCC = Arrays.asList(Constants.lstCountry);
-      if(lstCC.contains(countryCode))
-       return true;
-      else
-       return false;
-     }
-    return false;
-   }
+//  public boolean inCountryCodeList(String line) {
+//    if(line.matches("[A-Z][A-Z][A-Z]: \\{")) {
+//      String[] array = line.split("[:]");
+//      String countryCode = array[0].trim();
+//      List<String> lstCC = Arrays.asList(Constants.lstCountry);
+//      if(lstCC.contains(countryCode))
+//       return true;
+//      else
+//       return false;
+//     }
+//    return false;
+//   }
   private boolean addColumnIfNotExists(String table, ArrayList<String> colList, ArrayList<String> colData) {
     for(int i = 0; i < colList.size(); i++) {
       boolean isDouble = false;

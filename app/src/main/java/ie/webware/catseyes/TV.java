@@ -46,8 +46,10 @@ class TV
          @Override
          public void onClick(View p1) {
            try {
-             //Double.parseDouble(tkv.value.replace(",", ""));
+             Double.parseDouble(tkv.value.replace(",", ""));
              if(tkv.subClass.equals("TVTerra")) {
+               new TVContinents(context, tkv.tableId);
+              } else if(tkv.subClass.equals("TVContinents")) {
                new TVRegion(context, tkv.tableId);
               } else if(tkv.subClass.equals("TVRegion")) {
                new TVCountry(context, tkv.tableId);
@@ -61,14 +63,16 @@ class TV
          @Override
          public void onClick(View p1) {
            try {
-             //Double.parseDouble(tkv.value.replace(",", ""));
+             Double.parseDouble(tkv.value.replace(",", ""));
              if(tkv.subClass.equals("TVTerra")) {
+               new TVContinents(context, tkv.tableId);
+              } else if(tkv.subClass.equals("TVContinents")) {
                new TVRegion(context, tkv.tableId);
-             } else if(tkv.subClass.equals("TVRegion")) {
+              } else if(tkv.subClass.equals("TVRegion")) {
                new TVCountry(context, tkv.tableId);
               } else if(tkv.subClass.equals("TVCountry")) {
                new TVData(context, tkv.tableId, tkv.field); 
-             }
+              }
             } catch(Exception e) {}
           }
         });
@@ -86,7 +90,7 @@ class TV
 
     return tableRows;
    }
-   
+
   protected void setHeader(String keyDescription, String valueDescription) {
     TableRow tableRow = new TableRow(context);
     LinearLayout.LayoutParams tableRowParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -114,9 +118,8 @@ class TV
       tableLayout.addView(tableRow);
      }
    }
-   
-   protected void stackRegister(String _TV, Context _context, long _id) {
-    //MainActivity.stack.addElement(new TVStackInfo(_TV, _context, _id));
-     MainActivity.stack.push(new TVStackInfo(_TV, _context, _id));
+
+  protected void registerOnStack(String _TV, Context _context, long _id) {
+    MainActivity.stack.push(new TVStackInfo(_TV, _context, _id));
    }
  }

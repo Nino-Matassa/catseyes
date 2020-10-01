@@ -17,7 +17,7 @@ public class TVRegion extends TV {
 
     populateTerra();
    setHeader("Country", "Population");
-   stackRegister("TVRegion", context, regionId);
+   registerOnStack("TVRegion", context, regionId);
    }
   private void populateTerra() {
     ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();

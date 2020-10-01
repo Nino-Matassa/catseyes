@@ -20,7 +20,7 @@ public class TVCountry extends TV
     
     populateTableCountry();
    setHeader("Country", "Details");
-   stackRegister("TVCountry", context, idCountry);
+   registerOnStack("TVCountry", context, idCountry);
    }
    
   public void populateTableCountry() {
