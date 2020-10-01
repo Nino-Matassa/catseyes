@@ -28,6 +28,7 @@ class TV
     ((Activity)context).setContentView(R.layout.table_layout);
     tableLayout = (TableLayout) ((Activity)context).findViewById(R.id.layoutTable);
     tableLayoutHeader = (TableLayout)((Activity)context).findViewById(R.id.layoutTableHeader);
+    Toast.makeText(context, "Generating Table", Toast.LENGTH_SHORT).show();
    }
 
   protected ArrayList<TableRow> getTableRows(ArrayList<TableKeyValue> tkvs) {
@@ -81,8 +82,8 @@ class TV
       textViewValue.setLayoutParams(cellParams);
       textViewKey.setText(tkv.key);
       textViewValue.setText(tkv.value);
-      //textViewKey.setTypeface(Typeface.MONOSPACE);
-      //textViewValue.setTypeface(Typeface.MONOSPACE);
+      textViewKey.setTypeface(Typeface.MONOSPACE);
+      textViewValue.setTypeface(Typeface.MONOSPACE);
       tableRow.addView(textViewKey);
       tableRow.addView(textViewValue);
       tableRows.add(tableRow);

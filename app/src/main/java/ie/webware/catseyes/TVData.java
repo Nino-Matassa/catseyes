@@ -49,7 +49,12 @@ public class TVData extends TV
        break;
       default:
      }
-    setHeader("Recent History Of...", fieldDescription);
+     
+    String sql = "select location from country where id = #".replace("#", String.valueOf(idData));
+    Cursor cursor = db.rawQuery(sql, null);
+    cursor.moveToFirst();
+    String country = cursor.getString(cursor.getColumnIndex("location"));
+    setHeader(country, fieldDescription);
     registerOnStack("TVData", context, idData);
    }
 
