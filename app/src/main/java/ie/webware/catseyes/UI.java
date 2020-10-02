@@ -32,6 +32,7 @@ class UI
 
   protected ArrayList<TableRow> getTableRows(ArrayList<TableKeyValue> tkvs) {
     ArrayList<TableRow> tableRows = new ArrayList<TableRow>();
+    boolean bColourSwitch = true;
     for(final TableKeyValue tkv: tkvs) {
       TableRow tableRow = new TableRow(context);
       LinearLayout.LayoutParams tableRowParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -48,7 +49,11 @@ class UI
            try {
              Double.parseDouble(tkv.value.replace(",", ""));
              if(tkv.subClass.equals(Constants.UITerra)) {
-               new UIContinents(context, tkv.tableId);
+               if(tkv.key.equals("Population")) {
+                 new UIContinents(context, tkv.tableId);
+                } else {
+                  new UIData(context, tkv.tableId, tkv.field);
+                }
               } else if(tkv.subClass.equals(Constants.UIContinent)) {
                new UIRegion(context, tkv.tableId);
               } else if(tkv.subClass.equals(Constants.UIRegion)) {
@@ -65,7 +70,11 @@ class UI
            try {
              Double.parseDouble(tkv.value.replace(",", ""));
              if(tkv.subClass.equals(Constants.UITerra)) {
-               new UIContinents(context, tkv.tableId);
+               if(tkv.key.equals("Population")) {
+                 new UIContinents(context, tkv.tableId);
+                } else {
+                  new UIData(context, tkv.tableId, tkv.field);
+                }
               } else if(tkv.subClass.equals(Constants.UIContinent)) {
                new UIRegion(context, tkv.tableId);
               } else if(tkv.subClass.equals(Constants.UIRegion)) {
@@ -83,6 +92,14 @@ class UI
       textViewValue.setText(tkv.value);
       tableRow.addView(textViewKey);
       tableRow.addView(textViewValue);
+      if(bColourSwitch) {
+        bColourSwitch = !bColourSwitch; 
+        tableRow.setBackgroundColor(Color.WHITE);
+       } else {
+        bColourSwitch = !bColourSwitch;
+        tableRow.setBackgroundColor(Color.TRANSPARENT);
+       }
+
       tableRows.add(tableRow);
      }
 

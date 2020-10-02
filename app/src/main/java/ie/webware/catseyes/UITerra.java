@@ -70,7 +70,7 @@ public class UITerra extends UI
     tkv.value = String.valueOf(formatter.format(sumNewCases));
     tkvs.add(tkv);
     tkv.tableId = 0L;
-    tkv.field = "total_cases";
+    tkv.field = "new_cases";
     tkv.subClass = Constants.UITerra;
     tkv = new TableKeyValue();
     
@@ -78,7 +78,7 @@ public class UITerra extends UI
     tkv.value = String.valueOf(formatter.format(sumNewDeaths));
     tkvs.add(tkv);
     tkv.tableId = 0L;
-    tkv.field = "total_deaths";
+    tkv.field = "new_deaths";
     tkv.subClass = Constants.UITerra;
     tkv = new TableKeyValue();
 
@@ -110,6 +110,14 @@ public class UITerra extends UI
     tkvs.add(tkv);
     tkv.tableId = 0l;
     tkv.field = "total_tests_per_million";
+    tkv.subClass = Constants.UITerra;
+    tkv = new TableKeyValue();
+    
+    tkv.key = "Total Tests";
+    tkv.value = String.valueOf(formatter.format(sumNewTests));
+    tkvs.add(tkv);
+    tkv.tableId = 0l;
+    tkv.field = "new_tests";
     tkv.subClass = Constants.UITerra;
     tkv = new TableKeyValue();
     

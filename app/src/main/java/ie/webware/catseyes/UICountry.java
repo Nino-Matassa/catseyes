@@ -25,6 +25,7 @@ public class UICountry extends UI
   Double deathPerMillion = 0.0;
   Double newCasePerMillion = 0.0;
   Double newDeathPerMillion = 0.0;
+  Long sumNewTests = 0L;
   
   public UICountry(Context _context, long _idCountry) {
     super(_context, _idCountry);
@@ -47,7 +48,9 @@ public class UICountry extends UI
     country = cursor.getString(cursor.getColumnIndex("location"));
     population = cursor.getLong(cursor.getColumnIndex("population"));
     
-    sql = "select new_cases, new_deaths, sum(new_cases) as total_cases, sum(new_deaths) as total_deaths, date, total_cases_per_million, new_cases_per_million, total_deaths_per_million, new_deaths_per_million " + 
+    sql = "select new_cases, new_deaths, sum(new_cases) as total_cases, sum(new_deaths) as total_deaths, " +
+    "date, total_cases_per_million, new_cases_per_million, total_deaths_per_million, new_deaths_per_million, " +
+    "sum(new_tests) as total_tests " +
     "from data where fk_country = # order by total_cases desc limit 1".replace("#", String.valueOf(idCountry));
     cursor = db.rawQuery(sql, null);
     cursor.moveToFirst();
@@ -68,6 +71,7 @@ public class UICountry extends UI
     deathPerMillion = cursor.getDouble(cursor.getColumnIndex("total_deaths_per_million"));
     newCasePerMillion = cursor.getDouble(cursor.getColumnIndex("new_cases_per_million"));
     newDeathPerMillion = cursor.getDouble(cursor.getColumnIndex("new_deaths_per_million"));
+    sumNewTests = cursor.getLong(cursor.getColumnIndex("total_tests"));
     
     TableKeyValue tkv = new TableKeyValue();
     tkv.key = "Country Code";
@@ -171,6 +175,14 @@ public class UICountry extends UI
     tkvs.add(tkv);
     tkv.tableId = idCountry;
     tkv.field = "new_deaths_per_million";
+    tkv.subClass = Constants.UICountry;
+    tkv = new TableKeyValue();
+    
+    tkv.key = "Total Tests";
+    tkv.value = String.valueOf(formatter.format(sumNewTests));
+    tkvs.add(tkv);
+    tkv.tableId = idCountry;
+    tkv.field = "total_tests";
     tkv.subClass = Constants.UICountry;
     tkv = new TableKeyValue();
     
