@@ -4,12 +4,12 @@ import java.text.*;
 import java.util.*;
 import android.database.*;
 
-public class TVRegion extends TV {
+public class UIRegion extends UI {
   Context context = null;
   long regionId = 0;
   DecimalFormat formatter = null;
 
-  public TVRegion(Context _context, long _regionId) {
+  public UIRegion(Context _context, long _regionId) {
     super(_context, _regionId);
     context = _context;
     regionId = _regionId;

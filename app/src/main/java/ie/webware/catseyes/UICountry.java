@@ -6,13 +6,13 @@ import android.util.*;
 import java.text.*;
 import java.util.*;
 
-public class TVCountry extends TV
+public class UICountry extends UI
  {
   Context context = null;
   long idCountry = 0;
   DecimalFormat formatter = null;
 
-  public TVCountry(Context _context, long _idCountry) {
+  public UICountry(Context _context, long _idCountry) {
     super(_context, _idCountry);
     context = _context;
     idCountry = _idCountry;

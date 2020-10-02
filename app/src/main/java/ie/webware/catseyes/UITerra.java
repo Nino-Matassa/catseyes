@@ -7,7 +7,7 @@ import java.util.*;
 import android.util.*;
 import java.util.function.*;
 
-public class TVTerra extends TV
+public class UITerra extends UI
  {
   Context context = null;
   long id = 0;
@@ -15,7 +15,7 @@ public class TVTerra extends TV
   String headerKey = null;
   String headerValue = null;
   
-  public TVTerra(Context _context, long _id) {
+  public UITerra(Context _context, long _id) {
     super(_context, _id);
     context = _context;
     id = _id;

@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="app_name">catseyes</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">SARS-COV-2 Statistical Analysis</string>
 </resources>

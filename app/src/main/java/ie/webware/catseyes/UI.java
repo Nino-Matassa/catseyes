@@ -13,7 +13,7 @@ import android.view.*;
 import android.text.style.*;
 import android.graphics.*;
 
-class TV
+class UI
  {
   private Context context = null;
   private TableLayout tableLayout = null;
@@ -21,14 +21,13 @@ class TV
   private long id = 0;
   SQLiteDatabase db = null;
 
-  protected TV(Context _context, long _id) {
+  protected UI(Context _context, long _id) {
     context = _context;
     id = _id;
     db = Database.getInstance(context);
     ((Activity)context).setContentView(R.layout.table_layout);
     tableLayout = (TableLayout) ((Activity)context).findViewById(R.id.layoutTable);
     tableLayoutHeader = (TableLayout)((Activity)context).findViewById(R.id.layoutTableHeader);
-    Toast.makeText(context, "Generating Table", Toast.LENGTH_SHORT).show();
    }
 
   protected ArrayList<TableRow> getTableRows(ArrayList<TableKeyValue> tkvs) {
@@ -49,13 +48,13 @@ class TV
            try {
              Double.parseDouble(tkv.value.replace(",", ""));
              if(tkv.subClass.equals("TVTerra")) {
-               new TVContinents(context, tkv.tableId);
+               new UIContinents(context, tkv.tableId);
               } else if(tkv.subClass.equals("TVContinents")) {
-               new TVRegion(context, tkv.tableId);
+               new UIRegion(context, tkv.tableId);
               } else if(tkv.subClass.equals("TVRegion")) {
-               new TVCountry(context, tkv.tableId);
+               new UICountry(context, tkv.tableId);
               } else if(tkv.subClass.equals("TVCountry")) {
-               new TVData(context, tkv.tableId, tkv.field); 
+               new UIData(context, tkv.tableId, tkv.field); 
               }
             } catch(Exception e) {}
           }
@@ -66,13 +65,13 @@ class TV
            try {
              Double.parseDouble(tkv.value.replace(",", ""));
              if(tkv.subClass.equals("TVTerra")) {
-               new TVContinents(context, tkv.tableId);
+               new UIContinents(context, tkv.tableId);
               } else if(tkv.subClass.equals("TVContinents")) {
-               new TVRegion(context, tkv.tableId);
+               new UIRegion(context, tkv.tableId);
               } else if(tkv.subClass.equals("TVRegion")) {
-               new TVCountry(context, tkv.tableId);
+               new UICountry(context, tkv.tableId);
               } else if(tkv.subClass.equals("TVCountry")) {
-               new TVData(context, tkv.tableId, tkv.field); 
+               new UIData(context, tkv.tableId, tkv.field); 
               }
             } catch(Exception e) {}
           }
@@ -82,8 +81,8 @@ class TV
       textViewValue.setLayoutParams(cellParams);
       textViewKey.setText(tkv.key);
       textViewValue.setText(tkv.value);
-      textViewKey.setTypeface(Typeface.MONOSPACE);
-      textViewValue.setTypeface(Typeface.MONOSPACE);
+      //textViewKey.setTypeface(Typeface.MONOSPACE);
+      //textViewValue.setTypeface(Typeface.MONOSPACE);
       tableRow.addView(textViewKey);
       tableRow.addView(textViewValue);
       tableRows.add(tableRow);
@@ -121,6 +120,6 @@ class TV
    }
 
   protected void registerOnStack(String _TV, Context _context, long _id) {
-    MainActivity.stack.push(new TVStackInfo(_TV, _context, _id));
+    MainActivity.stack.push(new UIStackInfo(_TV, _context, _id));
    }
  }

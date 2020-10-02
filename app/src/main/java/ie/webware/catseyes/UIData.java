@@ -6,14 +6,14 @@ import android.util.*;
 import java.text.*;
 import java.util.*;
 
-public class TVData extends TV
+public class UIData extends UI
  {
   Context context = null;
   long idData = 0;
   String field = null;
   DecimalFormat formatter = null;
 
-  public TVData(Context _context, long _idData, String _field) {
+  public UIData(Context _context, long _idData, String _field) {
     super(_context, _idData);
     context = _context;
     idData = _idData;

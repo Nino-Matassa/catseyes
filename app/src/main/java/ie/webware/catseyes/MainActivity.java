@@ -9,7 +9,7 @@ import java.util.*;
 
 public class MainActivity extends Activity
  {
-  static Stack<TVStackInfo> stack = new Stack<TVStackInfo>();
+  static Stack<UIStackInfo> stack = new Stack<UIStackInfo>();
   TextView view = null;
 
   @Override
@@ -17,9 +17,10 @@ public class MainActivity extends Activity
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main);
     view = findViewById(R.id.mainTextID);
+    view.setText("SARS-COV-2 Statistical Analysis");
     buildDatabase();
     try {
-      new TVTerra(MainActivity.this, 0);
+      new UITerra(MainActivity.this, 0);
      } catch(Exception e) {
       Log.d("MainActivity", e.toString());
      }
@@ -33,19 +34,19 @@ public class MainActivity extends Activity
       super.onBackPressed();
      } else {
       stack.pop();
-      TVStackInfo info = stack.pop();
+      UIStackInfo info = stack.pop();
       switch(info.TV) {
         case "TVTerra":
-         new TVTerra(info.context, info.id);
+         new UITerra(info.context, info.id);
          break;
         case "TVContinents":
-         new TVContinents(info.context, info.id);
+         new UIContinents(info.context, info.id);
          break;
         case "TVRegion":
-         new TVRegion(info.context, info.id);
+         new UIRegion(info.context, info.id);
          break;
         case "TVCountry":
-         new TVCountry(info.context, info.id);
+         new UICountry(info.context, info.id);
          break;
         case "TVData":
          // Error
