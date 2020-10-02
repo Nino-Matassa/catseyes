@@ -20,7 +20,7 @@ public class UIContinents extends UI
 
     populateContinents();
     setHeader("Region", "Population");
-    registerOnStack("TVContinents", context, id);
+    registerOnStack(Constants.UIContinent, context, id);
    }
 
   private void populateContinents() {
@@ -38,7 +38,7 @@ public class UIContinents extends UI
       tkv.value = String.valueOf(formatter.format(cPopulation.getLong(cPopulation.getColumnIndex("population"))));
       tkv.tableId = currentRegionId;
       tkv.field = tkv.key;
-      tkv.subClass = "TVContinents";
+      tkv.subClass = Constants.UIContinent;
       tkvs.add(tkv);
       tkv = new TableKeyValue();
      } while(cRegion.moveToNext());

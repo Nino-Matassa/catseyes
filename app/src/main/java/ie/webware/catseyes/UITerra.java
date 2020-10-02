@@ -29,7 +29,7 @@ public class UITerra extends UI
 
     populateTerra();
     setHeader(headerKey, headerValue);
-    registerOnStack("TVTerra", context, id);
+    registerOnStack(Constants.UITerra, context, id);
    }
 
   private void populateTerra() {
@@ -39,7 +39,7 @@ public class UITerra extends UI
     cursor.moveToFirst();
     sumPopulation = cursor.getLong(cursor.getColumnIndex("population"));
     TableKeyValue tkv = new TableKeyValue();
-    tkv.key = "Population"; tkv.value = String.valueOf(formatter.format(sumPopulation)); tkvs.add(tkv); tkv.tableId = 0L; tkv.field = "population"; tkv.subClass = "TVTerra"; tkv = new TableKeyValue();
+    tkv.key = "Population"; tkv.value = String.valueOf(formatter.format(sumPopulation)); tkvs.add(tkv); tkv.tableId = 0L; tkv.field = "population"; tkv.subClass = Constants.UITerra; tkv = new TableKeyValue();
 
     sql = "select sum(new_cases) as total_cases, sum(new_deaths) as total_deaths, sum(new_tests) as total_tests, date from data order by date desc";
     cursor = db.rawQuery(sql, null);
@@ -50,7 +50,7 @@ public class UITerra extends UI
       String[] arrDate = lastUpdated.split(" ");
       lastUpdated = arrDate[0] + " " + arrDate[1] + " " + arrDate[2] + " " + arrDate[5];
      } catch(ParseException e) {
-      Log.d("UITerra", e.toString());
+       Log.d(Constants.UITerra, e.toString());
      }
     sumNewCases = cursor.getLong(cursor.getColumnIndex("total_cases"));
     sumNewDeaths = cursor.getLong(cursor.getColumnIndex("total_deaths"));
@@ -61,7 +61,7 @@ public class UITerra extends UI
     tkvs.add(tkv); 
     tkv.tableId = 0l; 
     tkv.field = "date"; 
-    tkv.subClass = "TVTerra"; 
+    tkv.subClass = Constants.UITerra; 
     headerKey = "Terra"; 
     headerValue = tkv.value; 
     tkv = new TableKeyValue();
@@ -71,7 +71,7 @@ public class UITerra extends UI
     tkvs.add(tkv);
     tkv.tableId = 0L;
     tkv.field = "total_cases";
-    tkv.subClass = "TVTerra";
+    tkv.subClass = Constants.UITerra;
     tkv = new TableKeyValue();
     
     tkv.key = "Total Deaths";
@@ -79,7 +79,7 @@ public class UITerra extends UI
     tkvs.add(tkv);
     tkv.tableId = 0L;
     tkv.field = "total_deaths";
-    tkv.subClass = "TVTerra";
+    tkv.subClass = Constants.UITerra;
     tkv = new TableKeyValue();
 
     Double population = sumPopulation.doubleValue();
@@ -94,7 +94,7 @@ public class UITerra extends UI
     tkvs.add(tkv);
     tkv.tableId = 0l;
     tkv.field = "total_cases_per_million";
-    tkv.subClass = "TVTerra";
+    tkv.subClass = Constants.UITerra;
     tkv = new TableKeyValue();
     
     tkv.key = "Death/Million";
@@ -102,7 +102,7 @@ public class UITerra extends UI
     tkvs.add(tkv);
     tkv.tableId = 0l;
     tkv.field = "total_deaths_per_million";
-    tkv.subClass = "TVTerra";
+    tkv.subClass = Constants.UITerra;
     tkv = new TableKeyValue();
     
     tkv.key = "Test/Million";
@@ -110,7 +110,7 @@ public class UITerra extends UI
     tkvs.add(tkv);
     tkv.tableId = 0l;
     tkv.field = "total_tests_per_million";
-    tkv.subClass = "TVTerra";
+    tkv.subClass = Constants.UITerra;
     tkv = new TableKeyValue();
     
     setTableLayout(getTableRows(tkvs));

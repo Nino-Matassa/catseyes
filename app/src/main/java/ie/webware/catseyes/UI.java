@@ -47,13 +47,13 @@ class UI
          public void onClick(View p1) {
            try {
              Double.parseDouble(tkv.value.replace(",", ""));
-             if(tkv.subClass.equals("TVTerra")) {
+             if(tkv.subClass.equals(Constants.UITerra)) {
                new UIContinents(context, tkv.tableId);
-              } else if(tkv.subClass.equals("TVContinents")) {
+              } else if(tkv.subClass.equals(Constants.UIContinent)) {
                new UIRegion(context, tkv.tableId);
-              } else if(tkv.subClass.equals("TVRegion")) {
+              } else if(tkv.subClass.equals(Constants.UIRegion)) {
                new UICountry(context, tkv.tableId);
-              } else if(tkv.subClass.equals("TVCountry")) {
+              } else if(tkv.subClass.equals(Constants.UICountry)) {
                new UIData(context, tkv.tableId, tkv.field); 
               }
             } catch(Exception e) {}
@@ -64,13 +64,13 @@ class UI
          public void onClick(View p1) {
            try {
              Double.parseDouble(tkv.value.replace(",", ""));
-             if(tkv.subClass.equals("TVTerra")) {
+             if(tkv.subClass.equals(Constants.UITerra)) {
                new UIContinents(context, tkv.tableId);
-              } else if(tkv.subClass.equals("TVContinents")) {
+              } else if(tkv.subClass.equals(Constants.UIContinent)) {
                new UIRegion(context, tkv.tableId);
-              } else if(tkv.subClass.equals("TVRegion")) {
+              } else if(tkv.subClass.equals(Constants.UIRegion)) {
                new UICountry(context, tkv.tableId);
-              } else if(tkv.subClass.equals("TVCountry")) {
+              } else if(tkv.subClass.equals(Constants.UICountry)) {
                new UIData(context, tkv.tableId, tkv.field); 
               }
             } catch(Exception e) {}
@@ -81,8 +81,6 @@ class UI
       textViewValue.setLayoutParams(cellParams);
       textViewKey.setText(tkv.key);
       textViewValue.setText(tkv.value);
-      //textViewKey.setTypeface(Typeface.MONOSPACE);
-      //textViewValue.setTypeface(Typeface.MONOSPACE);
       tableRow.addView(textViewKey);
       tableRow.addView(textViewValue);
       tableRows.add(tableRow);

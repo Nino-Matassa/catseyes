@@ -36,19 +36,19 @@ public class MainActivity extends Activity
       stack.pop();
       UIStackInfo info = stack.pop();
       switch(info.UI) {
-        case "TVTerra":
+         case Constants.UITerra:
          new UITerra(info.context, info.id);
          break;
-        case "TVContinents":
+        case Constants.UIContinent:
          new UIContinents(info.context, info.id);
          break;
-        case "TVRegion":
+        case Constants.UIRegion:
          new UIRegion(info.context, info.id);
          break;
-        case "TVCountry":
+        case Constants.UICountry:
          new UICountry(info.context, info.id);
          break;
-        case "TVData":
+        case Constants.UIData:
          // Error
          break;
         default:

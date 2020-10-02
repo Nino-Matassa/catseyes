@@ -16,6 +16,11 @@ public final class Constants
   public static final String colJSON = "JSON";
   public static final String colCountryCode = "COUNTRY_CODE";
   public static final String colContinent = "CONTINENT";
+  public static final String UITerra = "UITerra";
+  public static final String UIContinent = "UIContinent";
+  public static final String UIRegion = "UIRegion";
+  public static final String UICountry = "UICountry";
+  public static final String UIData = "UIData";
   public static final int oneMillion = 1000000;
-  }
+ }
 

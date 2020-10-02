@@ -55,7 +55,7 @@ public class UIData extends UI
     cursor.moveToFirst();
     String country = cursor.getString(cursor.getColumnIndex("location"));
     setHeader(country, fieldDescription);
-    registerOnStack("TVData", context, idData);
+    registerOnStack(Constants.UIData, context, idData);
    }
 
   private void populateTableData() {
@@ -65,7 +65,7 @@ public class UIData extends UI
     cursor.moveToFirst();
     do {
       TableKeyValue tkv = new TableKeyValue();
-      tkv.subClass = "TVData";
+      tkv.subClass = Constants.UIData;
       tkv.key = cursor.getString(cursor.getColumnIndex("date"));
       tkv.value = String.valueOf(formatter.format(cursor.getLong(cursor.getColumnIndex(field))));
       tkvs.add(tkv);

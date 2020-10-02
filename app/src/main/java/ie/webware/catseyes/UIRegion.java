@@ -17,7 +17,7 @@ public class UIRegion extends UI {
 
     populateTerra();
    setHeader("Country", "Population");
-   registerOnStack("TVRegion", context, regionId);
+   registerOnStack(Constants.UIRegion, context, regionId);
    }
   private void populateTerra() {
     ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();
@@ -34,7 +34,7 @@ public class UIRegion extends UI {
       tkv.value = String.valueOf(formatter.format(cPopulation.getLong(cPopulation.getColumnIndex("population"))));
       tkv.tableId = currentCountryId;
       tkv.field = tkv.key;
-      tkv.subClass = "TVRegion";
+      tkv.subClass = Constants.UIRegion;
       tkvs.add(tkv);
       tkv = new TableKeyValue();
      } while(cCountry.moveToNext());
