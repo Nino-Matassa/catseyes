@@ -14,7 +14,13 @@ public class UITerra extends UI
   DecimalFormat formatter = null;
   String headerKey = null;
   String headerValue = null;
-  
+  // DB values
+  String lastUpdated = null;
+  Long sumNewCases = 0L;
+  Long sumNewDeaths = 0L;
+  Long sumPopulation = 0L;
+  Long sumNewTests = 0L;
+
   public UITerra(Context _context, long _id) {
     super(_context, _id);
     context = _context;
@@ -31,32 +37,82 @@ public class UITerra extends UI
     String sql = "select sum(population) as population from country";
     Cursor cursor = db.rawQuery(sql, null);
     cursor.moveToFirst();
-    TableKeyValue tkv = new TableKeyValue(); tkv.key = "Population"; tkv.value = String.valueOf(formatter.format(cursor.getLong(cursor.getColumnIndex("population")))); tkvs.add(tkv); tkv.tableId = 0L; tkv.field = "population"; tkv.subClass = "TVTerra"; tkv = new TableKeyValue();
+    sumPopulation = cursor.getLong(cursor.getColumnIndex("population"));
+    TableKeyValue tkv = new TableKeyValue();
+    tkv.key = "Population"; tkv.value = String.valueOf(formatter.format(sumPopulation)); tkvs.add(tkv); tkv.tableId = 0L; tkv.field = "population"; tkv.subClass = "TVTerra"; tkv = new TableKeyValue();
+
+    sql = "select sum(new_cases) as total_cases, sum(new_deaths) as total_deaths, sum(new_tests) as total_tests, date from data order by date desc";
+    cursor = db.rawQuery(sql, null);
+    cursor.moveToFirst();
+    lastUpdated = cursor.getString(cursor.getColumnIndex("date"));
+    try { 
+      lastUpdated = new SimpleDateFormat("yyyy-MM-dd").parse(lastUpdated).toString();
+      String[] arrDate = lastUpdated.split(" ");
+      lastUpdated = arrDate[0] + " " + arrDate[1] + " " + arrDate[2] + " " + arrDate[5];
+     } catch(ParseException e) {
+      Log.d("UITerra", e.toString());
+     }
+    sumNewCases = cursor.getLong(cursor.getColumnIndex("total_cases"));
+    sumNewDeaths = cursor.getLong(cursor.getColumnIndex("total_deaths"));
+    sumNewTests = cursor.getLong(cursor.getColumnIndex("total_tests"));
     
-    sql = "select sum(new_cases) as total_cases, sum(new_deaths) as total_deaths, date from data order by date desc";
-    cursor = db.rawQuery(sql, null);
-    cursor.moveToFirst();
-    tkv.key = "Last Updated"; tkv.value = cursor.getString(cursor.getColumnIndex("date")); try { tkv.value = new SimpleDateFormat("yyyy-MM-dd").parse(tkv.value).toString(); String[] arrDate = tkv.value.split(" "); tkv.value = arrDate[0] + " " + arrDate[1] + " " + arrDate[2] + " " + arrDate[5]; } catch(ParseException e) { Log.d("TVCountry", e.toString()); } finally { tkvs.add(tkv);} tkv.tableId = 0l; tkv.field = "date"; tkv.subClass = "TVTerra"; headerKey = "Terra"; headerValue = tkv.value; tkv = new TableKeyValue();
-    tkv.key = "Total Cases"; tkv.value = String.valueOf(formatter.format(cursor.getLong(cursor.getColumnIndex("total_cases")))); tkvs.add(tkv); tkv.tableId = 0L; tkv.field = "total_cases"; tkv.subClass = "TVTerra"; tkv = new TableKeyValue();
-    tkv.key = "Total Deaths"; tkv.value = String.valueOf(formatter.format(cursor.getLong(cursor.getColumnIndex("total_deaths")))); tkvs.add(tkv); tkv.tableId = 0L; tkv.field = "total_deaths"; tkv.subClass = "TVTerra"; tkv = new TableKeyValue();
+    tkv.key = "Last Updated";
+    tkv.value =  lastUpdated; 
+    tkvs.add(tkv); 
+    tkv.tableId = 0l; 
+    tkv.field = "date"; 
+    tkv.subClass = "TVTerra"; 
+    headerKey = "Terra"; 
+    headerValue = tkv.value; 
+    tkv = new TableKeyValue();
     
-    sql = "select sum(population) as population from country";
-    cursor = db.rawQuery(sql, null);
-    cursor.moveToFirst();
-    Double population = cursor.getDouble(cursor.getColumnIndex("population"));
-    sql = "select sum(new_cases) as total_cases from data";
-    cursor = db.rawQuery(sql, null);
-    cursor.moveToFirst();
-    Double totalCases = cursor.getDouble(cursor.getColumnIndex("total_cases"));
-    sql = "select sum(new_deaths) as total_deaths from data";
-    cursor = db.rawQuery(sql, null);
-    cursor.moveToFirst();
-    Double totalDeaths = cursor.getDouble(cursor.getColumnIndex("total_deaths"));
-    Double casePerMillion = (totalCases/population)*1000000;
-    Double deathPerMillion = (totalDeaths/population)*1000000;
-    tkv.key = "Case/Million"; tkv.value = String.valueOf(formatter.format(casePerMillion)); tkvs.add(tkv); tkv.tableId = 0l; tkv.field = "total_cases_per_million"; tkv.subClass = "TVTerra"; tkv = new TableKeyValue();
-    tkv.key = "Death/Million"; tkv.value = String.valueOf(formatter.format(deathPerMillion)); tkvs.add(tkv); tkv.tableId = 0l; tkv.field = "total_deaths_per_million"; tkv.subClass = "TVTerra"; tkv = new TableKeyValue();
+    tkv.key = "Total Cases";
+    tkv.value = String.valueOf(formatter.format(sumNewCases));
+    tkvs.add(tkv);
+    tkv.tableId = 0L;
+    tkv.field = "total_cases";
+    tkv.subClass = "TVTerra";
+    tkv = new TableKeyValue();
+    
+    tkv.key = "Total Deaths";
+    tkv.value = String.valueOf(formatter.format(sumNewDeaths));
+    tkvs.add(tkv);
+    tkv.tableId = 0L;
+    tkv.field = "total_deaths";
+    tkv.subClass = "TVTerra";
+    tkv = new TableKeyValue();
+
+    Double population = sumPopulation.doubleValue();
+    Double totalCases = sumNewCases.doubleValue();
+    Double totalDeaths = sumNewDeaths.doubleValue();
+    Double casePerMillion = totalCases / population * Constants.oneMillion;
+    Double deathPerMillion = totalDeaths / population * Constants.oneMillion;
+    Double testPerMillion = sumNewTests / population * Constants.oneMillion;
+
+    tkv.key = "Case/Million";
+    tkv.value = String.valueOf(formatter.format(casePerMillion));
+    tkvs.add(tkv);
+    tkv.tableId = 0l;
+    tkv.field = "total_cases_per_million";
+    tkv.subClass = "TVTerra";
+    tkv = new TableKeyValue();
+    
+    tkv.key = "Death/Million";
+    tkv.value = String.valueOf(formatter.format(deathPerMillion));
+    tkvs.add(tkv);
+    tkv.tableId = 0l;
+    tkv.field = "total_deaths_per_million";
+    tkv.subClass = "TVTerra";
+    tkv = new TableKeyValue();
+    
+    tkv.key = "Test/Million";
+    tkv.value = String.valueOf(formatter.format(testPerMillion));
+    tkvs.add(tkv);
+    tkv.tableId = 0l;
+    tkv.field = "total_tests_per_million";
+    tkv.subClass = "TVTerra";
+    tkv = new TableKeyValue();
+    
     setTableLayout(getTableRows(tkvs));
    }
-
  }

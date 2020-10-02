@@ -35,7 +35,7 @@ public class MainActivity extends Activity
      } else {
       stack.pop();
       UIStackInfo info = stack.pop();
-      switch(info.TV) {
+      switch(info.UI) {
         case "TVTerra":
          new UITerra(info.context, info.id);
          break;

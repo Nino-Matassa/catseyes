@@ -16,5 +16,6 @@ public final class Constants
   public static final String colJSON = "JSON";
   public static final String colCountryCode = "COUNTRY_CODE";
   public static final String colContinent = "CONTINENT";
+  public static final int oneMillion = 1000000;
   }
 
