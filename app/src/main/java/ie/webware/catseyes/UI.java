@@ -52,7 +52,7 @@ class UI
                if(tkv.key.equals("Population")) {
                  new UIContinents(context, tkv.tableId);
                 } else {
-                  new UIData(context, tkv.tableId, tkv.field);
+                  //new UIData(context, tkv.tableId, tkv.field);
                 }
               } else if(tkv.subClass.equals(Constants.UIContinent)) {
                new UIRegion(context, tkv.tableId);
@@ -73,7 +73,7 @@ class UI
                if(tkv.key.equals("Population")) {
                  new UIContinents(context, tkv.tableId);
                 } else {
-                  new UIData(context, tkv.tableId, tkv.field);
+                  //new UIData(context, tkv.tableId, tkv.field);
                 }
               } else if(tkv.subClass.equals(Constants.UIContinent)) {
                new UIRegion(context, tkv.tableId);
