@@ -49,10 +49,10 @@ class UI
            try {
              Double.parseDouble(tkv.value.replace(",", ""));
              if(tkv.subClass.equals(Constants.UITerra)) {
-               if(tkv.key.equals("Population")) {
+               if(tkv.key.equals(Constants.UITerraPopulation)) {
                  new UIContinents(context, tkv.tableId);
                 } else {
-                  //new UIData(context, tkv.tableId, tkv.field);
+                  new UITerraData(context, tkv.tableId, tkv.field);
                 }
               } else if(tkv.subClass.equals(Constants.UIContinent)) {
                new UIRegion(context, tkv.tableId);
@@ -70,10 +70,10 @@ class UI
            try {
              Double.parseDouble(tkv.value.replace(",", ""));
              if(tkv.subClass.equals(Constants.UITerra)) {
-               if(tkv.key.equals("Population")) {
+               if(tkv.key.equals(Constants.UITerraPopulation)) {
                  new UIContinents(context, tkv.tableId);
                 } else {
-                  //new UIData(context, tkv.tableId, tkv.field);
+                  new UITerraData(context, tkv.tableId, tkv.field);
                 }
               } else if(tkv.subClass.equals(Constants.UIContinent)) {
                new UIRegion(context, tkv.tableId);

@@ -21,6 +21,8 @@ public final class Constants
   public static final String UIRegion = "UIRegion";
   public static final String UICountry = "UICountry";
   public static final String UIData = "UIData";
+  public static final String UITerraData = "UITerraData";
+  public static final String UITerraPopulation = "Population";
   public static final int oneMillion = 1000000;
  }
 

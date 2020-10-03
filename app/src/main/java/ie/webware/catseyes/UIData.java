@@ -5,6 +5,7 @@ import android.database.*;
 import android.util.*;
 import java.text.*;
 import java.util.*;
+import android.widget.*;
 
 public class UIData extends UI
  {
@@ -20,7 +21,6 @@ public class UIData extends UI
     field = _field;
     formatter = new DecimalFormat("#,###.##");
 
-    populateTableData();
     String fieldDescription = null;
     switch(field) {
       case "new_cases":
@@ -49,11 +49,12 @@ public class UIData extends UI
        break;
       default:
      }
-     
     String sql = "select location from country where id = #".replace("#", String.valueOf(idData));
     Cursor cursor = db.rawQuery(sql, null);
     cursor.moveToFirst();
     String country = cursor.getString(cursor.getColumnIndex("location"));
+    Toast.makeText(context, country + " + " + fieldDescription, Toast.LENGTH_SHORT).show();
+    populateTableData();
     setHeader(country, fieldDescription);
     registerOnStack(Constants.UIData, context, idData);
    }
