@@ -21,7 +21,7 @@ public class UIRegion extends UI {
    }
   private void populateTerra() {
     ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();
-    String sql = "select id, location from country where fk_region = #".replace("#", String.valueOf(regionId));
+    String sql = "select id, location from country where fk_region = # order by location".replace("#", String.valueOf(regionId));
     Cursor cCountry = db.rawQuery(sql, null);
     cCountry.moveToFirst();
     TableKeyValue tkv = new TableKeyValue();

@@ -1,6 +1,6 @@
 /*
- Add UITerraDetails for all details other than population
- UIData Total Tests showing nonsence
- UICountry revisit sql,
+ UIData Total Tests showing nonsense
+ Add Test/Million to UICountry
+ UIContinents, sort by country
  
 */

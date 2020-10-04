@@ -56,7 +56,6 @@ public class UITerraData extends UI {
        break;
      }
      
-    Toast.makeText(context, "Terra + " + fieldDescription, Toast.LENGTH_SHORT).show();
     populateTerraDetails();
     setHeader("Terra", fieldDescription);
     registerOnStack(Constants.UITerraData, context, idData);

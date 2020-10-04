@@ -26,18 +26,18 @@ public class UICountry extends UI
   Double newCasePerMillion = 0.0;
   Double newDeathPerMillion = 0.0;
   Long sumNewTests = 0L;
-  
+
   public UICountry(Context _context, long _idCountry) {
     super(_context, _idCountry);
     context = _context;
     idCountry = _idCountry;
     formatter = new DecimalFormat("#,###.##");
-    
+
     populateTableCountry();
-   setHeader("Country", "Details");
-   registerOnStack(Constants.UICountry, context, idCountry);
+    setHeader("Country", "Details");
+    registerOnStack(Constants.UICountry, context, idCountry);
    }
-   
+
   public void populateTableCountry() {
     ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();
     String sql = "select COUNTRY_CODE, continent, location, population from country where ID = #".replace("#", String.valueOf(idCountry));
@@ -47,32 +47,27 @@ public class UICountry extends UI
     region = cursor.getString(cursor.getColumnIndex("continent"));
     country = cursor.getString(cursor.getColumnIndex("location"));
     population = cursor.getLong(cursor.getColumnIndex("population"));
-    
-    sql = "select new_cases, new_deaths, sum(new_cases) as total_cases, sum(new_deaths) as total_deaths, " +
-    "date, total_cases_per_million, new_cases_per_million, total_deaths_per_million, new_deaths_per_million, " +
-    "sum(new_tests) as total_tests " +
-    "from data where fk_country = # order by total_cases desc limit 1".replace("#", String.valueOf(idCountry));
+
+    sql = "select date, sum(new_cases) as total_cases, sum(new_deaths) as total_deaths, sum(new_tests) as total_tests " +
+     //"total_cases_per_million, total_deaths_per_million " +
+     "from data where fk_country = # order by total_cases desc limit 1".replace("#", String.valueOf(idCountry));
     cursor = db.rawQuery(sql, null);
     cursor.moveToFirst();
-    
+
     lastUpdated = cursor.getString(cursor.getColumnIndex("date"));
     try {
-     lastUpdated = new SimpleDateFormat("yyyy-MM-dd").parse(lastUpdated).toString();
-     String[] arrDate = lastUpdated.split(" ");
-     lastUpdated = arrDate[0] + " " + arrDate[1] + " " + arrDate[2] + " " + arrDate[5];
+      lastUpdated = new SimpleDateFormat("yyyy-MM-dd").parse(lastUpdated).toString();
+      String[] arrDate = lastUpdated.split(" ");
+      lastUpdated = arrDate[0] + " " + arrDate[1] + " " + arrDate[2] + " " + arrDate[5];
      } catch(ParseException e) {
-       Log.d(Constants.UICountry, e.toString());
+      Log.d(Constants.UICountry, e.toString());
      }
-    newCases = cursor.getLong(cursor.getColumnIndex("new_cases"));
-    newDeaths = cursor.getLong(cursor.getColumnIndex("new_deaths"));
     sumNewCases = cursor.getLong(cursor.getColumnIndex("total_cases"));
     sumNewDeaths = cursor.getLong(cursor.getColumnIndex("total_deaths"));
-    casePerMillion = cursor.getDouble(cursor.getColumnIndex("total_cases_per_million"));
-    deathPerMillion = cursor.getDouble(cursor.getColumnIndex("total_deaths_per_million"));
-    newCasePerMillion = cursor.getDouble(cursor.getColumnIndex("new_cases_per_million"));
-    newDeathPerMillion = cursor.getDouble(cursor.getColumnIndex("new_deaths_per_million"));
+    casePerMillion = sumNewCases.doubleValue()/population*Constants.oneMillion;
+    deathPerMillion = sumNewDeaths.doubleValue()/population*Constants.oneMillion;
     sumNewTests = cursor.getLong(cursor.getColumnIndex("total_tests"));
-    
+
     TableKeyValue tkv = new TableKeyValue();
     tkv.key = "Country Code";
     tkv.value = countryCode;
@@ -81,7 +76,7 @@ public class UICountry extends UI
     tkv.field = "COUNTRY_CODE";
     tkv.subClass = Constants.UICountry;
     tkv = new TableKeyValue();
-    
+
     tkv.key = "Region";
     tkv.value = region;
     tkvs.add(tkv);
@@ -89,7 +84,7 @@ public class UICountry extends UI
     tkv.field = "continent";
     tkv.subClass = Constants.UICountry;
     tkv = new TableKeyValue();
-    
+
     tkv.key = "Country";
     tkv.value = country; 
     tkvs.add(tkv);
@@ -97,7 +92,7 @@ public class UICountry extends UI
     tkv.field = "location";
     tkv.subClass = Constants.UICountry;
     tkv = new TableKeyValue();
-    
+
     tkv.key = "Population";
     tkv.value = String.valueOf(formatter.format(population));
     tkvs.add(tkv);
@@ -105,7 +100,7 @@ public class UICountry extends UI
     tkv.field = "population";
     tkv.subClass = Constants.UICountry;
     tkv = new TableKeyValue();
-    
+
     tkv.key = "Last Updated";
     tkv.value = lastUpdated;
     tkvs.add(tkv);
@@ -113,36 +108,28 @@ public class UICountry extends UI
     tkv.field = "date";
     tkv.subClass = Constants.UICountry;
     tkv = new TableKeyValue();
-    
-    tkv.key = "New Cases";
-    tkv.value = String.valueOf(formatter.format(newCases));
+
+    tkv.key = "Cases";
+    tkv.value = String.valueOf(formatter.format(sumNewCases));
     tkvs.add(tkv);
     tkv.tableId = idCountry;
     tkv.field = "new_cases";
     tkv.subClass = Constants.UICountry;
     tkv = new TableKeyValue();
-    
-    tkv.key = "New Deaths";
-    tkv.value = String.valueOf(formatter.format(newDeaths));
+
+    tkv.key = "Deaths";
+    tkv.value = String.valueOf(formatter.format(sumNewDeaths));
     tkvs.add(tkv);
     tkv.tableId = idCountry;
     tkv.field = "new_deaths";
     tkv.subClass = Constants.UICountry;
     tkv = new TableKeyValue();
-    
-    tkv.key = "Total Cases";
-    tkv.value = String.valueOf(formatter.format(sumNewCases));
+
+    tkv.key = "Tests";
+    tkv.value = String.valueOf(formatter.format(sumNewTests));
     tkvs.add(tkv);
     tkv.tableId = idCountry;
-    tkv.field = "total_cases";
-    tkv.subClass = Constants.UICountry;
-    tkv = new TableKeyValue();
-    
-    tkv.key = "Total Deaths";
-    tkv.value = String.valueOf(formatter.format(sumNewDeaths));
-    tkvs.add(tkv);
-    tkv.tableId = idCountry;
-    tkv.field = "total_deaths";
+    tkv.field = "new_tests";
     tkv.subClass = Constants.UICountry;
     tkv = new TableKeyValue();
     
@@ -153,7 +140,7 @@ public class UICountry extends UI
     tkv.field = "total_cases_per_million";
     tkv.subClass = Constants.UICountry;
     tkv = new TableKeyValue();
-    
+
     tkv.key = "Death/Million";
     tkv.value = String.valueOf(formatter.format(deathPerMillion));
     tkvs.add(tkv);
@@ -161,31 +148,7 @@ public class UICountry extends UI
     tkv.field = "total_deaths_per_million";
     tkv.subClass = Constants.UICountry;
     tkv = new TableKeyValue();
-    
-    tkv.key = "New Case/Million";
-    tkv.value = String.valueOf(formatter.format(newCasePerMillion));
-    tkvs.add(tkv);
-    tkv.tableId = idCountry;
-    tkv.field = "new_cases_per_million";
-    tkv.subClass = Constants.UICountry;
-    tkv = new TableKeyValue();
-    
-    tkv.key = "New Death/Million";
-    tkv.value = String.valueOf(formatter.format(newDeathPerMillion));
-    tkvs.add(tkv);
-    tkv.tableId = idCountry;
-    tkv.field = "new_deaths_per_million";
-    tkv.subClass = Constants.UICountry;
-    tkv = new TableKeyValue();
-    
-    tkv.key = "Total Tests";
-    tkv.value = String.valueOf(formatter.format(sumNewTests));
-    tkvs.add(tkv);
-    tkv.tableId = idCountry;
-    tkv.field = "total_tests";
-    tkv.subClass = Constants.UICountry;
-    tkv = new TableKeyValue();
-    
+
     setTableLayout(getTableRows(tkvs));
    }
  }

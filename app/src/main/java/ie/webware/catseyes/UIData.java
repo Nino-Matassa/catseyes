@@ -29,23 +29,14 @@ public class UIData extends UI
       case "new_deaths":
        fieldDescription = "New Deaths";
        break;
-      case "total_cases":
-       fieldDescription = "Total Cases";
-       break;
-      case "total_deaths":
-       fieldDescription = "Total Deaths";
-       break;
       case "total_cases_per_million":
        fieldDescription = "Cases/Million";
        break;
       case "total_deaths_per_million":
        fieldDescription = "Deaths/Million";
        break;
-      case "new_cases_per_million":
-       fieldDescription = "Total Cases/Million";
-       break;
-      case "new_deaths_per_million":
-       fieldDescription = "Total Deaths/Million";
+      case "new_tests":
+       fieldDescription = "New Tests";
        break;
       default:
      }

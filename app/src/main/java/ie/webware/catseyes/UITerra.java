@@ -89,6 +89,14 @@ public class UITerra extends UI
     Double deathPerMillion = totalDeaths / population * Constants.oneMillion;
     Double testPerMillion = sumNewTests / population * Constants.oneMillion;
 
+    tkv.key = "Total Tests";
+    tkv.value = String.valueOf(formatter.format(sumNewTests));
+    tkvs.add(tkv);
+    tkv.tableId = 0l;
+    tkv.field = "new_tests";
+    tkv.subClass = Constants.UITerra;
+    tkv = new TableKeyValue();
+
     tkv.key = "Case/Million";
     tkv.value = String.valueOf(formatter.format(casePerMillion));
     tkvs.add(tkv);
@@ -112,15 +120,7 @@ public class UITerra extends UI
     tkv.field = "total_tests_per_million";
     tkv.subClass = Constants.UITerra;
     tkv = new TableKeyValue();
-    
-    tkv.key = "Total Tests";
-    tkv.value = String.valueOf(formatter.format(sumNewTests));
-    tkvs.add(tkv);
-    tkv.tableId = 0l;
-    tkv.field = "new_tests";
-    tkv.subClass = Constants.UITerra;
-    tkv = new TableKeyValue();
-    
+
     setTableLayout(getTableRows(tkvs));
    }
  }
