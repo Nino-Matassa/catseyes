@@ -50,17 +50,14 @@ class UI
              Double.parseDouble(tkv.value.replace(",", ""));
              if(tkv.subClass.equals(Constants.UITerra)) {
                if(tkv.key.equals(Constants.UITerraPopulation)) {
-                 Toast.makeText(context, "Terra + " + Constants.UITerraPopulation, Toast.LENGTH_SHORT).show();
                  new UIContinents(context, tkv.tableId);
                 } else {
                  Toast.makeText(context, "Terra Data", Toast.LENGTH_SHORT).show();
                  new UITerraData(context, tkv.tableId, tkv.field);
                 }
               } else if(tkv.subClass.equals(Constants.UIContinent)) {
-               Toast.makeText(context, "Terra Region", Toast.LENGTH_SHORT).show();
                new UIRegion(context, tkv.tableId);
               } else if(tkv.subClass.equals(Constants.UIRegion)) {
-               Toast.makeText(context, "Region Country", Toast.LENGTH_SHORT).show();
                new UICountry(context, tkv.tableId);
               } else if(tkv.subClass.equals(Constants.UICountry)) {
                Toast.makeText(context, "Country Data", Toast.LENGTH_SHORT).show();
@@ -76,17 +73,14 @@ class UI
              Double.parseDouble(tkv.value.replace(",", ""));
              if(tkv.subClass.equals(Constants.UITerra)) {
                if(tkv.key.equals(Constants.UITerraPopulation)) {
-                 Toast.makeText(context, "Terra + " + Constants.UITerraPopulation, Toast.LENGTH_SHORT).show();
                  new UIContinents(context, tkv.tableId);
                 } else {
                  Toast.makeText(context, "Terra Data", Toast.LENGTH_SHORT).show();
                  new UITerraData(context, tkv.tableId, tkv.field);
                 }
               } else if(tkv.subClass.equals(Constants.UIContinent)) {
-               Toast.makeText(context, "Terra Region", Toast.LENGTH_SHORT).show();
                new UIRegion(context, tkv.tableId);
               } else if(tkv.subClass.equals(Constants.UIRegion)) {
-               Toast.makeText(context, "Region Country", Toast.LENGTH_SHORT).show();
                new UICountry(context, tkv.tableId);
               } else if(tkv.subClass.equals(Constants.UICountry)) {
                Toast.makeText(context, "Country Data", Toast.LENGTH_SHORT).show();

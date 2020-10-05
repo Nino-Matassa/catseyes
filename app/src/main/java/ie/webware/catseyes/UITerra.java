@@ -66,7 +66,7 @@ public class UITerra extends UI
     headerValue = tkv.value; 
     tkv = new TableKeyValue();
     
-    tkv.key = "Total Cases";
+    tkv.key = "Cases";
     tkv.value = String.valueOf(formatter.format(sumNewCases));
     tkvs.add(tkv);
     tkv.tableId = 0L;
@@ -74,7 +74,7 @@ public class UITerra extends UI
     tkv.subClass = Constants.UITerra;
     tkv = new TableKeyValue();
     
-    tkv.key = "Total Deaths";
+    tkv.key = "Deaths";
     tkv.value = String.valueOf(formatter.format(sumNewDeaths));
     tkvs.add(tkv);
     tkv.tableId = 0L;
@@ -89,7 +89,7 @@ public class UITerra extends UI
     Double deathPerMillion = totalDeaths / population * Constants.oneMillion;
     Double testPerMillion = sumNewTests / population * Constants.oneMillion;
 
-    tkv.key = "Total Tests";
+    tkv.key = "Tests";
     tkv.value = String.valueOf(formatter.format(sumNewTests));
     tkvs.add(tkv);
     tkv.tableId = 0l;

@@ -31,28 +31,28 @@ public class UITerraData extends UI {
        fieldDescription = "New Deaths";
        sql = "select date, sum(new_deaths) as new_deaths from data group by date order by date desc";
        break;
+      case "new_tests":
+       fieldDescription = "Total Tests";
+       sql = "select date, sum(new_tests) as new_tests from data group by date order by date desc";
+       field = "new_tests";
+       break;
       case "total_cases_per_million":
        fieldDescription = "Cases/Million";
-       sql = "select date, sum(new_cases) as new_cases from data group by date order by date desc";
-       field = "new_cases";
+       sql = "select date, sum(total_cases) as total_cases from data group by date order by date desc";
+       field = "total_cases";
        bPerMillion = true;
        break;
       case "total_deaths_per_million":
        fieldDescription = "Deaths/Million";
-       sql = "select date, sum(new_deaths) as new_deaths from data group by date order by date desc";
-       field = "new_deaths";
+       sql = "select date, sum(total_deaths) as total_deaths from data group by date order by date desc";
+       field = "total_deaths";
        bPerMillion = true;
        break;
       case "total_tests_per_million":
        fieldDescription = "Total Tests/Million";
-       sql = "select date, sum(new_tests) as new_tests from data where new_tests > 0 group by date order by date desc";
-       field = "new_tests";
+       sql = "select date, sum(total_tests) as total_tests from data group by date order by date desc";
+       field = "total_tests";
        bPerMillion = true;
-       break;
-      case "new_tests":
-       fieldDescription = "Total Tests";
-       sql = "select date, sum(new_tests) as new_tests from data where new_tests > 0 group by date order by date desc";
-       field = "new_tests";
        break;
      }
      

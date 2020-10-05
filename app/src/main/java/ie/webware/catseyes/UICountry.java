@@ -26,6 +26,7 @@ public class UICountry extends UI
   Double newCasePerMillion = 0.0;
   Double newDeathPerMillion = 0.0;
   Long sumNewTests = 0L;
+  Double testPerMillion = 0.0;
 
   public UICountry(Context _context, long _idCountry) {
     super(_context, _idCountry);
@@ -49,7 +50,6 @@ public class UICountry extends UI
     population = cursor.getLong(cursor.getColumnIndex("population"));
 
     sql = "select date, sum(new_cases) as total_cases, sum(new_deaths) as total_deaths, sum(new_tests) as total_tests " +
-     //"total_cases_per_million, total_deaths_per_million " +
      "from data where fk_country = # order by total_cases desc limit 1".replace("#", String.valueOf(idCountry));
     cursor = db.rawQuery(sql, null);
     cursor.moveToFirst();
@@ -67,6 +67,7 @@ public class UICountry extends UI
     casePerMillion = sumNewCases.doubleValue()/population*Constants.oneMillion;
     deathPerMillion = sumNewDeaths.doubleValue()/population*Constants.oneMillion;
     sumNewTests = cursor.getLong(cursor.getColumnIndex("total_tests"));
+    testPerMillion = sumNewTests.doubleValue()/population*Constants.oneMillion;
 
     TableKeyValue tkv = new TableKeyValue();
     tkv.key = "Country Code";
@@ -149,6 +150,14 @@ public class UICountry extends UI
     tkv.subClass = Constants.UICountry;
     tkv = new TableKeyValue();
 
+    tkv.key = "Test/Million";
+    tkv.value = String.valueOf(formatter.format(testPerMillion));
+    tkvs.add(tkv);
+    tkv.tableId = idCountry;
+    tkv.field = "total_tests";
+    tkv.subClass = Constants.UICountry;
+    tkv = new TableKeyValue();
+    
     setTableLayout(getTableRows(tkvs));
    }
  }
