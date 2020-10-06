@@ -1,6 +1,6 @@
 /*
- Calculate R-nought for Terra & Country
  https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1804098/
  
- Add posivity rate to uicountry & uiterra
+ Posivity rate & R 0 added to uicountry & uiterra, but calculations to be revisited
+ 
 */

@@ -35,6 +35,7 @@ public class MainActivity extends Activity
      } else {
       stack.pop();
       UIStackInfo info = stack.pop();
+      Toast.makeText(MainActivity.this, info.UI, Toast.LENGTH_LONG).show();
       switch(info.UI) {
          case Constants.UITerra:
          new UITerra(info.context, info.id);

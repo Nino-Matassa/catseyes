@@ -158,6 +158,33 @@ public class UICountry extends UI
     tkv.subClass = Constants.UICountry;
     tkv = new TableKeyValue();
     
+    Double positivityRate = sumNewCases.doubleValue()/sumNewTests;
+    
+    tkv.key = "Test Positive Rate";
+    tkv.value = String.valueOf(formatter.format(positivityRate));
+    tkvs.add(tkv);
+    tkv.tableId = idCountry;
+    tkv.field = "positive_rate";
+    tkv.subClass = Constants.UICountry;
+    tkv = new TableKeyValue();
+    
+    sql = "select date, sum(new_cases) as newCasesToday from data where fk_country = # and new_cases > 0 group by date order by date desc limit 1".replace("#", String.valueOf(idCountry));
+    cursor = db.rawQuery(sql, null);
+    cursor.moveToFirst();
+    Long newCasesToday = cursor.getLong(cursor.getColumnIndex("newCasesToday"));
+    Long existingCases = sumNewCases - newCasesToday;
+
+    Double R0 = existingCases.doubleValue()/sumNewCases;
+
+    tkv.key = "R0";
+    tkv.value = String.valueOf(formatter.format(R0));
+    tkvs.add(tkv);
+    tkv.tableId = idCountry;
+    tkv.field = "R0";
+    tkv.subClass = Constants.UICountry;
+    tkv = new TableKeyValue();
+    
+    
     setTableLayout(getTableRows(tkvs));
    }
  }
