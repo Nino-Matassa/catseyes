@@ -74,7 +74,6 @@ public class UITerraData extends UI
 
     setHeader("Terra", fieldDescription);
     registerOnStack(Constants.UITerraData, context, idData);
-    busyBar(context, false);
    }
    
   private void populateTerraDetailsR0() {

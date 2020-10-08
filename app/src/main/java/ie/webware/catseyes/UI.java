@@ -28,7 +28,6 @@ class UI
     ((Activity)context).setContentView(R.layout.table_layout);
     tableLayout = (TableLayout) ((Activity)context).findViewById(R.id.layoutTable);
     tableLayoutHeader = (TableLayout)((Activity)context).findViewById(R.id.layoutTableHeader);
-    busyBar(context, false);
    }
 
   protected ArrayList<TableRow> getTableRows(ArrayList<TableKeyValue> tkvs) {
@@ -47,7 +46,7 @@ class UI
       textViewKey.setOnClickListener(new OnClickListener() {
          @Override
          public void onClick(View p1) {
-           busyBar(context, true);
+          WorldOmeterDatabase.toast(tkv.subClass, Toast.LENGTH_LONG, context);
            try {
              Double.parseDouble(tkv.value.replace(",", ""));
              if(tkv.subClass.equals(Constants.UITerra)) {
@@ -69,7 +68,7 @@ class UI
       textViewValue.setOnClickListener(new OnClickListener() {
          @Override
          public void onClick(View p1) {
-           busyBar(context, true);
+           WorldOmeterDatabase.toast(tkv.subClass, Toast.LENGTH_LONG, context);
            try {
              Double.parseDouble(tkv.value.replace(",", ""));
              if(tkv.subClass.equals(Constants.UITerra)) {
@@ -141,11 +140,11 @@ class UI
     MainActivity.stack.push(new UIStackInfo(_TV, _context, _id));
    }
    
-  public void busyBar(final Context context, final boolean visible) {
-    View progressbar = ((Activity)context).findViewById(R.id.busyBarView);
-    if(!visible)
-     progressbar.setVisibility(View.GONE);
-    else
-     progressbar.setVisibility(View.VISIBLE);
-   }
+//  public void busySymbol(final Context context, final boolean visible) {
+//    View progressbar = ((Activity)context).findViewById(R.id.busyBarView);
+//    if(!visible)
+//     progressbar.setVisibility(View.GONE);
+//    else
+//     progressbar.setVisibility(View.VISIBLE);
+//   }
  }

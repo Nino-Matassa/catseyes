@@ -31,13 +31,12 @@ public class MainActivity extends Activity
   @Override
   public void onBackPressed() {
     if(stack.size() == 2)
-     Toast.makeText(MainActivity.this, "Hit back button again to exit", Toast.LENGTH_LONG).show();
+     WorldOmeterDatabase.toast("Hit back button again to exit.", Toast.LENGTH_LONG, MainActivity.this);
     if(stack.empty()) {
       super.onBackPressed();
      } else {
       stack.pop();
       UIStackInfo info = stack.pop();
-      //Toast.makeText(MainActivity.this, info.UI, Toast.LENGTH_LONG).show();
       switch(info.UI) {
          case Constants.UITerra:
          new UITerra(info.context, info.id);
