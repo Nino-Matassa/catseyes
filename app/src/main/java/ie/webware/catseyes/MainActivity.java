@@ -1,8 +1,10 @@
 package ie.webware.catseyes;
 
 import android.app.*;
+import android.content.*;
 import android.os.*;
 import android.util.*;
+import android.view.*;
 import android.widget.*;
 import java.util.*;
 
@@ -35,7 +37,7 @@ public class MainActivity extends Activity
      } else {
       stack.pop();
       UIStackInfo info = stack.pop();
-      Toast.makeText(MainActivity.this, info.UI, Toast.LENGTH_LONG).show();
+      //Toast.makeText(MainActivity.this, info.UI, Toast.LENGTH_LONG).show();
       switch(info.UI) {
          case Constants.UITerra:
          new UITerra(info.context, info.id);
@@ -76,6 +78,4 @@ public class MainActivity extends Activity
       });
     thread.start();
    }
- }
-
-
+}

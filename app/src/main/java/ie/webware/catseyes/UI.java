@@ -28,6 +28,7 @@ class UI
     ((Activity)context).setContentView(R.layout.table_layout);
     tableLayout = (TableLayout) ((Activity)context).findViewById(R.id.layoutTable);
     tableLayoutHeader = (TableLayout)((Activity)context).findViewById(R.id.layoutTableHeader);
+    busyBar(context, false);
    }
 
   protected ArrayList<TableRow> getTableRows(ArrayList<TableKeyValue> tkvs) {
@@ -46,13 +47,13 @@ class UI
       textViewKey.setOnClickListener(new OnClickListener() {
          @Override
          public void onClick(View p1) {
+           busyBar(context, true);
            try {
              Double.parseDouble(tkv.value.replace(",", ""));
              if(tkv.subClass.equals(Constants.UITerra)) {
                if(tkv.key.equals(Constants.UITerraPopulation)) {
                  new UIContinents(context, tkv.tableId);
                 } else {
-                 Toast.makeText(context, "Terra Data", Toast.LENGTH_SHORT).show();
                  new UITerraData(context, tkv.tableId, tkv.field);
                 }
               } else if(tkv.subClass.equals(Constants.UIContinent)) {
@@ -60,7 +61,6 @@ class UI
               } else if(tkv.subClass.equals(Constants.UIRegion)) {
                new UICountry(context, tkv.tableId);
               } else if(tkv.subClass.equals(Constants.UICountry)) {
-               Toast.makeText(context, "Country Data", Toast.LENGTH_SHORT).show();
                new UIData(context, tkv.tableId, tkv.field); 
               }
             } catch(Exception e) {}
@@ -69,13 +69,13 @@ class UI
       textViewValue.setOnClickListener(new OnClickListener() {
          @Override
          public void onClick(View p1) {
+           busyBar(context, true);
            try {
              Double.parseDouble(tkv.value.replace(",", ""));
              if(tkv.subClass.equals(Constants.UITerra)) {
                if(tkv.key.equals(Constants.UITerraPopulation)) {
                  new UIContinents(context, tkv.tableId);
                 } else {
-                 Toast.makeText(context, "Terra Data", Toast.LENGTH_SHORT).show();
                  new UITerraData(context, tkv.tableId, tkv.field);
                 }
               } else if(tkv.subClass.equals(Constants.UIContinent)) {
@@ -83,7 +83,6 @@ class UI
               } else if(tkv.subClass.equals(Constants.UIRegion)) {
                new UICountry(context, tkv.tableId);
               } else if(tkv.subClass.equals(Constants.UICountry)) {
-               Toast.makeText(context, "Country Data", Toast.LENGTH_SHORT).show();
                new UIData(context, tkv.tableId, tkv.field); 
               }
             } catch(Exception e) {}
@@ -140,5 +139,13 @@ class UI
 
   protected void registerOnStack(String _TV, Context _context, long _id) {
     MainActivity.stack.push(new UIStackInfo(_TV, _context, _id));
+   }
+   
+  public void busyBar(final Context context, final boolean visible) {
+    View progressbar = ((Activity)context).findViewById(R.id.busyBarView);
+    if(!visible)
+     progressbar.setVisibility(View.GONE);
+    else
+     progressbar.setVisibility(View.VISIBLE);
    }
  }
