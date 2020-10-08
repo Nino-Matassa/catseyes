@@ -1,7 +1,7 @@
 package ie.webware.catseyes;
 import android.content.*;
 import android.database.*;
-import android.widget.*;
+import android.view.*;
 import java.text.*;
 import java.util.*;
 

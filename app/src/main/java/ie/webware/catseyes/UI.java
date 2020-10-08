@@ -19,7 +19,7 @@ class UI
   private TableLayout tableLayout = null;
   private TableLayout tableLayoutHeader = null;
   private long id = 0;
-  SQLiteDatabase db = null;
+  protected SQLiteDatabase db = null;
 
   protected UI(Context _context, long _id) {
     context = _context;
@@ -46,45 +46,13 @@ class UI
       textViewKey.setOnClickListener(new OnClickListener() {
          @Override
          public void onClick(View p1) {
-          WorldOmeterDatabase.toast(tkv.subClass, Toast.LENGTH_LONG, context);
-           try {
-             Double.parseDouble(tkv.value.replace(",", ""));
-             if(tkv.subClass.equals(Constants.UITerra)) {
-               if(tkv.key.equals(Constants.UITerraPopulation)) {
-                 new UIContinents(context, tkv.tableId);
-                } else {
-                 new UITerraData(context, tkv.tableId, tkv.field);
-                }
-              } else if(tkv.subClass.equals(Constants.UIContinent)) {
-               new UIRegion(context, tkv.tableId);
-              } else if(tkv.subClass.equals(Constants.UIRegion)) {
-               new UICountry(context, tkv.tableId);
-              } else if(tkv.subClass.equals(Constants.UICountry)) {
-               new UIData(context, tkv.tableId, tkv.field); 
-              }
-            } catch(Exception e) {}
+           onClickListenerFired(p1, tkv);
           }
         });
       textViewValue.setOnClickListener(new OnClickListener() {
          @Override
          public void onClick(View p1) {
-           WorldOmeterDatabase.toast(tkv.subClass, Toast.LENGTH_LONG, context);
-           try {
-             Double.parseDouble(tkv.value.replace(",", ""));
-             if(tkv.subClass.equals(Constants.UITerra)) {
-               if(tkv.key.equals(Constants.UITerraPopulation)) {
-                 new UIContinents(context, tkv.tableId);
-                } else {
-                 new UITerraData(context, tkv.tableId, tkv.field);
-                }
-              } else if(tkv.subClass.equals(Constants.UIContinent)) {
-               new UIRegion(context, tkv.tableId);
-              } else if(tkv.subClass.equals(Constants.UIRegion)) {
-               new UICountry(context, tkv.tableId);
-              } else if(tkv.subClass.equals(Constants.UICountry)) {
-               new UIData(context, tkv.tableId, tkv.field); 
-              }
-            } catch(Exception e) {}
+           onClickListenerFired(p1, tkv);
           }
         });
       textViewValue.setTextSize(18);
@@ -139,12 +107,26 @@ class UI
   protected void registerOnStack(String _TV, Context _context, long _id) {
     MainActivity.stack.push(new UIStackInfo(_TV, _context, _id));
    }
-   
-//  public void busySymbol(final Context context, final boolean visible) {
-//    View progressbar = ((Activity)context).findViewById(R.id.busyBarView);
-//    if(!visible)
-//     progressbar.setVisibility(View.GONE);
-//    else
-//     progressbar.setVisibility(View.VISIBLE);
-//   }
+
+  private void onClickListenerFired(View p1, TableKeyValue tkv) {
+   //new BusyView(context); // being ignored...
+   try {
+     if(tkv.subClass.equals(Constants.UICountry) && tkv.key.equals("Population"))
+      return;
+      Double.parseDouble(tkv.value.replace(",", ""));
+      if(tkv.subClass.equals(Constants.UITerra)) {
+        if(tkv.key.equals(Constants.UITerraPopulation)) {
+          new UIContinents(context, tkv.tableId);
+         } else {
+          new UITerraData(context, tkv.tableId, tkv.field);
+         }
+       } else if(tkv.subClass.equals(Constants.UIContinent)) {
+        new UIRegion(context, tkv.tableId);
+       } else if(tkv.subClass.equals(Constants.UIRegion)) {
+        new UICountry(context, tkv.tableId);
+       } else if(tkv.subClass.equals(Constants.UICountry)) {
+        new UIData(context, tkv.tableId, tkv.field); 
+       }
+     } catch(Exception e) {}
+   }
  }

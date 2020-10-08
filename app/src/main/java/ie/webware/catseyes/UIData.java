@@ -62,7 +62,7 @@ public class UIData extends UI
     Cursor cursor = db.rawQuery(sql, null);
     cursor.moveToFirst();
     String country = cursor.getString(cursor.getColumnIndex("location"));
-    Toast.makeText(context, country + " + " + fieldDescription, Toast.LENGTH_SHORT).show();
+    //Toast.makeText(context, country + " + " + fieldDescription, Toast.LENGTH_SHORT).show();
     
     setHeader(country, fieldDescription);
     registerOnStack(Constants.UIData, context, idData);
