@@ -4,18 +4,16 @@ import android.app.*;
 import android.content.*;
 import android.os.*;
 
-//https://www.journaldev.com/9708/android-asynctask-example-tutorial
-
 public class BusyBee extends AsyncTask<Void,Void,UI >
  {
 
   private Context context = null;
-  private ProgressDialog pd = null;
+  private static ProgressDialog pd = null;
 
   public BusyBee(Context _context) {
    context = _context;
    pd = new ProgressDialog(context);
-   pd.setMessage("Building");
+   pd.show();
   }
 
   @Override
@@ -28,7 +26,7 @@ public class BusyBee extends AsyncTask<Void,Void,UI >
   protected void onPreExecute() {
     // TODO: Implement this method
     super.onPreExecute();
-    pd.show();
+    pd.setMessage("Building");
    }
 
   @Override
@@ -39,7 +37,6 @@ public class BusyBee extends AsyncTask<Void,Void,UI >
    }
  }
  
-//    context = _context;
 //    ((Activity)context).setContentView(R.layout.busy_view);
 //    progressSymbol = ((Activity)context).findViewById(R.id.busyViewId);
 //    progressSymbol.setVisibility(View.VISIBLE);

@@ -12,7 +12,7 @@ public class MainActivity extends Activity
  {
   static Stack<UIStackInfo> stack = new Stack<UIStackInfo>();
   TextView view = null;
-  BusyBee busyBee = null;
+  //BusyBee busyBee = null;
   
 
   @Override
@@ -22,10 +22,7 @@ public class MainActivity extends Activity
     view = findViewById(R.id.mainTextID);
     view.setText("SARS-COV-2 Statistical Analysis");
     buildDatabase();
-    if(busyBee == null) {
-      busyBee = new BusyBee(MainActivity.this);
-      busyBee.execute();
-     }
+    
     
     try {
       new UITerra(MainActivity.this, 0);
@@ -84,3 +81,5 @@ public class MainActivity extends Activity
     thread.start();
    }
  }
+ 
+
