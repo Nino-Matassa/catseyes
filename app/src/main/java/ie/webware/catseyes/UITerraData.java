@@ -21,7 +21,7 @@ public class UITerraData extends UI
     idData = _idData;
     field = _field;
     formatter = new DecimalFormat("#,###.##");
-
+    
     String fieldDescription = null;
     switch(field) {
       case "new_cases":
@@ -74,6 +74,9 @@ public class UITerraData extends UI
 
     setHeader("Terra", fieldDescription);
     registerOnStack(Constants.UITerraData, context, idData);
+    try {
+      Thread.sleep(1000);
+     } catch(InterruptedException e) {}
    }
    
   private void populateTerraDetailsR0() {

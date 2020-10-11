@@ -18,8 +18,10 @@ class UI
   private Context context = null;
   private TableLayout tableLayout = null;
   private TableLayout tableLayoutHeader = null;
+  private TableLayout tableLayoutFooter = null;
   private long id = 0;
   protected SQLiteDatabase db = null;
+  protected View progressSymbol = null;
 
   protected UI(Context _context, long _id) {
     context = _context;
@@ -97,7 +99,7 @@ class UI
     tableRow.addView(textViewR);
     tableLayoutHeader.addView(tableRow);
    }
-
+   
   protected void setTableLayout(ArrayList<TableRow> tableRows) {
     for(TableRow tableRow: tableRows) {
       tableLayout.addView(tableRow);
@@ -109,16 +111,16 @@ class UI
    }
 
   private void onClickListenerFired(View p1, TableKeyValue tkv) {
-   //new BusyView(context); // being ignored...
-   try {
-     if(tkv.subClass.equals(Constants.UICountry) && tkv.key.equals("Population"))
-      return;
+    try {
+      BusyView.busyBee(context, "Hi", true);
+      if(tkv.subClass.equals(Constants.UICountry) && tkv.key.equals("Population"))
+       return;
       Double.parseDouble(tkv.value.replace(",", ""));
       if(tkv.subClass.equals(Constants.UITerra)) {
         if(tkv.key.equals(Constants.UITerraPopulation)) {
           new UIContinents(context, tkv.tableId);
          } else {
-          new UITerraData(context, tkv.tableId, tkv.field);
+           new UITerraData(context, tkv.tableId, tkv.field);
          }
        } else if(tkv.subClass.equals(Constants.UIContinent)) {
         new UIRegion(context, tkv.tableId);
@@ -127,6 +129,27 @@ class UI
        } else if(tkv.subClass.equals(Constants.UICountry)) {
         new UIData(context, tkv.tableId, tkv.field); 
        }
-     } catch(Exception e) {}
+     } catch(Exception e) {
+      Log.d("UI", e.toString());
+     } finally {
+       BusyView.busyBee(context, "", false);
+     }
    }
+   
+  //  protected void setFooter(String description) {
+//    TableRow tableRow = new TableRow(context);
+//    LinearLayout.LayoutParams tableRowParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+//    tableRow.setLayoutParams(tableRowParams);
+//
+//    TableRow.LayoutParams cellParams = new TableRow.LayoutParams(0, TableRow.LayoutParams.MATCH_PARENT);
+//    cellParams.weight = 9;
+//    TextView textView = new TextView(context);
+//    textView.setTextSize(18);
+//    textView.setLayoutParams(cellParams);
+//    textView.setText(description);
+//    textView.setTypeface(null, Typeface.BOLD);
+//    tableRow.addView(textView);
+//    tableLayoutFooter.addView(tableRow);
+//   }
+  
  }
