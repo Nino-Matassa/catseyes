@@ -16,7 +16,7 @@ public class UIRegion extends UI {
     formatter = new DecimalFormat("#,###.##");
 
     populateTerra();
-   setHeader("Country", "Population");
+   setHeader("Country", "Cases/Million");
    registerOnStack(Constants.UIRegion, context, regionId);
    }
   private void populateTerra() {
@@ -31,11 +31,16 @@ public class UIRegion extends UI {
       String populationSql = "select sum(population) as population from country where id = #".replace("#", String.valueOf(currentCountryId));
       Cursor cPopulation = db.rawQuery(populationSql, null);
       cPopulation.moveToFirst();
-      tkv.value = String.valueOf(formatter.format(cPopulation.getLong(cPopulation.getColumnIndex("population"))));
+      Long population = cPopulation.getLong(cPopulation.getColumnIndex("population"));
+      String casesSql = "select sum(new_cases) as total_cases from data join country on data.fk_country = country.id where country.id = #".replace("#", String.valueOf(currentCountryId));
+      Cursor cCases = db.rawQuery(casesSql, null);
+      cCases.moveToFirst();
+      Long cases = cCases.getLong(cCases.getColumnIndex("total_cases"));
+      tkv.value = String.valueOf(formatter.format(cases.doubleValue()/population*Constants.oneMillion));
       tkv.tableId = currentCountryId;
       tkv.field = tkv.key;
       tkv.subClass = Constants.UIRegion;
-      tkvs.add(tkv);
+      tkvs.add(tkv); 
       tkv = new TableKeyValue();
      } while(cCountry.moveToNext());
 

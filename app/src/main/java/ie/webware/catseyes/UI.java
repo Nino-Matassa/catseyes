@@ -115,7 +115,7 @@ class UI
    busyBee.execute();
    
     try {
-     Thread.sleep(1000);
+     //Thread.sleep(1000);
       if(tkv.subClass.equals(Constants.UICountry) && tkv.key.equals("Population"))
        return;
       Double.parseDouble(tkv.value.replace(",", ""));
