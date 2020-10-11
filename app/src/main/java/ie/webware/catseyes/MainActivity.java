@@ -8,11 +8,12 @@ import android.view.*;
 import android.widget.*;
 import java.util.*;
 
-
 public class MainActivity extends Activity
  {
   static Stack<UIStackInfo> stack = new Stack<UIStackInfo>();
   TextView view = null;
+  BusyBee busyBee = null;
+  
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +22,11 @@ public class MainActivity extends Activity
     view = findViewById(R.id.mainTextID);
     view.setText("SARS-COV-2 Statistical Analysis");
     buildDatabase();
+    if(busyBee == null) {
+      busyBee = new BusyBee(MainActivity.this);
+      busyBee.execute();
+     }
+    
     try {
       new UITerra(MainActivity.this, 0);
      } catch(Exception e) {
@@ -38,7 +44,7 @@ public class MainActivity extends Activity
       stack.pop();
       UIStackInfo info = stack.pop();
       switch(info.UI) {
-         case Constants.UITerra:
+        case Constants.UITerra:
          new UITerra(info.context, info.id);
          break;
         case Constants.UIContinent:
@@ -77,4 +83,4 @@ public class MainActivity extends Activity
       });
     thread.start();
    }
-}
+ }

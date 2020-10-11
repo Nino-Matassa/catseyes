@@ -4,6 +4,8 @@ import android.database.*;
 import android.view.*;
 import java.text.*;
 import java.util.*;
+import android.view.GestureDetector.*;
+import android.view.View.*;
 
 public class UITerraData extends UI
  {
@@ -74,9 +76,6 @@ public class UITerraData extends UI
 
     setHeader("Terra", fieldDescription);
     registerOnStack(Constants.UITerraData, context, idData);
-    try {
-      Thread.sleep(1000);
-     } catch(InterruptedException e) {}
    }
    
   private void populateTerraDetailsR0() {

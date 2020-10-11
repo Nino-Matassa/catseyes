@@ -22,7 +22,8 @@ class UI
   private long id = 0;
   protected SQLiteDatabase db = null;
   protected View progressSymbol = null;
-
+  BusyBee busyBee = null;
+  
   protected UI(Context _context, long _id) {
     context = _context;
     id = _id;
@@ -30,6 +31,10 @@ class UI
     ((Activity)context).setContentView(R.layout.table_layout);
     tableLayout = (TableLayout) ((Activity)context).findViewById(R.id.layoutTable);
     tableLayoutHeader = (TableLayout)((Activity)context).findViewById(R.id.layoutTableHeader);
+    if(busyBee == null) {
+      busyBee = new BusyBee(context);
+      busyBee.execute();
+     }
    }
 
   protected ArrayList<TableRow> getTableRows(ArrayList<TableKeyValue> tkvs) {
@@ -112,7 +117,7 @@ class UI
 
   private void onClickListenerFired(View p1, TableKeyValue tkv) {
     try {
-      BusyView.busyBee(context, "Hi", true);
+     Thread.sleep(1000);
       if(tkv.subClass.equals(Constants.UICountry) && tkv.key.equals("Population"))
        return;
       Double.parseDouble(tkv.value.replace(",", ""));
@@ -132,7 +137,6 @@ class UI
      } catch(Exception e) {
       Log.d("UI", e.toString());
      } finally {
-       BusyView.busyBee(context, "", false);
      }
    }
    
