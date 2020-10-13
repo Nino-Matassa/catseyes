@@ -56,6 +56,7 @@ public class WorldOmeterDatabase
           toast("Initialised", Toast.LENGTH_LONG, context);
          }
        }
+      //speedReadJSON();
      } catch(Exception e) {
       Log.d("WorldOmeterDatabase", e.toString());
      }

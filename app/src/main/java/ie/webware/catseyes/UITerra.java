@@ -1,11 +1,12 @@
 package ie.webware.catseyes;
 
+import android.app.*;
 import android.content.*;
 import android.database.*;
+import android.util.*;
+import android.view.*;
 import java.text.*;
 import java.util.*;
-import android.util.*;
-import java.util.function.*;
 
 public class UITerra extends UI
  {
@@ -29,6 +30,7 @@ public class UITerra extends UI
 
     populateTerra();
     setHeader(headerKey, headerValue);
+    setFooter("...");
     registerOnStack(Constants.UITerra, context, id);
    }
 

@@ -1,11 +1,10 @@
 package ie.webware.catseyes;
+import android.app.*;
 import android.content.*;
 import android.database.*;
 import android.view.*;
 import java.text.*;
 import java.util.*;
-import android.view.GestureDetector.*;
-import android.view.View.*;
 
 public class UITerraData extends UI
  {
@@ -75,6 +74,7 @@ public class UITerraData extends UI
      }
 
     setHeader("Terra", fieldDescription);
+    setFooter("...");
     registerOnStack(Constants.UITerraData, context, idData);
    }
    

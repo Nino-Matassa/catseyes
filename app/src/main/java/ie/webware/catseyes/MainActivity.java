@@ -10,10 +10,8 @@ import java.util.*;
 
 public class MainActivity extends Activity
  {
-  static Stack<UIStackInfo> stack = new Stack<UIStackInfo>();
-  TextView view = null;
-  //BusyBee busyBee = null;
-  
+  public static Stack<UIStackInfo> stack = new Stack<UIStackInfo>();
+  private TextView view = null;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -22,8 +20,7 @@ public class MainActivity extends Activity
     view = findViewById(R.id.mainTextID);
     view.setText("SARS-COV-2 Statistical Analysis");
     buildDatabase();
-    
-    
+
     try {
       new UITerra(MainActivity.this, 0);
      } catch(Exception e) {
@@ -33,31 +30,35 @@ public class MainActivity extends Activity
 
   @Override
   public void onBackPressed() {
-    if(stack.size() == 2)
-     WorldOmeterDatabase.toast("Hit back button again to exit.", Toast.LENGTH_LONG, MainActivity.this);
-    if(stack.empty()) {
-      super.onBackPressed();
-     } else {
-      stack.pop();
-      UIStackInfo info = stack.pop();
-      switch(info.UI) {
-        case Constants.UITerra:
-         new UITerra(info.context, info.id);
-         break;
-        case Constants.UIContinent:
-         new UIContinents(info.context, info.id);
-         break;
-        case Constants.UIRegion:
-         new UIRegion(info.context, info.id);
-         break;
-        case Constants.UICountry:
-         new UICountry(info.context, info.id);
-         break;
-        case Constants.UIData:
-         // Error
-         break;
-        default:
+    try {
+      if(stack.size() == 2)
+       WorldOmeterDatabase.toast("Hit back button again to exit.", Toast.LENGTH_LONG, MainActivity.this);
+      if(stack.empty()) {
+        super.onBackPressed();
+       } else {
+        stack.pop();
+        UIStackInfo info = stack.pop();
+        switch(info.UI) {
+          case Constants.UITerra:
+           new UITerra(info.context, info.id);
+           break;
+          case Constants.UIContinent:
+           new UIContinents(info.context, info.id);
+           break;
+          case Constants.UIRegion:
+           new UIRegion(info.context, info.id);
+           break;
+          case Constants.UICountry:
+           new UICountry(info.context, info.id);
+           break;
+          case Constants.UIData:
+           // Error
+           break;
+          default:
+         }
        }
+     } catch(Exception e) {
+      Log.d("onBackPressed", e.toString());
      }
    }
 

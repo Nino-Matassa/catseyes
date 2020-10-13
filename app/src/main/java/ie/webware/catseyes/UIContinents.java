@@ -20,6 +20,7 @@ public class UIContinents extends UI
 
     populateContinents();
     setHeader("Region", "Cases/Million");
+    setFooter("...");
     registerOnStack(Constants.UIContinent, context, id);
    }
 

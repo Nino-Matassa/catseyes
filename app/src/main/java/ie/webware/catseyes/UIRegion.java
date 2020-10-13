@@ -17,7 +17,8 @@ public class UIRegion extends UI {
 
     populateTerra();
    setHeader("Country", "Cases/Million");
-   registerOnStack(Constants.UIRegion, context, regionId);
+    setFooter("...");
+    registerOnStack(Constants.UIRegion, context, regionId);
    }
   private void populateTerra() {
     ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();

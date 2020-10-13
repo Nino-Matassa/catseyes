@@ -21,15 +21,20 @@ class UI
   private TableLayout tableLayoutFooter = null;
   private long id = 0;
   protected SQLiteDatabase db = null;
-  protected View progressSymbol = null;
+  public static View progressSymbol = null;
   
   protected UI(Context _context, long _id) {
     context = _context;
     id = _id;
+    new BusyBee(context).execute();
+    
     db = Database.getInstance(context);
     ((Activity)context).setContentView(R.layout.table_layout);
     tableLayout = (TableLayout) ((Activity)context).findViewById(R.id.layoutTable);
     tableLayoutHeader = (TableLayout)((Activity)context).findViewById(R.id.layoutTableHeader);
+    tableLayoutFooter = (TableLayout)((Activity)context).findViewById(R.id.layoutTableFooter);
+    progressSymbol = ((Activity)context).findViewById(R.id.busyViewId);
+    progressSymbol.setVisibility(View.GONE);
    }
 
   protected ArrayList<TableRow> getTableRows(ArrayList<TableKeyValue> tkvs) {
@@ -111,11 +116,7 @@ class UI
    }
 
   private void onClickListenerFired(View p1, TableKeyValue tkv) {
-   BusyBee busyBee = new BusyBee(context);
-   busyBee.execute();
-   
     try {
-     //Thread.sleep(1000);
       if(tkv.subClass.equals(Constants.UICountry) && tkv.key.equals("Population"))
        return;
       Double.parseDouble(tkv.value.replace(",", ""));
@@ -138,20 +139,20 @@ class UI
      }
    }
    
-  //  protected void setFooter(String description) {
-//    TableRow tableRow = new TableRow(context);
-//    LinearLayout.LayoutParams tableRowParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-//    tableRow.setLayoutParams(tableRowParams);
-//
-//    TableRow.LayoutParams cellParams = new TableRow.LayoutParams(0, TableRow.LayoutParams.MATCH_PARENT);
-//    cellParams.weight = 9;
-//    TextView textView = new TextView(context);
-//    textView.setTextSize(18);
-//    textView.setLayoutParams(cellParams);
-//    textView.setText(description);
-//    textView.setTypeface(null, Typeface.BOLD);
-//    tableRow.addView(textView);
-//    tableLayoutFooter.addView(tableRow);
-//   }
+    protected void setFooter(String description) {
+    TableRow tableRow = new TableRow(context);
+    LinearLayout.LayoutParams tableRowParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+    tableRow.setLayoutParams(tableRowParams);
+
+    TableRow.LayoutParams cellParams = new TableRow.LayoutParams(0, TableRow.LayoutParams.MATCH_PARENT);
+    cellParams.weight = 9;
+    TextView textView = new TextView(context);
+    textView.setTextSize(18);
+    textView.setLayoutParams(cellParams);
+    textView.setText(description);
+    textView.setTypeface(null, Typeface.BOLD);
+    tableRow.addView(textView);
+    tableLayoutFooter.addView(tableRow);
+   }
   
  }

@@ -65,6 +65,7 @@ public class UIData extends UI
     //Toast.makeText(context, country + " + " + fieldDescription, Toast.LENGTH_SHORT).show();
     
     setHeader(country, fieldDescription);
+    setFooter("...");
     registerOnStack(Constants.UIData, context, idData);
    }
    
