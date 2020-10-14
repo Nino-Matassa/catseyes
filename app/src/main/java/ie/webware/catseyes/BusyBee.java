@@ -7,6 +7,7 @@ import android.view.*;
 import android.widget.*;
 import android.opengl.*;
 
+//http://www.briandolhansky.com/blog/2013/7/11/snippets-android-async-progress
 public class BusyBee extends AsyncTask<Void,Void,Void>
  {
   //View progressSymbol = null;
@@ -15,11 +16,19 @@ public class BusyBee extends AsyncTask<Void,Void,Void>
   private ProgressDialog pd = null;
   public BusyBee(Context _context) {
     context = _context;
+    pd = new ProgressDialog(context);
+    pd.setMessage("Building");
+    pd.show();
+    
    }
 
   @Override
   protected Void doInBackground(Void[] p1) {
-    // TODO: Implement this method
+    try {
+      Thread.sleep(1000);
+     } catch (InterruptedException e) {
+      e.printStackTrace();
+     }
     return null;
    }
 
@@ -27,11 +36,7 @@ public class BusyBee extends AsyncTask<Void,Void,Void>
   protected void onPreExecute() {
     // TODO: Implement this method
     //UI.progressSymbol.setVisibility(View.VISIBLE);
-    super.onPreExecute();
     //((Activity)context).findViewById(R.id.busyViewId).setVisibility(View.VISIBLE);
-    pd = new ProgressDialog(context);
-    pd.setMessage("Building");
-    pd.show();
     //progressSymbol.setVisibility(View.VISIBLE);
    }
 
@@ -39,7 +44,6 @@ public class BusyBee extends AsyncTask<Void,Void,Void>
   protected void onPostExecute(Void result) {
     // TODO: Implement this method
     //UI.progressSymbol.setVisibility(View.GONE);
-    super.onPostExecute(result);
     //((Activity)context).findViewById(R.id.busyViewId).setVisibility(View.GONE);
     pd.dismiss();
     //UI.progressSymbol.setVisibility(View.GONE);
