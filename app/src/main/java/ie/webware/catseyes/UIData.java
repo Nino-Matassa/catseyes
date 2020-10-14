@@ -20,6 +20,7 @@ public class UIData extends UI
     idData = _idData;
     field = _field;
     formatter = new DecimalFormat("#,###.##");
+    new BusyBee(context).execute();
 
     String fieldDescription = null;
     switch(field) {

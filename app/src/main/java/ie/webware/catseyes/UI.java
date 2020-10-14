@@ -21,20 +21,19 @@ class UI
   private TableLayout tableLayoutFooter = null;
   private long id = 0;
   protected SQLiteDatabase db = null;
-  public static View progressSymbol = null;
+  //public static View progressSymbol = null;
   
   protected UI(Context _context, long _id) {
     context = _context;
     id = _id;
-    new BusyBee(context).execute();
     
     db = Database.getInstance(context);
     ((Activity)context).setContentView(R.layout.table_layout);
     tableLayout = (TableLayout) ((Activity)context).findViewById(R.id.layoutTable);
     tableLayoutHeader = (TableLayout)((Activity)context).findViewById(R.id.layoutTableHeader);
     tableLayoutFooter = (TableLayout)((Activity)context).findViewById(R.id.layoutTableFooter);
-    progressSymbol = ((Activity)context).findViewById(R.id.busyViewId);
-    progressSymbol.setVisibility(View.GONE);
+    //progressSymbol = ((Activity)context).findViewById(R.id.busyViewId);
+    //progressSymbol.setVisibility(View.GONE);
    }
 
   protected ArrayList<TableRow> getTableRows(ArrayList<TableKeyValue> tkvs) {
