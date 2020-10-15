@@ -22,9 +22,9 @@ public class BusyBee extends AsyncTask<Void, Void, Void>
 
   @Override
   protected Void doInBackground(Void[] p1) {
-    try {
-      Thread.sleep(1000);
-     } catch(InterruptedException e) {}
+//    try {
+//      Thread.sleep(1000);
+//     } catch(InterruptedException e) {}
     return null;
    }
 
