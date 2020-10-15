@@ -12,6 +12,7 @@ public class UIData extends UI
   Context context = null;
   long idData = 0;
   String field = null;
+  String country = null;
   DecimalFormat formatter = null;
 
   public UIData(Context _context, long _idData, String _field) {
@@ -61,11 +62,10 @@ public class UIData extends UI
     String sql = "select location from country where id = #".replace("#", String.valueOf(idData));
     Cursor cursor = db.rawQuery(sql, null);
     cursor.moveToFirst();
-    String country = cursor.getString(cursor.getColumnIndex("location"));
-    //Toast.makeText(context, country + " + " + fieldDescription, Toast.LENGTH_SHORT).show();
+    country = cursor.getString(cursor.getColumnIndex("location"));
     
     setHeader(country, fieldDescription);
-    setFooter("...");
+    setFooter(country + " : " + fieldDescription);
     registerOnStack(Constants.UIData, context, idData);
    }
    

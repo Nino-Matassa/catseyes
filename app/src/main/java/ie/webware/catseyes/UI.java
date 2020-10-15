@@ -33,10 +33,10 @@ class UI
     tableLayoutHeader = (TableLayout)((Activity)context).findViewById(R.id.layoutTableHeader);
     tableLayoutFooter = (TableLayout)((Activity)context).findViewById(R.id.layoutTableFooter);
     
-    if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB)
-     new BusyBee(MainActivity.activity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    else
-     new BusyBee(MainActivity.activity).execute();
+//    if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB)
+//     new BusyBee(MainActivity.activity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//    else
+//     new BusyBee(MainActivity.activity).execute();
    }
 
   protected ArrayList<TableRow> getTableRows(ArrayList<TableKeyValue> tkvs) {
@@ -118,10 +118,10 @@ class UI
 
   private void onClickListenerFired(View p1, TableKeyValue tkv) {
    
-//    if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB)
-//     new BusyBee(MainActivity.activity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-//    else
-//     new BusyBee(MainActivity.activity).execute();
+    if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB)
+     new BusyBee(MainActivity.activity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    else
+     new BusyBee(MainActivity.activity).execute();
     
     try {
       if(tkv.subClass.equals(Constants.UICountry) && tkv.key.equals("Population"))
@@ -158,6 +158,7 @@ class UI
     textView.setLayoutParams(cellParams);
     textView.setText(description);
     textView.setTypeface(null, Typeface.BOLD);
+    textView.setGravity(Gravity.CENTER);
     tableRow.addView(textView);
     tableLayoutFooter.addView(tableRow);
    }

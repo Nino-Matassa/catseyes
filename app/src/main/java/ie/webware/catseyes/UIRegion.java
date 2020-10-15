@@ -18,7 +18,7 @@ public class UIRegion extends UI
 
     populateTerra();
     setHeader("Country", "Cases/Million");
-    setFooter("...");
+    setFooter("Country : Cases/Million");
     registerOnStack(Constants.UIRegion, context, regionId);
    }
   private void populateTerra() {
@@ -45,8 +45,18 @@ public class UIRegion extends UI
       tkvs.add(tkv); 
       tkv = new TableKeyValue();
      } while(cCountry.moveToNext());
-
-    setTableLayout(getTableRows(tkvs));
-
+     tkvs.sort(new sortStats());
+     setTableLayout(getTableRows(tkvs));
+   }
+   
+  class sortStats implements Comparator<TableKeyValue>
+   {
+    @Override
+    public int compare(TableKeyValue tkvA, TableKeyValue tkvB) {
+      // TODO: Implement this method
+      Double dA = Double.parseDouble(tkvA.value.replace(",", ""));
+      Double dB = Double.parseDouble(tkvB.value.replace(",", ""));
+      return dA.compareTo(dB);
+     }
    }
  }

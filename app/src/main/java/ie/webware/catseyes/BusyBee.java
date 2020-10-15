@@ -22,25 +22,26 @@ public class BusyBee extends AsyncTask<Void, Void, Void>
 
   @Override
   protected Void doInBackground(Void[] p1) {
-//    try {
-//      Thread.sleep(1000);
-//     } catch(InterruptedException e) {}
+     try {
+      Thread.sleep(500);
+     } catch(InterruptedException e) {}
     return null;
    }
 
   @Override
   protected void onPreExecute() {
-    pd.setMessage("Building");
-    pd.show();
     super.onPreExecute();
+    pd.show();
+    pd.setMessage("Building");
    }
 
   @Override
   protected void onPostExecute(Void result) {
-    pd.dismiss();
     super.onPostExecute(result);
+    pd.dismiss();
    }
  }
+ 
  
 
   //View progressSymbol = null;

@@ -36,7 +36,7 @@ public class UICountry extends UI
 
     populateTableCountry();
     setHeader("Country", "Details");
-    setFooter("...");
+    setFooter(country);
     registerOnStack(Constants.UICountry, context, idCountry);
    }
 

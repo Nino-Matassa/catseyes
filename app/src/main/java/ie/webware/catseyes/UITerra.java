@@ -30,7 +30,7 @@ public class UITerra extends UI
 
     populateTerra();
     setHeader(headerKey, headerValue);
-    setFooter("...");
+    setFooter("Terra");
     registerOnStack(Constants.UITerra, context, id);
    }
 

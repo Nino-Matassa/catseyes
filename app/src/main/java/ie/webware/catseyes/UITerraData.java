@@ -75,7 +75,7 @@ public class UITerraData extends UI
      }
 
     setHeader("Terra", fieldDescription);
-    setFooter("...");
+    setFooter("Terra : " + fieldDescription);
     registerOnStack(Constants.UITerraData, context, idData);
    }
    
