@@ -4,7 +4,8 @@ import java.text.*;
 import java.util.*;
 import android.database.*;
 
-public class UIRegion extends UI {
+public class UIRegion extends UI
+ {
   Context context = null;
   long regionId = 0;
   DecimalFormat formatter = null;
@@ -16,7 +17,7 @@ public class UIRegion extends UI {
     formatter = new DecimalFormat("#,###.##");
 
     populateTerra();
-   setHeader("Country", "Cases/Million");
+    setHeader("Country", "Cases/Million");
     setFooter("...");
     registerOnStack(Constants.UIRegion, context, regionId);
    }
@@ -37,7 +38,7 @@ public class UIRegion extends UI {
       Cursor cCases = db.rawQuery(casesSql, null);
       cCases.moveToFirst();
       Long cases = cCases.getLong(cCases.getColumnIndex("total_cases"));
-      tkv.value = String.valueOf(formatter.format(cases.doubleValue()/population*Constants.oneMillion));
+      tkv.value = String.valueOf(formatter.format(cases.doubleValue() / population * Constants.oneMillion));
       tkv.tableId = currentCountryId;
       tkv.field = tkv.key;
       tkv.subClass = Constants.UIRegion;
@@ -46,6 +47,6 @@ public class UIRegion extends UI {
      } while(cCountry.moveToNext());
 
     setTableLayout(getTableRows(tkvs));
-    
-  }
-}
+
+   }
+ }

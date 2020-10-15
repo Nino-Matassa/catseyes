@@ -1,4 +1,8 @@
 /*
+Calculating the R0
  https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1804098/
+ Delay added for progress dialog working on the assumption the doInBackground function needs
+ to chew up some time. Not 100% on this.
  
+ Last line issue in scroll view fixed, xml issue.
 */

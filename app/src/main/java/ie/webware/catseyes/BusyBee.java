@@ -6,11 +6,14 @@ import android.os.*;
 import android.view.*;
 import android.widget.*;
 import android.opengl.*;
+import android.util.*;
 
-public class BusyBee extends AsyncTask<Void,Void,Void>
+public class BusyBee extends AsyncTask<Void, Void, Void>
  {
+
+  @Override
   private Context context = null;
-  
+
   private ProgressDialog pd = null;
   public BusyBee(Context _context) {
     context = _context;
@@ -29,11 +32,13 @@ public class BusyBee extends AsyncTask<Void,Void,Void>
   protected void onPreExecute() {
     pd.setMessage("Building");
     pd.show();
+    super.onPreExecute();
    }
 
   @Override
   protected void onPostExecute(Void result) {
     pd.dismiss();
+    super.onPostExecute(result);
    }
  }
  

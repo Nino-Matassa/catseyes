@@ -21,7 +21,6 @@ class UI
   private TableLayout tableLayoutFooter = null;
   private long id = 0;
   protected SQLiteDatabase db = null;
-  //public static View progressSymbol = null;
   
   protected UI(Context _context, long _id) {
     context = _context;
@@ -32,8 +31,6 @@ class UI
     tableLayout = (TableLayout) ((Activity)context).findViewById(R.id.layoutTable);
     tableLayoutHeader = (TableLayout)((Activity)context).findViewById(R.id.layoutTableHeader);
     tableLayoutFooter = (TableLayout)((Activity)context).findViewById(R.id.layoutTableFooter);
-    //progressSymbol = ((Activity)context).findViewById(R.id.busyViewId);
-    //progressSymbol.setVisibility(View.GONE);
    }
 
   protected ArrayList<TableRow> getTableRows(ArrayList<TableKeyValue> tkvs) {
@@ -78,7 +75,6 @@ class UI
 
       tableRows.add(tableRow);
      }
-
     return tableRows;
    }
 
@@ -115,6 +111,7 @@ class UI
    }
 
   private void onClickListenerFired(View p1, TableKeyValue tkv) {
+    new BusyBee(context).execute();
     try {
       if(tkv.subClass.equals(Constants.UICountry) && tkv.key.equals("Population"))
        return;

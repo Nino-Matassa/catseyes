@@ -22,7 +22,6 @@ public class UITerraData extends UI
     idData = _idData;
     field = _field;
     formatter = new DecimalFormat("#,###.##");
-    new BusyBee(context).execute();
     
     
     String fieldDescription = null;
