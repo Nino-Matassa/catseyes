@@ -111,7 +111,7 @@ class UI
    }
 
   private void onClickListenerFired(View p1, TableKeyValue tkv) {
-    new BusyBee(context).execute();
+    new BusyBee(MainActivity.activity).execute();
     try {
       if(tkv.subClass.equals(Constants.UICountry) && tkv.key.equals("Population"))
        return;
