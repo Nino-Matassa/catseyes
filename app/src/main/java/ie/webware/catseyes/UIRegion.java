@@ -17,10 +17,6 @@ public class UIRegion extends UI
     regionId = _regionId;
     formatter = new DecimalFormat("#,###.##");
 
-//    populateTerra();
-//    setHeader("Country", "Cases/Million");
-//    setFooter("Country : Cases/Million");
-//    registerOnStack(Constants.UIRegion, context, regionId);
     uiHandler();
    }
 

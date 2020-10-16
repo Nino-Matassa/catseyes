@@ -19,10 +19,6 @@ public class UIContinents extends UI
     id = _id;
     formatter = new DecimalFormat("#,###.##");
 
-//    populateContinents();
-//    setHeader("Region", "Cases/Million");
-//    setFooter("Region : Cases/Million");
-//    registerOnStack(Constants.UIContinent, context, id);
     uiHandler();
    }
 

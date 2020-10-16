@@ -27,10 +27,6 @@ public class UITerra extends UI
     id = _id;
     formatter = new DecimalFormat("#,###.##");
 
-//    populateTerra();
-//    setHeader(headerKey, headerValue);
-//    setFooter("Terra");
-//    registerOnStack(Constants.UITerra, context, id);
     uiHandler();
    }
    

@@ -35,10 +35,6 @@ public class UICountry extends UI
     idCountry = _idCountry;
     formatter = new DecimalFormat("#,###.##");
 
-//    populateTableCountry();
-//    setHeader("Country", "Details");
-//    setFooter(country);
-//    registerOnStack(Constants.UICountry, context, idCountry);
     uiHandler();
    }
 
