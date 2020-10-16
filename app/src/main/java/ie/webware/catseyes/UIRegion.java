@@ -3,6 +3,7 @@ import android.content.*;
 import java.text.*;
 import java.util.*;
 import android.database.*;
+import android.os.*;
 
 public class UIRegion extends UI
  {
@@ -16,10 +17,24 @@ public class UIRegion extends UI
     regionId = _regionId;
     formatter = new DecimalFormat("#,###.##");
 
-    populateTerra();
-    setHeader("Country", "Cases/Million");
-    setFooter("Country : Cases/Million");
-    registerOnStack(Constants.UIRegion, context, regionId);
+//    populateTerra();
+//    setHeader("Country", "Cases/Million");
+//    setFooter("Country : Cases/Million");
+//    registerOnStack(Constants.UIRegion, context, regionId);
+    uiHandler();
+   }
+
+  private void uiHandler() {
+    Handler handler = new Handler(Looper.getMainLooper());
+    handler.post(new Runnable() {
+       @Override
+       public void run() {
+         populateTerra();
+         setHeader("Country", "Cases/Million");
+         setFooter("Country : Cases/Million");
+         registerOnStack(Constants.UIRegion, context, regionId);
+        }
+      });
    }
   private void populateTerra() {
     ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();

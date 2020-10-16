@@ -5,6 +5,7 @@ import android.database.*;
 import android.util.*;
 import java.text.*;
 import java.util.*;
+import android.os.*;
 
 public class UICountry extends UI
  {
@@ -34,10 +35,24 @@ public class UICountry extends UI
     idCountry = _idCountry;
     formatter = new DecimalFormat("#,###.##");
 
-    populateTableCountry();
-    setHeader("Country", "Details");
-    setFooter(country);
-    registerOnStack(Constants.UICountry, context, idCountry);
+//    populateTableCountry();
+//    setHeader("Country", "Details");
+//    setFooter(country);
+//    registerOnStack(Constants.UICountry, context, idCountry);
+    uiHandler();
+   }
+
+  private void uiHandler() {
+    Handler handler = new Handler(Looper.getMainLooper());
+    handler.post(new Runnable() {
+       @Override
+       public void run() {
+         populateTableCountry();
+         setHeader("Country", "Details");
+         setFooter(country);
+         registerOnStack(Constants.UICountry, context, idCountry);
+        }
+      });
    }
 
   public void populateTableCountry() {

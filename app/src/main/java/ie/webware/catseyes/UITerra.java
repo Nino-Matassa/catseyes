@@ -1,10 +1,9 @@
 package ie.webware.catseyes;
 
-import android.app.*;
 import android.content.*;
 import android.database.*;
+import android.os.*;
 import android.util.*;
-import android.view.*;
 import java.text.*;
 import java.util.*;
 
@@ -28,12 +27,26 @@ public class UITerra extends UI
     id = _id;
     formatter = new DecimalFormat("#,###.##");
 
-    populateTerra();
-    setHeader(headerKey, headerValue);
-    setFooter("Terra");
-    registerOnStack(Constants.UITerra, context, id);
+//    populateTerra();
+//    setHeader(headerKey, headerValue);
+//    setFooter("Terra");
+//    registerOnStack(Constants.UITerra, context, id);
+    uiHandler();
    }
-
+   
+   private void uiHandler() {
+     Handler handler = new Handler(Looper.getMainLooper());
+     handler.post(new Runnable() {
+        @Override
+        public void run() {
+          populateTerra();
+          setHeader(headerKey, headerValue);
+          setFooter("Terra");
+          registerOnStack(Constants.UITerra, context, id);             
+         }
+       });
+   }
+   
   private void populateTerra() {
     ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();
     String sql = "select sum(population) as population from country";

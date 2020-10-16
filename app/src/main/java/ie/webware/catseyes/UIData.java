@@ -6,6 +6,7 @@ import android.util.*;
 import java.text.*;
 import java.util.*;
 import android.widget.*;
+import android.os.*;
 
 public class UIData extends UI
  {
@@ -22,51 +23,62 @@ public class UIData extends UI
     field = _field;
     formatter = new DecimalFormat("#,###.##");
 
-    String fieldDescription = null;
-    switch(field) {
-      case "new_cases":
-       fieldDescription = "New Cases";
-       populateTableData();
-       break;
-      case "new_deaths":
-       fieldDescription = "New Deaths";
-       populateTableData();
-       break;
-      case "new_tests":
-       fieldDescription = "New Tests";
-       populateTableData();
-       break;
-      case "total_cases_per_million":
-       fieldDescription = "Case/Million";
-       populateTableData();
-       break;
-      case "total_deaths_per_million":
-       fieldDescription = "Death/Million";
-       populateTableData();
-       break;
-      case "total_tests":
-       fieldDescription = "Test/Million";
-       field = "total_tests_per_thousand*1000";
-       populateTableData();
-       break;
-      case "positive_rate":
-       fieldDescription = "Positivity Rate";
-       populateTableData();
-       break;
-      case "R0":
-       fieldDescription = "R0";
-       populateTableDataR0();
-       break;
-      default:
-     }
-    String sql = "select location from country where id = #".replace("#", String.valueOf(idData));
-    Cursor cursor = db.rawQuery(sql, null);
-    cursor.moveToFirst();
-    country = cursor.getString(cursor.getColumnIndex("location"));
+    uiHandler();
     
-    setHeader(country, fieldDescription);
-    setFooter(country + " : " + fieldDescription);
-    registerOnStack(Constants.UIData, context, idData);
+   }
+
+  private void uiHandler() {
+    Handler handler = new Handler(Looper.getMainLooper());
+    handler.post(new Runnable() {
+       @Override
+       public void run() {
+         String fieldDescription = null;
+         switch(field) {
+           case "new_cases":
+            fieldDescription = "New Cases";
+            populateTableData();
+            break;
+           case "new_deaths":
+            fieldDescription = "New Deaths";
+            populateTableData();
+            break;
+           case "new_tests":
+            fieldDescription = "New Tests";
+            populateTableData();
+            break;
+           case "total_cases_per_million":
+            fieldDescription = "Case/Million";
+            populateTableData();
+            break;
+           case "total_deaths_per_million":
+            fieldDescription = "Death/Million";
+            populateTableData();
+            break;
+           case "total_tests":
+            fieldDescription = "Test/Million";
+            field = "total_tests_per_thousand*1000";
+            populateTableData();
+            break;
+           case "positive_rate":
+            fieldDescription = "Positivity Rate";
+            populateTableData();
+            break;
+           case "R0":
+            fieldDescription = "R0";
+            populateTableDataR0();
+            break;
+           default:
+          }
+         String sql = "select location from country where id = #".replace("#", String.valueOf(idData));
+         Cursor cursor = db.rawQuery(sql, null);
+         cursor.moveToFirst();
+         country = cursor.getString(cursor.getColumnIndex("location"));
+
+         setHeader(country, fieldDescription);
+         setFooter(country + " : " + fieldDescription);
+         registerOnStack(Constants.UIData, context, idData);
+        }
+      });
    }
    
   private void populateTableDataR0() {

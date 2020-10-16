@@ -5,6 +5,7 @@ import android.database.*;
 import android.view.*;
 import java.text.*;
 import java.util.*;
+import android.os.*;
 
 public class UITerraData extends UI
  {
@@ -23,60 +24,124 @@ public class UITerraData extends UI
     field = _field;
     formatter = new DecimalFormat("#,###.##");
     
+    uiHandler();
+    }
     
-    String fieldDescription = null;
-    switch(field) {
-      case "new_cases":
-       fieldDescription = "New Cases";
-       sql = "select date, sum(new_cases) as new_cases from data group by date order by date desc";
-       populateTerraDetails();
-       break;
-      case "new_deaths":
-       fieldDescription = "New Deaths";
-       sql = "select date, sum(new_deaths) as new_deaths from data group by date order by date desc";
-       populateTerraDetails();
-       break;
-      case "new_tests":
-       fieldDescription = "Total Tests";
-       sql = "select date, sum(new_tests) as new_tests from data group by date order by date desc";
-       field = "new_tests";
-       populateTerraDetails();
-       break;
-      case "total_cases_per_million":
-       fieldDescription = "Cases/Million";
-       sql = "select date, sum(total_cases) as total_cases from data group by date order by date desc";
-       field = "total_cases";
-       bPerMillion = true;
-       populateTerraDetails();
-       break;
-      case "total_deaths_per_million":
-       fieldDescription = "Deaths/Million";
-       sql = "select date, sum(total_deaths) as total_deaths from data group by date order by date desc";
-       field = "total_deaths";
-       bPerMillion = true;
-       populateTerraDetails();
-       break;
-      case "total_tests_per_million":
-       fieldDescription = "Total Tests/Million";
-       sql = "select date, sum(total_tests) as total_tests from data group by date order by date desc";
-       field = "total_tests";
-       bPerMillion = true;
-       populateTerraDetails();
-       break;
-      case "positive_rate":
-       fieldDescription = "Positivity Rate";
-       sql = "select date, sum(positive_rate) as positive_rate from data group by date order by date desc";
-       populateTerraDetails();
-       break;
-      case "R0":
-       fieldDescription = "R0";
-       populateTerraDetailsR0();
-       break;
-     }
+//    String fieldDescription = null;
+//    switch(field) {
+//      case "new_cases":
+//       fieldDescription = "New Cases";
+//       sql = "select date, sum(new_cases) as new_cases from data group by date order by date desc";
+//       populateTerraDetails();
+//       break;
+//      case "new_deaths":
+//       fieldDescription = "New Deaths";
+//       sql = "select date, sum(new_deaths) as new_deaths from data group by date order by date desc";
+//       populateTerraDetails();
+//       break;
+//      case "new_tests":
+//       fieldDescription = "Total Tests";
+//       sql = "select date, sum(new_tests) as new_tests from data group by date order by date desc";
+//       field = "new_tests";
+//       populateTerraDetails();
+//       break;
+//      case "total_cases_per_million":
+//       fieldDescription = "Cases/Million";
+//       sql = "select date, sum(total_cases) as total_cases from data group by date order by date desc";
+//       field = "total_cases";
+//       bPerMillion = true;
+//       populateTerraDetails();
+//       break;
+//      case "total_deaths_per_million":
+//       fieldDescription = "Deaths/Million";
+//       sql = "select date, sum(total_deaths) as total_deaths from data group by date order by date desc";
+//       field = "total_deaths";
+//       bPerMillion = true;
+//       populateTerraDetails();
+//       break;
+//      case "total_tests_per_million":
+//       fieldDescription = "Total Tests/Million";
+//       sql = "select date, sum(total_tests) as total_tests from data group by date order by date desc";
+//       field = "total_tests";
+//       bPerMillion = true;
+//       populateTerraDetails();
+//       break;
+//      case "positive_rate":
+//       fieldDescription = "Positivity Rate";
+//       sql = "select date, sum(positive_rate) as positive_rate from data group by date order by date desc";
+//       populateTerraDetails();
+//       break;
+//      case "R0":
+//       fieldDescription = "R0";
+//       populateTerraDetailsR0();
+//       break;
+//     }
+//
+//    setHeader("Terra", fieldDescription);
+//    setFooter("Terra : " + fieldDescription);
+//    registerOnStack(Constants.UITerraData, context, idData);
+//   }
 
-    setHeader("Terra", fieldDescription);
-    setFooter("Terra : " + fieldDescription);
-    registerOnStack(Constants.UITerraData, context, idData);
+  private void uiHandler() {
+    Handler handler = new Handler(Looper.getMainLooper());
+    handler.post(new Runnable() {
+       @Override
+       public void run() {
+         String fieldDescription = null;
+         switch(field) {
+           case "new_cases":
+            fieldDescription = "New Cases";
+            sql = "select date, sum(new_cases) as new_cases from data group by date order by date desc";
+            populateTerraDetails();
+            break;
+           case "new_deaths":
+            fieldDescription = "New Deaths";
+            sql = "select date, sum(new_deaths) as new_deaths from data group by date order by date desc";
+            populateTerraDetails();
+            break;
+           case "new_tests":
+            fieldDescription = "Total Tests";
+            sql = "select date, sum(new_tests) as new_tests from data group by date order by date desc";
+            field = "new_tests";
+            populateTerraDetails();
+            break;
+           case "total_cases_per_million":
+            fieldDescription = "Cases/Million";
+            sql = "select date, sum(total_cases) as total_cases from data group by date order by date desc";
+            field = "total_cases";
+            bPerMillion = true;
+            populateTerraDetails();
+            break;
+           case "total_deaths_per_million":
+            fieldDescription = "Deaths/Million";
+            sql = "select date, sum(total_deaths) as total_deaths from data group by date order by date desc";
+            field = "total_deaths";
+            bPerMillion = true;
+            populateTerraDetails();
+            break;
+           case "total_tests_per_million":
+            fieldDescription = "Total Tests/Million";
+            sql = "select date, sum(total_tests) as total_tests from data group by date order by date desc";
+            field = "total_tests";
+            bPerMillion = true;
+            populateTerraDetails();
+            break;
+           case "positive_rate":
+            fieldDescription = "Positivity Rate";
+            sql = "select date, sum(positive_rate) as positive_rate from data group by date order by date desc";
+            populateTerraDetails();
+            break;
+           case "R0":
+            fieldDescription = "R0";
+            populateTerraDetailsR0();
+            break;
+          }
+
+         setHeader("Terra", fieldDescription);
+         setFooter("Terra : " + fieldDescription);
+         registerOnStack(Constants.UITerraData, context, idData);
+        }
+      });
    }
    
   private void populateTerraDetailsR0() {

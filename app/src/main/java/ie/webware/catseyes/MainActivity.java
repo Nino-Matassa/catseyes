@@ -34,7 +34,7 @@ public class MainActivity extends Activity
   public void onBackPressed() {
     if(stack.size() == 2)
      WorldOmeterDatabase.toast("Hit back button again to exit.", Toast.LENGTH_LONG, MainActivity.this);
-    if(stack.empty()) {
+    if(stack.empty() || stack.size() == 1) {
       super.onBackPressed();
      } else {
       stack.pop();
@@ -58,12 +58,6 @@ public class MainActivity extends Activity
         default:
        }
      }
-   }
-
-  @Override
-  protected void onDestroy() {
-    Database.getInstance(MainActivity.this).close();
-    super.onDestroy();
    }
 
   public void buildDatabase() {

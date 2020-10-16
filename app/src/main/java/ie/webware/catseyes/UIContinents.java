@@ -5,6 +5,7 @@ import java.text.*;
 import java.util.*;
 import android.database.*;
 import android.util.*;
+import android.os.*;
 
 public class UIContinents extends UI
  {
@@ -18,10 +19,24 @@ public class UIContinents extends UI
     id = _id;
     formatter = new DecimalFormat("#,###.##");
 
-    populateContinents();
-    setHeader("Region", "Cases/Million");
-    setFooter("Region : Cases/Million");
-    registerOnStack(Constants.UIContinent, context, id);
+//    populateContinents();
+//    setHeader("Region", "Cases/Million");
+//    setFooter("Region : Cases/Million");
+//    registerOnStack(Constants.UIContinent, context, id);
+    uiHandler();
+   }
+
+  private void uiHandler() {
+    Handler handler = new Handler(Looper.getMainLooper());
+    handler.post(new Runnable() {
+       @Override
+       public void run() {
+         populateContinents();
+         setHeader("Region", "Cases/Million");
+         setFooter("Region : Cases/Million");
+         registerOnStack(Constants.UIContinent, context, id);         
+        }
+      });
    }
 
   private void populateContinents() {
