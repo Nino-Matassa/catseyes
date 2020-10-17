@@ -9,7 +9,7 @@
 		android:layout_height="wrap_content"
 		android:layout_width="wrap_content"
 		android:text=""
-    android:textSize="14dip"
+		android:textSize="14dip"
 		android:id="@+id/mainTextID"/>
 
 </LinearLayout>

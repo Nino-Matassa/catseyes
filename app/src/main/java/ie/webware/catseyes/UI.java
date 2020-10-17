@@ -96,10 +96,10 @@ class UI extends AsyncTask<Void, Void, Void>
       tableRow.addView(textViewValue);
       if(bColourSwitch) {
         bColourSwitch = !bColourSwitch; 
-        tableRow.setBackgroundColor(Color.LTGRAY);
+        tableRow.setBackgroundColor(Color.parseColor("#F7FAFD"));
        } else {
         bColourSwitch = !bColourSwitch;
-        tableRow.setBackgroundColor(Color.TRANSPARENT);
+         tableRow.setBackgroundColor(Color.parseColor("#ECF8F6"));
        }
 
       tableRows.add(tableRow);
@@ -115,8 +115,8 @@ class UI extends AsyncTask<Void, Void, Void>
     TableRow.LayoutParams cellParams = new TableRow.LayoutParams(0, TableRow.LayoutParams.MATCH_PARENT);
     cellParams.weight = 9;
     TextView textViewL = new TextView(context);
-    textViewL.setTextSize(18);
     TextView textViewR = new TextView(context);
+    textViewL.setTextSize(18);
     textViewR.setTextSize(18);
     textViewL.setLayoutParams(cellParams);
     textViewR.setLayoutParams(cellParams);
@@ -126,6 +126,7 @@ class UI extends AsyncTask<Void, Void, Void>
     textViewR.setTypeface(null, Typeface.BOLD);
     tableRow.addView(textViewL);
     tableRow.addView(textViewR);
+    tableRow.setBackgroundColor(Color.parseColor("#E6E6CA"));
     tableLayoutHeader.addView(tableRow);
    }
 
@@ -176,6 +177,7 @@ class UI extends AsyncTask<Void, Void, Void>
     textView.setTypeface(null, Typeface.BOLD);
     textView.setGravity(Gravity.CENTER);
     tableRow.addView(textView);
+    tableRow.setBackgroundColor(Color.parseColor("#E6E6CA"));
     tableLayoutFooter.addView(tableRow);
    }
 
