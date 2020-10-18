@@ -98,7 +98,9 @@ public class UITerraData extends UI
     Cursor cSumNewCasesYesterday = db.rawQuery(sqlSumNewCasesYesterday, null);
     cSumNewCasesYesterday.moveToFirst();
     cSumNewCasesYesterday.moveToNext();
+    cSumNewCasesYesterday.moveToNext();
     cSumNewCasesToday.moveToFirst();
+    cSumNewCasesToday.moveToNext();
     do {
       TableKeyValue tkv = new TableKeyValue();
       tkv.subClass = Constants.UITerraData;
