@@ -23,11 +23,14 @@ class UI extends AsyncTask<Void, Void, Void>
   private long id = 0;
   protected SQLiteDatabase db = null;
   private ProgressDialog pd = null;
+  Vibrator vibrator = null;
   
   protected UI(Context _context, long _id) {
     context = _context;
     id = _id;
     pd = new ProgressDialog(MainActivity.activity);
+    
+    vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE) ;
     
     if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
      this.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -145,6 +148,7 @@ class UI extends AsyncTask<Void, Void, Void>
       if(tkv.subClass.equals(Constants.UICountry) && tkv.key.equals("Population"))
        return;
       Double.parseDouble(tkv.value.replace(",", ""));
+      vibrator.vibrate(100);
       if(tkv.subClass.equals(Constants.UITerra)) {
         if(tkv.key.equals(Constants.UITerraPopulation)) {
           new UIContinents(context, tkv.tableId);
