@@ -10,6 +10,7 @@ public class UIRegion extends UI
   Context context = null;
   long regionId = 0;
   DecimalFormat formatter = null;
+  private String continent = null;
 
   public UIRegion(Context _context, long _regionId) {
     super(_context, _regionId);
@@ -26,17 +27,18 @@ public class UIRegion extends UI
        @Override
        public void run() {
          populateTerra();
-         setHeader("Country", "Cases/Million");
-         setFooter("Country : Cases/Million");
+         setHeader(continent, "Cases/Million");
+         setFooter(continent + " : Cases/Million");
          registerOnStack(Constants.UIRegion, context, regionId);
         }
       });
    }
   private void populateTerra() {
     ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();
-    String sql = "select id, location from country where fk_region = # order by location".replace("#", String.valueOf(regionId));
+    String sql = "select id, continent, location from country where fk_region = # order by location".replace("#", String.valueOf(regionId));
     Cursor cCountry = db.rawQuery(sql, null);
     cCountry.moveToFirst();
+    continent = cCountry.getString(cCountry.getColumnIndex("continent"));
     TableKeyValue tkv = new TableKeyValue();
     do {
       tkv.key = cCountry.getString(cCountry.getColumnIndex("location"));

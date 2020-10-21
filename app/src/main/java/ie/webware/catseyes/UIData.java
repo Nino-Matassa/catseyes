@@ -74,7 +74,7 @@ public class UIData extends UI
          cursor.moveToFirst();
          country = cursor.getString(cursor.getColumnIndex("location"));
 
-         setHeader(country, fieldDescription);
+         setHeader("Date", fieldDescription);
          setFooter(country + " : " + fieldDescription);
          registerOnStack(Constants.UIData, context, idData);
         }

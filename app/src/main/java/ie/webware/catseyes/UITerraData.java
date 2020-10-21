@@ -83,7 +83,7 @@ public class UITerraData extends UI
             break;
           }
 
-         setHeader("Terra", fieldDescription);
+         setHeader("Date", fieldDescription);
          setFooter("Terra : " + fieldDescription);
          registerOnStack(Constants.UITerraData, context, idData);
         }

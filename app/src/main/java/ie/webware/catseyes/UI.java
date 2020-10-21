@@ -147,7 +147,7 @@ class UI extends AsyncTask<Void, Void, Void>
     try {
       if(tkv.subClass.equals(Constants.UICountry) && tkv.key.equals("Population"))
        return;
-      Double.parseDouble(tkv.value.replace(",", ""));
+      Double.parseDouble(tkv.value.replace(",", "").replace("%", ""));
       vibrator.vibrate(100);
       if(tkv.subClass.equals(Constants.UITerra)) {
         if(tkv.key.equals(Constants.UITerraPopulation)) {

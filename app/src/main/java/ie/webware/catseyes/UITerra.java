@@ -20,6 +20,8 @@ public class UITerra extends UI
   Long sumNewDeaths = 0L;
   Long sumPopulation = 0L;
   Long sumNewTests = 0L;
+  Double positivityRate = 0.0;
+  Integer nCountry = 0;
 
   public UITerra(Context _context, long _id) {
     super(_context, _id);
@@ -45,14 +47,15 @@ public class UITerra extends UI
    
   private void populateTerra() {
     ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();
-    String sql = "select sum(population) as population from country";
+    String sql = "select count(id) as ncountry, sum(population) as population from country";
     Cursor cursor = db.rawQuery(sql, null);
     cursor.moveToFirst();
     sumPopulation = cursor.getLong(cursor.getColumnIndex("population"));
+    nCountry = cursor.getInt(cursor.getColumnIndex("ncountry"));
     TableKeyValue tkv = new TableKeyValue();
     tkv.key = "Population"; tkv.value = String.valueOf(formatter.format(sumPopulation)); tkvs.add(tkv); tkv.tableId = 0L; tkv.field = "population"; tkv.subClass = Constants.UITerra; tkv = new TableKeyValue();
 
-    sql = "select sum(new_cases) as total_cases, sum(new_deaths) as total_deaths, sum(new_tests) as total_tests, date from data order by date desc";
+    sql = "select sum(positive_rate) as positivity_rate, sum(new_cases) as total_cases, sum(new_deaths) as total_deaths, sum(new_tests) as total_tests, date from data order by date desc";
     cursor = db.rawQuery(sql, null);
     cursor.moveToFirst();
     lastUpdated = cursor.getString(cursor.getColumnIndex("date"));
@@ -66,6 +69,7 @@ public class UITerra extends UI
     sumNewCases = cursor.getLong(cursor.getColumnIndex("total_cases"));
     sumNewDeaths = cursor.getLong(cursor.getColumnIndex("total_deaths"));
     sumNewTests = cursor.getLong(cursor.getColumnIndex("total_tests"));
+    positivityRate = cursor.getDouble(cursor.getColumnIndex("positivity_rate"));
     
     tkv.key = "Last Updated";
     tkv.value =  lastUpdated; 
@@ -132,10 +136,10 @@ public class UITerra extends UI
     tkv.subClass = Constants.UITerra;
     tkv = new TableKeyValue();
 
-    Double positivityRate = sumNewCases.doubleValue()/sumNewTests;
+    positivityRate = positivityRate.doubleValue()/nCountry;
     
     tkv.key = "Test Positive Rate";
-    tkv.value = String.valueOf(formatter.format(positivityRate));
+    tkv.value = String.valueOf(formatter.format(positivityRate)) + "%";
     tkvs.add(tkv);
     tkv.tableId = 0l;
     tkv.field = "positive_rate";
@@ -151,7 +155,7 @@ public class UITerra extends UI
     Double R0 = existingCases.doubleValue()/sumNewCases;
     
     tkv.key = "R0";
-    tkv.value = String.valueOf(formatter.format(R0));
+    tkv.value = String.valueOf(formatter.format(R0)) + "%";
     tkvs.add(tkv);
     tkv.tableId = 0l;
     tkv.field = "R0";
