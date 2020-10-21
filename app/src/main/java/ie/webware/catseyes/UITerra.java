@@ -31,20 +31,20 @@ public class UITerra extends UI
 
     uiHandler();
    }
-   
-   private void uiHandler() {
-     Handler handler = new Handler(Looper.getMainLooper());
-     handler.post(new Runnable() {
-        @Override
-        public void run() {
-          populateTerra();
-          setHeader(headerKey, headerValue);
-          setFooter("Terra");
-          registerOnStack(Constants.UITerra, context, id);             
-         }
-       });
+
+  private void uiHandler() {
+    Handler handler = new Handler(Looper.getMainLooper());
+    handler.post(new Runnable() {
+       @Override
+       public void run() {
+         populateTerra();
+         setHeader(headerKey, headerValue);
+         setFooter("Terra");
+         registerOnStack(Constants.UITerra, context, id);             
+        }
+      });
    }
-   
+
   private void populateTerra() {
     ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();
     String sql = "select count(id) as ncountry, sum(population) as population from country";
@@ -64,13 +64,13 @@ public class UITerra extends UI
       String[] arrDate = lastUpdated.split(" ");
       lastUpdated = arrDate[0] + " " + arrDate[1] + " " + arrDate[2] + " " + arrDate[5];
      } catch(ParseException e) {
-       Log.d(Constants.UITerra, e.toString());
+      Log.d(Constants.UITerra, e.toString());
      }
     sumNewCases = cursor.getLong(cursor.getColumnIndex("total_cases"));
     sumNewDeaths = cursor.getLong(cursor.getColumnIndex("total_deaths"));
     sumNewTests = cursor.getLong(cursor.getColumnIndex("total_tests"));
     positivityRate = cursor.getDouble(cursor.getColumnIndex("positivity_rate"));
-    
+
     tkv.key = "Last Updated";
     tkv.value =  lastUpdated; 
     tkvs.add(tkv); 
@@ -80,7 +80,7 @@ public class UITerra extends UI
     headerKey = "Terra"; 
     headerValue = tkv.value; 
     tkv = new TableKeyValue();
-    
+
     tkv.key = "Cases";
     tkv.value = String.valueOf(formatter.format(sumNewCases));
     tkvs.add(tkv);
@@ -88,7 +88,7 @@ public class UITerra extends UI
     tkv.field = "new_cases";
     tkv.subClass = Constants.UITerra;
     tkv = new TableKeyValue();
-    
+
     tkv.key = "Deaths";
     tkv.value = String.valueOf(formatter.format(sumNewDeaths));
     tkvs.add(tkv);
@@ -119,7 +119,7 @@ public class UITerra extends UI
     tkv.field = "total_cases_per_million";
     tkv.subClass = Constants.UITerra;
     tkv = new TableKeyValue();
-    
+
     tkv.key = "Death/Million";
     tkv.value = String.valueOf(formatter.format(deathPerMillion));
     tkvs.add(tkv);
@@ -127,7 +127,7 @@ public class UITerra extends UI
     tkv.field = "total_deaths_per_million";
     tkv.subClass = Constants.UITerra;
     tkv = new TableKeyValue();
-    
+
     tkv.key = "Test/Million";
     tkv.value = String.valueOf(formatter.format(testPerMillion));
     tkvs.add(tkv);
@@ -136,32 +136,50 @@ public class UITerra extends UI
     tkv.subClass = Constants.UITerra;
     tkv = new TableKeyValue();
 
-    positivityRate = positivityRate.doubleValue()/nCountry;
-    
+    positivityRate = positivityRate.doubleValue() / nCountry;
+
     tkv.key = "Test Positive Rate";
-    tkv.value = String.valueOf(formatter.format(positivityRate)) + "%";
+    tkv.value = String.valueOf(formatter.format(positivityRate));
     tkvs.add(tkv);
     tkv.tableId = 0l;
     tkv.field = "positive_rate";
     tkv.subClass = Constants.UITerra;
     tkv = new TableKeyValue();
-    
-    sql = "select date, sum(new_cases) as newCasesToday from data where new_cases > 0 group by date order by date desc limit 1";
-    cursor = db.rawQuery(sql, null);
-    cursor.moveToFirst();
-    Long newCasesToday = cursor.getLong(cursor.getColumnIndex("newCasesToday"));
-    Long existingCases = sumNewCases - newCasesToday;
-    
-    Double R0 = existingCases.doubleValue()/sumNewCases;
-    
+
     tkv.key = "R0";
-    tkv.value = String.valueOf(formatter.format(R0)) + "%";
+    tkv.value = String.valueOf(formatter.format(populateR0Average(nCountry))) + "%";
     tkvs.add(tkv);
     tkv.tableId = 0l;
     tkv.field = "R0";
     tkv.subClass = Constants.UITerra;
     tkv = new TableKeyValue();
-    
+
     setTableLayout(getTableRows(tkvs));
+   }
+
+  private double populateR0Average(int nCountry) {
+    Double R0 = 0.0;
+    Long sumNewCasesToday = 0L;
+    Long sumNewCasesYesterday = 0L;
+    String sqlNewCasesToday = "select date, sum(new_cases) as sumNewCasesToday from data group by date";
+    String sqlSumNewCasesYesterday = "select date, sum(new_cases) as sumNewCasesYesterday from data group by date";
+    Cursor cSumNewCasesToday = db.rawQuery(sqlNewCasesToday, null);
+    Cursor cSumNewCasesYesterday = db.rawQuery(sqlSumNewCasesYesterday, null);
+    cSumNewCasesYesterday.moveToFirst();
+    cSumNewCasesYesterday.moveToNext();
+    cSumNewCasesToday.moveToFirst();
+    do {
+      try {
+        sumNewCasesToday = cSumNewCasesToday.getLong(cSumNewCasesToday.getColumnIndex("sumNewCasesToday"));
+        sumNewCasesYesterday = cSumNewCasesYesterday.getLong(cSumNewCasesYesterday.getColumnIndex("sumNewCasesYesterday"));
+       } catch(Exception e) {
+        Log.d("UITerra", e.toString());
+       }
+      if(sumNewCasesToday > 0) {
+        R0 += sumNewCasesYesterday.doubleValue() / sumNewCasesToday;
+       }
+      cSumNewCasesToday.moveToNext();
+     } while(cSumNewCasesYesterday.moveToNext());
+    return R0 / nCountry;
    }
  }

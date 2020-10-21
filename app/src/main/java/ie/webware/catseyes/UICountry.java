@@ -189,7 +189,7 @@ public class UICountry extends UI
     Double R0 = existingCases.doubleValue()/sumNewCases;
 
     tkv.key = "R0";
-    tkv.value = String.valueOf(formatter.format(R0)) + "%";
+    tkv.value = String.valueOf(formatter.format(populateR0Average()));
     tkvs.add(tkv);
     tkv.tableId = idCountry;
     tkv.field = "R0";
@@ -199,4 +199,33 @@ public class UICountry extends UI
     
     setTableLayout(getTableRows(tkvs));
    }
+  private double populateR0Average() {
+    Double R0 = 0.0;
+    Long sumNewCasesToday = 0L;
+    Long sumNewCasesYesterday = 0L;
+    int nDays = 0;
+    String sqlNewCasesToday = "select date, sum(new_cases) as sumNewCasesToday from data where fk_country = # group by date order by date desc".replace("#", String.valueOf(idCountry));
+    String sqlSumNewCasesYesterday = "select date, sum(new_cases) as sumNewCasesYesterday from data where fk_country = # group by date order by date desc".replace("#", String.valueOf(idCountry));
+    Cursor cSumNewCasesToday = db.rawQuery(sqlNewCasesToday, null);
+    Cursor cSumNewCasesYesterday = db.rawQuery(sqlSumNewCasesYesterday, null);
+    cSumNewCasesYesterday.moveToFirst();
+    cSumNewCasesYesterday.moveToNext();
+    cSumNewCasesToday.moveToFirst();
+    do {
+      try {
+        sumNewCasesToday = cSumNewCasesToday.getLong(cSumNewCasesToday.getColumnIndex("sumNewCasesToday"));
+        sumNewCasesYesterday = cSumNewCasesYesterday.getLong(cSumNewCasesYesterday.getColumnIndex("sumNewCasesYesterday"));
+       } catch(Exception e) {
+        Log.d("UICountry", e.toString());
+       }
+      if(sumNewCasesToday > 0) {
+        R0 += sumNewCasesYesterday.doubleValue() / sumNewCasesToday;
+        nDays++;
+       }
+      cSumNewCasesToday.moveToNext();
+     } while(cSumNewCasesYesterday.moveToNext());
+     
+    return R0/nDays;
+   }
+  
  }
