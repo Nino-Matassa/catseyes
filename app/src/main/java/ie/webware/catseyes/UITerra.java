@@ -139,7 +139,7 @@ public class UITerra extends UI
     positivityRate = positivityRate.doubleValue() / nCountry;
 
     tkv.key = "Test Positive Rate";
-    tkv.value = String.valueOf(formatter.format(positivityRate));
+    tkv.value = String.valueOf(formatter.format(positivityRate)) + "%";
     tkvs.add(tkv);
     tkv.tableId = 0l;
     tkv.field = "positive_rate";
@@ -147,7 +147,7 @@ public class UITerra extends UI
     tkv = new TableKeyValue();
 
     tkv.key = "R0";
-    tkv.value = String.valueOf(formatter.format(populateR0Average(nCountry))) + "%";
+    tkv.value = String.valueOf(formatter.format(populateR0Average(nCountry)));
     tkvs.add(tkv);
     tkv.tableId = 0l;
     tkv.field = "R0";

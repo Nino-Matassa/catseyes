@@ -66,7 +66,6 @@ public class UIContinents extends UI
    {
     @Override
     public int compare(TableKeyValue tkvA, TableKeyValue tkvB) {
-      // TODO: Implement this method
       Double dA = Double.parseDouble(tkvA.value.replace(",", ""));
       Double dB = Double.parseDouble(tkvB.value.replace(",", ""));
       return dA.compareTo(dB);

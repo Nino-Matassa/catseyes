@@ -6,6 +6,7 @@ import android.view.*;
 import java.text.*;
 import java.util.*;
 import android.os.*;
+import android.util.*;
 
 public class UITerraData extends UI
  {
@@ -27,7 +28,7 @@ public class UITerraData extends UI
     uiHandler();
    }
 
-  
+
   private void uiHandler() {
     Handler handler = new Handler(Looper.getMainLooper());
     handler.post(new Runnable() {

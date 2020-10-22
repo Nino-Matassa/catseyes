@@ -1,12 +1,11 @@
 /*
-Calculating the R0
- https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1804098/
- Delay added for progress dialog working on the assumption the doInBackground function needs
- to chew up some time. Not 100% on this.
+ Calculating the daily R0
  
- Last line issue in scroll view fixed, xml issue.
+ Change UITerraData & UIData daily R0 to show average up to that day.
  
- Threading & progress dialog
- https://www.toptal.com/android/android-threading-all-you-need-to-know
+ Sort the sql ascending and count the days for each iteration deviding the sum by nDays for each day.
+ Finally sort the table data by date so it shows correctly.
+ 
+ NB: for a day to count it must have > 0 cases otherwise the calculation is thrown.
  
 */
