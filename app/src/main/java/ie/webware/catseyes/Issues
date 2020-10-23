@@ -1,11 +1,3 @@
 /*
- Calculating the daily R0
- 
- Change UITerraData & UIData daily R0 to show average up to that day.
- 
- Sort the sql ascending and count the days for each iteration deviding the sum by nDays for each day.
- Finally sort the table data by date so it shows correctly.
- 
- NB: for a day to count it must have > 0 cases otherwise the calculation is thrown.
  
 */
