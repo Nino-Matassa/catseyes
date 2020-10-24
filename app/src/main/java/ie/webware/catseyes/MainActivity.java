@@ -23,11 +23,21 @@ public class MainActivity extends Activity
     view.setText("SARS-COV-2 Statistical Analysis");
     buildDatabase();
 
-    try {
-      new UITerra(MainActivity.this, 0);
-     } catch(Exception e) {
-      Log.d("MainActivity", e.toString());
-     }
+	uiHandler();
+ }
+  
+ private void uiHandler() {
+  Handler handler = new Handler(Looper.getMainLooper());
+  handler.post(new Runnable() {
+	@Override
+	public void run() {
+	 try {
+	  new UITerra(MainActivity.this, 0);
+	 } catch(Exception e) {
+	  Log.d("MainActivity", e.toString());
+	 }
+	}     
+   });
    }
 
   @Override
