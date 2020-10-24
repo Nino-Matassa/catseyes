@@ -46,9 +46,6 @@ class UI extends AsyncTask<Void, Void, Void>
    
   @Override
   protected Void doInBackground(Void[] p1) {
-    try {
-      Thread.sleep(500);
-     } catch(InterruptedException e) {}
     return null;
    }
 
