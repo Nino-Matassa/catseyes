@@ -51,7 +51,8 @@ public class MainActivity extends Activity
       UIStackInfo info = stack.pop();
       switch(info.UI) {
         case Constants.UITerra:
-         new UITerra(info.context, info.id);
+         //new UITerra(info.context, info.id);
+         super.onBackPressed();
          break;
         case Constants.UIContinent:
          new UIContinents(info.context, info.id);
@@ -82,6 +83,9 @@ public class MainActivity extends Activity
         }
       });
     thread.start();
+    try {
+      thread.join();
+     } catch(InterruptedException e) {}
    }
  }
  
