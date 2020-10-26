@@ -57,7 +57,7 @@ public class WorldOmeterDatabase
          }
        }
       //speedReadJSON(); // debugging
-      //Thread.sleep(1000); // debugging
+      //Thread.sleep(10000); // debugging
      } catch(Exception e) {
       Log.d("WorldOmeterDatabase", e.toString());
      }

@@ -28,7 +28,13 @@ public class MainActivity extends Activity
     else
      new BusyBee().execute();
     
-    buildDatabase();
+    //Delay, to allow the ui to draw it self first
+    Handler handler = new Handler();
+    handler.postDelayed(new Runnable() {
+       public void run() {
+         buildDatabase();
+        }
+      }, 500);
    }
 
   private void openTerra() {
@@ -105,13 +111,14 @@ class BusyBee extends AsyncTask
   @Override
   protected Object doInBackground(Object[] p1) {
     try {
-      Thread.sleep(1000);
+      Thread.sleep(500);
      } catch(InterruptedException e) {}
     return null;
    }
 
   @Override
   protected void onPreExecute() {
+    pd.setMessage("Generating database...");
     pd.show();
     super.onPreExecute();
    }
