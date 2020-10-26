@@ -53,10 +53,11 @@ public class WorldOmeterDatabase
         if(urlTS.after(jsonTS)) {
           readJSONfromURL();
           speedReadJSON();
-          toast("Initialised", Toast.LENGTH_LONG, context);
+          //toast("Initialised", Toast.LENGTH_LONG, context);
          }
        }
       //speedReadJSON(); // debugging
+      //Thread.sleep(1000); // debugging
      } catch(Exception e) {
       Log.d("WorldOmeterDatabase", e.toString());
      }

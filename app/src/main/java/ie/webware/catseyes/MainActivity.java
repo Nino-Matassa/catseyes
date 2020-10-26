@@ -17,16 +17,21 @@ public class MainActivity extends Activity
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    
     activity = this;
     setContentView(R.layout.main);
     view = findViewById(R.id.mainTextID);
     view.setText("SARS-COV-2 Statistical Analysis");
+    
+    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+     new BusyBee().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    else
+     new BusyBee().execute();
+    
     buildDatabase();
-
-    uiHandler();
    }
 
-  private void uiHandler() {
+  private void openTerra() {
     Handler handler = new Handler(Looper.getMainLooper());
     handler.post(new Runnable() {
        @Override
@@ -42,17 +47,17 @@ public class MainActivity extends Activity
 
   @Override
   public void onBackPressed() {
+    UIStackInfo infoPeek = stack.peek();
     if(stack.size() == 2)
      WorldOmeterDatabase.toast("Hit back button again to exit.", Toast.LENGTH_LONG, MainActivity.this);
-    if(stack.empty() || stack.size() == 1) {
+    if(stack.empty() || stack.size() == 1 || infoPeek.UI == Constants.UITerra) {
       super.onBackPressed();
      } else {
       stack.pop();
       UIStackInfo info = stack.pop();
       switch(info.UI) {
         case Constants.UITerra:
-         //new UITerra(info.context, info.id);
-         super.onBackPressed();
+         new UITerra(info.context, info.id);
          break;
         case Constants.UIContinent:
          new UIContinents(info.context, info.id);
@@ -85,8 +90,35 @@ public class MainActivity extends Activity
     thread.start();
     try {
       thread.join();
+      openTerra();
      } catch(InterruptedException e) {}
    }
  }
  
+class BusyBee extends AsyncTask
+ {
+  private ProgressDialog pd;
+  
+  public BusyBee() {
+   pd = new ProgressDialog(MainActivity.activity);
+  }
+  @Override
+  protected Object doInBackground(Object[] p1) {
+    try {
+      Thread.sleep(1000);
+     } catch(InterruptedException e) {}
+    return null;
+   }
 
+  @Override
+  protected void onPreExecute() {
+    pd.show();
+    super.onPreExecute();
+   }
+
+  @Override
+  protected void onPostExecute(Object result) {
+    pd.hide();
+    super.onPostExecute(result);
+   }
+ }
