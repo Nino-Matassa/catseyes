@@ -40,7 +40,7 @@ public class WorldOmeterDatabase
       if(!jsonFile.exists()) {
         readJSONfromURL();
         speedReadJSON();
-        toast("Initialised", Toast.LENGTH_LONG, context);
+        //toast("Initialised", Toast.LENGTH_LONG, context);
        } else {
         URL url = new URL(Constants.worldOmeterURL);
         URLConnection urlConnection = url.openConnection();
@@ -56,11 +56,15 @@ public class WorldOmeterDatabase
           //toast("Initialised", Toast.LENGTH_LONG, context);
          }
        }
-      //speedReadJSON(); // debugging
-      //Thread.sleep(10000); // debugging
+       { //debugging
+        //speedReadJSON();
+        //notificationMessage("Hello");     
+        //Thread.sleep(3000);
+       }
      } catch(Exception e) {
       Log.d("WorldOmeterDatabase", e.toString());
      }
+    notificationMessage("Touch the grey screen to continue.");
    }
 
   private void populateTableColumnNames() {
@@ -73,7 +77,7 @@ public class WorldOmeterDatabase
    }
 
   private void readJSONfromURL() throws IOException {
-    toast("Downloading " + Constants.worldOmeterURL, Toast.LENGTH_LONG, context);
+    notificationMessage("Checking " + Constants.worldOmeterURL + " for new data.");
     String filePath = context.getFilesDir().getPath().toString() + Constants.jsonPath;
     File file = new File(filePath);
     if(file.exists()) file.delete();
@@ -87,7 +91,7 @@ public class WorldOmeterDatabase
    }
 
   private void speedReadJSON() throws Exception {
-    toast("Speedreading " + Constants.jsonPath, Toast.LENGTH_LONG, context);
+    notificationMessage("Building new data.");
     String filePath = context.getFilesDir().getPath().toString() + Constants.jsonPath;
     BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath));
     ArrayList<String> rows = new ArrayList<String>();
@@ -112,9 +116,11 @@ public class WorldOmeterDatabase
          } else {
           if(rows.size() > 1) {
             serializeCountry(rows, countryCode);
-            toast("Serializing " + countryCode, Toast.LENGTH_LONG, context);
+             notificationMessage("Serializing " + countryCode);
+            //toast("Serializing " + countryCode, Toast.LENGTH_LONG, context);
            } else {
-            toast("No update for " + countryCode, Toast.LENGTH_LONG, context);
+            //toast("No update for " + countryCode, Toast.LENGTH_LONG, context);
+             notificationMessage("No update for " + countryCode);
            }
 
           rows = new ArrayList<String>();
@@ -144,7 +150,11 @@ public class WorldOmeterDatabase
       row += line.replace("{", "").replace("}", ""); // json formatting unaccounted for
      }
     bufferedReader.close();
-    toast("Update completed", Toast.LENGTH_LONG, context);
+    //toast("Update completed", Toast.LENGTH_LONG, context);
+   }
+
+  private void notify(Context context, String countryCode) {
+    // TODO: Implement this method
    }
   private boolean serializeCountry(ArrayList<String> rows, String countryCode) {
     String continent = null;
@@ -196,10 +206,10 @@ public class WorldOmeterDatabase
     // populate data if not already populated check for lastDate
     boolean isFirstRow = true;
     for(String  row: rows) {
-     if(isFirstRow) {
-      isFirstRow = false;
-      continue; // ignore the first row, it for the country table
-     }
+      if(isFirstRow) {
+        isFirstRow = false;
+        continue; // ignore the first row, it for the country table
+       }
       columns = row.split(",");
       ArrayList<String> colName = new ArrayList<String>();
       ArrayList<String> colData = new ArrayList<String>();
@@ -343,11 +353,20 @@ public class WorldOmeterDatabase
       oStream.close();
      }
    }
-  public static void toast(final String text, final int length, final Context context) {
-    new Handler(Looper.getMainLooper()).post(new Runnable() {
+//  public static void toast(final String text, final int length, final Context context) {
+//    new Handler(Looper.getMainLooper()).post(new Runnable() {
+//       @Override
+//       public void run() {
+//         Toast.makeText(context, text, length).show();
+//        }
+//      });
+//   }
+  public void notificationMessage(final String msg) {
+    MainActivity.activity.runOnUiThread(new Runnable() {
        @Override
        public void run() {
-         Toast.makeText(context, text, length).show();
+         //new AlertDialog.Builder(context).setMessage(msg).create().show();
+         new AlertDialog.Builder(context).setMessage(msg).show();
         }
       });
    }
