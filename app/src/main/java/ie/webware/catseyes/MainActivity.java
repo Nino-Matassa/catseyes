@@ -13,28 +13,34 @@ public class MainActivity extends Activity
   public static Stack<UIStackInfo> stack = new Stack<UIStackInfo>();
   private TextView view = null;
   public static Activity activity = null;
+  private boolean bBuildingDatabase = false;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    
+
     activity = this;
     setContentView(R.layout.main);
     view = findViewById(R.id.mainTextID);
     view.setText("SARS-COV-2 Statistical Analysis");
-    
+
 //    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
 //     new BusyBee().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 //    else
 //     new BusyBee().execute();
 //    
     //Delay, to allow the ui to draw it self first
-    Handler handler = new Handler();
-    handler.postDelayed(new Runnable() {
-       public void run() {
-         buildDatabase(listener);
-        }
-      }, 500);
+    if(!bBuildingDatabase) {
+     bBuildingDatabase = true;
+      Handler handler = new Handler();
+      handler.postDelayed(new Runnable() {
+         public void run() {
+           buildDatabase(listener);
+          }
+        }, 500);
+     } else {
+      openTerra();
+     }
    }
 
   private void openTerra() {
@@ -81,12 +87,13 @@ public class MainActivity extends Activity
        }
      }
    }
-   
-  public interface WorldOmeterDatabaseListener{
+
+  public interface WorldOmeterDatabaseListener
+   {
     public void WorldOmeterDatabasethreadFinished();
    }
 
-  public void buildDatabase(final WorldOmeterDatabaseListener listener){
+  public void buildDatabase(final WorldOmeterDatabaseListener listener) {
     new Thread(new Runnable() {
        @Override 
        public void run() {

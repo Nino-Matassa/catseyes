@@ -58,7 +58,8 @@ public class WorldOmeterDatabase
        }
        { //debugging
         //speedReadJSON();
-        //notificationMessage("Hello");     
+        //notificationMessage("Hello");
+        //toast("Initialised", Toast.LENGTH_LONG, context);
         //Thread.sleep(3000);
        }
      } catch(Exception e) {
@@ -116,11 +117,11 @@ public class WorldOmeterDatabase
          } else {
           if(rows.size() > 1) {
             serializeCountry(rows, countryCode);
-             notificationMessage("Serializing " + countryCode);
-            //toast("Serializing " + countryCode, Toast.LENGTH_LONG, context);
+             //notificationMessage("Serializing " + countryCode);
+            toast("Serializing " + countryCode, Toast.LENGTH_SHORT, context);
            } else {
-            //toast("No update for " + countryCode, Toast.LENGTH_LONG, context);
-             notificationMessage("No update for " + countryCode);
+            toast("No update for " + countryCode, Toast.LENGTH_SHORT, context);
+             //notificationMessage("No update for " + countryCode);
            }
 
           rows = new ArrayList<String>();
@@ -353,19 +354,18 @@ public class WorldOmeterDatabase
       oStream.close();
      }
    }
-//  public static void toast(final String text, final int length, final Context context) {
-//    new Handler(Looper.getMainLooper()).post(new Runnable() {
-//       @Override
-//       public void run() {
-//         Toast.makeText(context, text, length).show();
-//        }
-//      });
-//   }
+  public static void toast(final String text, final int length, final Context context) {
+    new Handler(Looper.getMainLooper()).post(new Runnable() {
+       @Override
+       public void run() {
+         Toast.makeText(context, text, length).show();
+        }
+      });
+   }
   public void notificationMessage(final String msg) {
     MainActivity.activity.runOnUiThread(new Runnable() {
        @Override
        public void run() {
-         //new AlertDialog.Builder(context).setMessage(msg).create().show();
          new AlertDialog.Builder(context).setMessage(msg).show();
         }
       });
