@@ -31,7 +31,7 @@ class UI extends AsyncTask<Void, Void, Void>
     pd = new ProgressDialog(MainActivity.activity);
     
     vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE) ;
-    vibrator.vibrate(100);
+    vibrator.vibrate(80);
     
     if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
      this.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);

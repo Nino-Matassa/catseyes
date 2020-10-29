@@ -13,7 +13,6 @@ public class MainActivity extends Activity
   public static Stack<UIStackInfo> stack = new Stack<UIStackInfo>();
   private TextView view = null;
   public static Activity activity = null;
-  private boolean bBuildingDatabase = false;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -22,25 +21,17 @@ public class MainActivity extends Activity
     activity = this;
     setContentView(R.layout.main);
     view = findViewById(R.id.mainTextID);
-    view.setText("SARS-COV-2 Statistical Analysis");
+    view.setText("SARS-COV-2 Statistical Analysis, Aug 7, 2020");
 
-//    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-//     new BusyBee().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-//    else
-//     new BusyBee().execute();
-//    
     //Delay, to allow the ui to draw it self first
-    if(!bBuildingDatabase) {
-     bBuildingDatabase = true;
-      Handler handler = new Handler();
-      handler.postDelayed(new Runnable() {
-         public void run() {
-           buildDatabase(listener);
-          }
-        }, 500);
-     } else {
-      openTerra();
-     }
+    Handler handler = new Handler();
+    handler.postDelayed(new Runnable() {
+       public void run() {
+         if(thread == null)
+          buildDatabase(listener);
+        }
+      }, 500);
+    openTerra();
    }
 
   private void openTerra() {
@@ -92,9 +83,10 @@ public class MainActivity extends Activity
    {
     public void WorldOmeterDatabasethreadFinished();
    }
-
+   
+  Thread thread = null;
   public void buildDatabase(final WorldOmeterDatabaseListener listener) {
-    new Thread(new Runnable() {
+    thread = new Thread(new Runnable() {
        @Override 
        public void run() {
          try {
@@ -104,45 +96,17 @@ public class MainActivity extends Activity
           }
          listener.WorldOmeterDatabasethreadFinished();
         }
-      }).start();
+      });
+    thread.start();
    }
-  WorldOmeterDatabaseListener listener = new WorldOmeterDatabaseListener() {
 
+   WorldOmeterDatabaseListener listener = new WorldOmeterDatabaseListener() {
     @Override
     public void WorldOmeterDatabasethreadFinished() {
       openTerra();
+      thread = null;
      }
    };
  }
  
-//class BusyBee extends AsyncTask<Void, Void, Void>
-// {
-//  private ProgressDialog pd;
-//
-//  public BusyBee() {
-//    pd = new  ProgressDialog(MainActivity.activity);
-//   }
-//
-//  @Override
-//  protected void onPreExecute() {
-//    pd.setMessage("Generating database...");
-//    pd.show();
-//    super.onPreExecute();
-//   }
-//
-//  @Override
-//  protected void onPostExecute(Void result) {
-//    pd.hide();
-//    super.onPostExecute(result);
-//   }
-//
-//  @Override
-//  protected Void doInBackground(Void[] p1) {
-//    try {
-//      Thread.sleep(500);
-//     } catch(InterruptedException e) {}
-//    return null;
-//   }
-// }
-// 
 

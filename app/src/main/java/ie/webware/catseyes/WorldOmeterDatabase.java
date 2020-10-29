@@ -40,7 +40,6 @@ public class WorldOmeterDatabase
       if(!jsonFile.exists()) {
         readJSONfromURL();
         speedReadJSON();
-        //toast("Initialised", Toast.LENGTH_LONG, context);
        } else {
         URL url = new URL(Constants.worldOmeterURL);
         URLConnection urlConnection = url.openConnection();
@@ -53,14 +52,10 @@ public class WorldOmeterDatabase
         if(urlTS.after(jsonTS)) {
           readJSONfromURL();
           speedReadJSON();
-          //toast("Initialised", Toast.LENGTH_LONG, context);
          }
        }
        { //debugging
         //speedReadJSON();
-        //notificationMessage("Hello");
-        //toast("Initialised", Toast.LENGTH_LONG, context);
-        //Thread.sleep(3000);
        }
      } catch(Exception e) {
       Log.d("WorldOmeterDatabase", e.toString());

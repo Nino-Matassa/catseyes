@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">SARS-COV-2 Statistical Analysis</string>
+    <string name="author">Nino Matassa</string>
+    <string name="written_from">Aug 7, 2020</string>
+    <string name="email">nino.matassa@gmail.com</string>
 </resources>
