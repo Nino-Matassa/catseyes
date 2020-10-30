@@ -13,6 +13,7 @@ public class MainActivity extends Activity
   public static Stack<UIStackInfo> stack = new Stack<UIStackInfo>();
   private TextView view = null;
   public static Activity activity = null;
+  private Thread thread = null;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -27,11 +28,9 @@ public class MainActivity extends Activity
     Handler handler = new Handler();
     handler.postDelayed(new Runnable() {
        public void run() {
-         if(thread == null)
-          buildDatabase(listener);
+         buildDatabase(listener);
         }
       }, 500);
-    openTerra();
    }
 
   private void openTerra() {
@@ -47,6 +46,38 @@ public class MainActivity extends Activity
         }     
       });
    }
+
+  public interface WorldOmeterDatabaseListener
+   {
+    public void WorldOmeterDatabasethreadFinished();
+   }
+
+  public void buildDatabase(final WorldOmeterDatabaseListener listener) {
+    if(!(thread == null))
+    {
+     openTerra();
+     return;
+    }
+    thread = new Thread(new Runnable() {
+       @Override 
+       public void run() {
+         try {
+           new WorldOmeterDatabase(MainActivity.this);
+          } catch(Exception e) {
+           Log.d("MainActivity", e.toString());
+          }
+         listener.WorldOmeterDatabasethreadFinished();
+        }
+      });
+    thread.start();
+   }
+
+  WorldOmeterDatabaseListener listener = new WorldOmeterDatabaseListener() {
+    @Override
+    public void WorldOmeterDatabasethreadFinished() {
+      openTerra();
+     }
+   };
 
   @Override
   public void onBackPressed() {
@@ -78,35 +109,6 @@ public class MainActivity extends Activity
        }
      }
    }
-
-  public interface WorldOmeterDatabaseListener
-   {
-    public void WorldOmeterDatabasethreadFinished();
-   }
-   
-  Thread thread = null;
-  public void buildDatabase(final WorldOmeterDatabaseListener listener) {
-    thread = new Thread(new Runnable() {
-       @Override 
-       public void run() {
-         try {
-           new WorldOmeterDatabase(MainActivity.this);
-          } catch(Exception e) {
-           Log.d("MainActivity", e.toString());
-          }
-         listener.WorldOmeterDatabasethreadFinished();
-        }
-      });
-    thread.start();
-   }
-
-   WorldOmeterDatabaseListener listener = new WorldOmeterDatabaseListener() {
-    @Override
-    public void WorldOmeterDatabasethreadFinished() {
-      openTerra();
-      thread = null;
-     }
-   };
  }
  
 

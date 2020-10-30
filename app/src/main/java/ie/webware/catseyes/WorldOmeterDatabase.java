@@ -40,6 +40,7 @@ public class WorldOmeterDatabase
       if(!jsonFile.exists()) {
         readJSONfromURL();
         speedReadJSON();
+        notificationMessage("Touch the grey screen to continue.");
        } else {
         URL url = new URL(Constants.worldOmeterURL);
         URLConnection urlConnection = url.openConnection();
@@ -52,6 +53,7 @@ public class WorldOmeterDatabase
         if(urlTS.after(jsonTS)) {
           readJSONfromURL();
           speedReadJSON();
+           notificationMessage("Touch the grey screen to continue.");
          }
        }
        { //debugging
@@ -60,7 +62,6 @@ public class WorldOmeterDatabase
      } catch(Exception e) {
       Log.d("WorldOmeterDatabase", e.toString());
      }
-    notificationMessage("Touch the grey screen to continue.");
    }
 
   private void populateTableColumnNames() {
