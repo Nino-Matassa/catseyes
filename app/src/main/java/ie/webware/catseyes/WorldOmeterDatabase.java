@@ -27,19 +27,21 @@ public class WorldOmeterDatabase
     context = _context;
     db = Database.getInstance(context);
     view = ((Activity)context).findViewById(R.id.mainTextID);
-    // Copy json & db to application download because tablet and phone not rooted
-    copyDBtoDownload();
     // If the database already exists populate the country and data column name lists
     if(Database.isExistingDatabase) {
       populateTableColumnNames();
      }
+   }
+   
+  public boolean readJSONfromURL() {
+   boolean downloaded = false;
     // If there is no json file or it's old read it
     String jsonFilePath = context.getFilesDir().getPath().toString() + Constants.jsonPath;
     File jsonFile = new File(jsonFilePath);
     try {
       if(!jsonFile.exists()) {
-        readJSONfromURL();
-        speedReadJSON();
+        downloadJSON();
+        downloaded = true;
         notificationMessage("Touch the grey screen to continue.");
        } else {
         URL url = new URL(Constants.worldOmeterURL);
@@ -51,18 +53,16 @@ public class WorldOmeterDatabase
         Date urlTS = new SimpleDateFormat("yyyy-MM-dd").parse(new Timestamp(urlTimeStamp).toString());
         Date jsonTS = new SimpleDateFormat("yyyy-MM-dd").parse(new Timestamp(jsonTimeStamp).toString());
         if(urlTS.after(jsonTS)) {
-          readJSONfromURL();
-          speedReadJSON();
-           notificationMessage("Touch the grey screen to continue.");
+          downloadJSON();
+          downloaded = true;
+          notificationMessage("Touch the grey screen to continue.");
          }
-       }
-       { //debugging
-        //speedReadJSON();
        }
      } catch(Exception e) {
       Log.d("WorldOmeterDatabase", e.toString());
      }
-   }
+   return downloaded;
+  }
 
   private void populateTableColumnNames() {
     Cursor cCountryCols = db.query(Constants.tblCountry, null, null, null, null, null, null);
@@ -73,7 +73,7 @@ public class WorldOmeterDatabase
     listOfDataColumns = new ArrayList<String>(Arrays.asList(lstDataCols));
    }
 
-  private void readJSONfromURL() throws IOException {
+  private void downloadJSON() throws IOException {
     notificationMessage("Checking " + Constants.worldOmeterURL + " for new data.");
     String filePath = context.getFilesDir().getPath().toString() + Constants.jsonPath;
     File file = new File(filePath);
@@ -87,7 +87,7 @@ public class WorldOmeterDatabase
     readChannel.close();
    }
 
-  private void speedReadJSON() throws Exception {
+  public void speedReadJSON() throws Exception {
     notificationMessage("Building new data.");
     String filePath = context.getFilesDir().getPath().toString() + Constants.jsonPath;
     BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath));
@@ -147,12 +147,11 @@ public class WorldOmeterDatabase
       row += line.replace("{", "").replace("}", ""); // json formatting unaccounted for
      }
     bufferedReader.close();
-    //toast("Update completed", Toast.LENGTH_LONG, context);
+    // Copy json & db to application download because tablet and phone not rooted
+    copyDBtoDownload();
+    notificationMessage("All updates finished. Touch in the grey area to continue.");
    }
 
-  private void notify(Context context, String countryCode) {
-    // TODO: Implement this method
-   }
   private boolean serializeCountry(ArrayList<String> rows, String countryCode) {
     String continent = null;
     String country = null;
@@ -277,18 +276,6 @@ public class WorldOmeterDatabase
       return false;
      }
    }
-//  public boolean inCountryCodeList(String line) {
-//    if(line.matches("[A-Z][A-Z][A-Z]: \\{")) {
-//      String[] array = line.split("[:]");
-//      String countryCode = array[0].trim();
-//      List<String> lstCC = Arrays.asList(Constants.lstCountry);
-//      if(lstCC.contains(countryCode))
-//       return true;
-//      else
-//       return false;
-//     }
-//    return false;
-//   }
   private boolean addColumnIfNotExists(String table, ArrayList<String> colList, ArrayList<String> colData) {
     for(int i = 0; i < colList.size(); i++) {
       boolean isDouble = false;

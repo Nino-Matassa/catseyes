@@ -14,6 +14,7 @@ public class MainActivity extends Activity
   private TextView view = null;
   public static Activity activity = null;
   private Thread thread = null;
+  private boolean bUpdateDatabase = false;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -23,14 +24,41 @@ public class MainActivity extends Activity
     setContentView(R.layout.main);
     view = findViewById(R.id.mainTextID);
     view.setText("SARS-COV-2 Statistical Analysis, Aug 7, 2020");
-
-    //Delay, to allow the ui to draw it self first
-    Handler handler = new Handler();
-    handler.postDelayed(new Runnable() {
+    
+    // Check for new data
+    Handler jsonHandler = new Handler();
+    jsonHandler.postDelayed(new Runnable() {
        public void run() {
-         buildDatabase(listener);
+         Thread jsonThread = new Thread(new Runnable() {
+            @Override 
+            public void run() {
+              try {
+                bUpdateDatabase = new WorldOmeterDatabase(MainActivity.this).readJSONfromURL();
+               } catch(Exception e) {
+                Log.d("MainActivity", e.toString());
+               }
+             }
+           });
+         jsonThread.start();
+         try {
+           jsonThread.join();
+          } catch(InterruptedException e) {}
         }
       }, 500);
+
+      if(bUpdateDatabase) {
+        //Delay, to allow the ui to draw it self first
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+           public void run() {
+             listener.WorldOmeterDatabasethreadFinished();
+             buildDatabase(listener);
+            }
+          }, 500);
+      } else {
+        openTerra();
+      }
+    
    }
 
   private void openTerra() {
@@ -62,7 +90,7 @@ public class MainActivity extends Activity
        @Override 
        public void run() {
          try {
-           new WorldOmeterDatabase(MainActivity.this);
+           new WorldOmeterDatabase(MainActivity.this).speedReadJSON();
           } catch(Exception e) {
            Log.d("MainActivity", e.toString());
           }
