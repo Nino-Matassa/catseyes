@@ -26,9 +26,9 @@ public class MainActivity extends Activity
     view.setText("SARS-COV-2 Statistical Analysis, Aug 7, 2020");
     
     // Check for new data
-    Handler jsonHandler = new Handler();
-    jsonHandler.postDelayed(new Runnable() {
-       public void run() {
+    //Handler jsonHandler = new Handler();
+    //jsonHandler.postDelayed(new Runnable() {
+       //public void run() {
          Thread jsonThread = new Thread(new Runnable() {
             @Override 
             public void run() {
@@ -43,8 +43,8 @@ public class MainActivity extends Activity
          try {
            jsonThread.join();
           } catch(InterruptedException e) {}
-        }
-      }, 500);
+        //}
+      //}, 500);
 
       if(bUpdateDatabase) {
         //Delay, to allow the ui to draw it self first
