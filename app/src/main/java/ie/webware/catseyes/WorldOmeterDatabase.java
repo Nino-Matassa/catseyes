@@ -31,9 +31,16 @@ public class WorldOmeterDatabase
     if(Database.isExistingDatabase) {
       populateTableColumnNames();
      }
+
+     if(readJSONfromURL()) {
+       try {
+         notificationMessage("Updating the database.");
+         speedReadJSON();
+        } catch(Exception e) {}
+      }
    }
    
-  public boolean readJSONfromURL() {
+   private boolean readJSONfromURL() {
    boolean downloaded = false;
     // If there is no json file or it's old read it
     String jsonFilePath = context.getFilesDir().getPath().toString() + Constants.jsonPath;
@@ -42,7 +49,6 @@ public class WorldOmeterDatabase
       if(!jsonFile.exists()) {
         downloadJSON();
         downloaded = true;
-        notificationMessage("Touch the grey screen to continue.");
        } else {
         URL url = new URL(Constants.worldOmeterURL);
         URLConnection urlConnection = url.openConnection();
@@ -55,7 +61,6 @@ public class WorldOmeterDatabase
         if(urlTS.after(jsonTS)) {
           downloadJSON();
           downloaded = true;
-          notificationMessage("Touch the grey screen to continue.");
          }
        }
      } catch(Exception e) {
@@ -87,7 +92,7 @@ public class WorldOmeterDatabase
     readChannel.close();
    }
 
-  public void speedReadJSON() throws Exception {
+  private void speedReadJSON() throws Exception {
     notificationMessage("Building new data.");
     String filePath = context.getFilesDir().getPath().toString() + Constants.jsonPath;
     BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath));
@@ -113,11 +118,9 @@ public class WorldOmeterDatabase
          } else {
           if(rows.size() > 1) {
             serializeCountry(rows, countryCode);
-             //notificationMessage("Serializing " + countryCode);
             toast("Serializing " + countryCode, Toast.LENGTH_SHORT, context);
            } else {
             toast("No update for " + countryCode, Toast.LENGTH_SHORT, context);
-             //notificationMessage("No update for " + countryCode);
            }
 
           rows = new ArrayList<String>();
