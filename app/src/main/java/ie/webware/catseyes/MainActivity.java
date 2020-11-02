@@ -23,7 +23,7 @@ public class MainActivity extends Activity
     setContentView(R.layout.main);
     view = findViewById(R.id.mainTextID);
     view.setText("SARS-COV-2 Statistical Analysis, Aug 7, 2020");
-
+    
     //Delay, to allow the ui to draw it self first
     Handler handler = new Handler();
     handler.postDelayed(new Runnable() {
