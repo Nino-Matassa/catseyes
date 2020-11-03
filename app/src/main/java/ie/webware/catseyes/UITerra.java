@@ -159,27 +159,20 @@ public class UITerra extends UI
 
   private double populateR0Average(int nCountry) {
     Double R0 = 0.0;
-    Long sumNewCasesToday = 0L;
-    Long sumNewCasesYesterday = 0L;
-    String sqlNewCasesToday = "select date, sum(new_cases) as sumNewCasesToday from data group by date";
-    String sqlSumNewCasesYesterday = "select date, sum(new_cases) as sumNewCasesYesterday from data group by date";
-    Cursor cSumNewCasesToday = db.rawQuery(sqlNewCasesToday, null);
-    Cursor cSumNewCasesYesterday = db.rawQuery(sqlSumNewCasesYesterday, null);
-    cSumNewCasesYesterday.moveToFirst();
-    cSumNewCasesYesterday.moveToNext();
-    cSumNewCasesToday.moveToFirst();
+    String sqlNewCases = "select date, sum(new_cases) as sumNewCases from data group by date";
+    Cursor cSumNewCases = db.rawQuery(sqlNewCases, null);
+    long dayX = 1L;
+    long prevX = 1L;
+    cSumNewCases.moveToFirst();
     do {
       try {
-        sumNewCasesToday = cSumNewCasesToday.getLong(cSumNewCasesToday.getColumnIndex("sumNewCasesToday"));
-        sumNewCasesYesterday = cSumNewCasesYesterday.getLong(cSumNewCasesYesterday.getColumnIndex("sumNewCasesYesterday"));
+        dayX += cSumNewCases.getLong(cSumNewCases.getColumnIndex("sumNewCases"));
        } catch(Exception e) {
         Log.d("UITerra", e.toString());
        }
-      if(sumNewCasesToday > 0) {
-        R0 += sumNewCasesYesterday.doubleValue() / sumNewCasesToday;
-       }
-      cSumNewCasesToday.moveToNext();
-     } while(cSumNewCasesYesterday.moveToNext());
-    return R0 / nCountry;
+        R0 += prevX / dayX;
+        prevX = dayX;
+     } while(cSumNewCases.moveToNext());
+    return R0 / nCountry + 1;
    }
  }

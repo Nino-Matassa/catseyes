@@ -199,33 +199,25 @@ public class UICountry extends UI
     
     setTableLayout(getTableRows(tkvs));
    }
+   
   private double populateR0Average() {
     Double R0 = 0.0;
-    Long sumNewCasesToday = 0L;
-    Long sumNewCasesYesterday = 0L;
+    String sqlNewCases = "select date, sum(new_cases) as sumNewCases from data where fk_country = # group by date order by date desc".replace("#", String.valueOf(idCountry));
+    Cursor cSumNewCases = db.rawQuery(sqlNewCases, null);
+    long dayX = 1L;
+    long prevX = 1L;
     int nDays = 0;
-    String sqlNewCasesToday = "select date, sum(new_cases) as sumNewCasesToday from data where fk_country = # group by date order by date desc".replace("#", String.valueOf(idCountry));
-    String sqlSumNewCasesYesterday = "select date, sum(new_cases) as sumNewCasesYesterday from data where fk_country = # group by date order by date desc".replace("#", String.valueOf(idCountry));
-    Cursor cSumNewCasesToday = db.rawQuery(sqlNewCasesToday, null);
-    Cursor cSumNewCasesYesterday = db.rawQuery(sqlSumNewCasesYesterday, null);
-    cSumNewCasesYesterday.moveToFirst();
-    cSumNewCasesYesterday.moveToNext();
-    cSumNewCasesToday.moveToFirst();
+    cSumNewCases.moveToFirst();
     do {
       try {
-        sumNewCasesToday = cSumNewCasesToday.getLong(cSumNewCasesToday.getColumnIndex("sumNewCasesToday"));
-        sumNewCasesYesterday = cSumNewCasesYesterday.getLong(cSumNewCasesYesterday.getColumnIndex("sumNewCasesYesterday"));
+        dayX += cSumNewCases.getLong(cSumNewCases.getColumnIndex("sumNewCases"));
        } catch(Exception e) {
-        Log.d("UICountry", e.toString());
+        Log.d("UITerra", e.toString());
        }
-      if(sumNewCasesToday > 0) {
-        R0 += sumNewCasesYesterday.doubleValue() / sumNewCasesToday;
-        nDays++;
-       }
-      cSumNewCasesToday.moveToNext();
-     } while(cSumNewCasesYesterday.moveToNext());
-     
-    return R0/nDays;
+      R0 += prevX / dayX;
+      prevX = dayX;
+      nDays++;
+     } while(cSumNewCases.moveToNext());
+    return R0 / nDays + 1;
    }
-  
  }
