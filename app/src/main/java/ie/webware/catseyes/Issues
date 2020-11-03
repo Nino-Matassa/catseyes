@@ -1,12 +1,7 @@
 /*
 
-https://www.vogella.com/tutorials/AndroidIntent/article.html
-
-Works from the main thread
-new AlertDialog.Builder(MainActivity.this).setMessage("msg to display!").show();
-
-Passing information between threads
-https://stackoverflow.com/questions/28526969/android-passing-data-between-threads
+ The tablet is waking up to it's previous state and not restarting like the phone which is causing
+ an issue with the updates.
  
  Remove any duplicates from the data table
  
