@@ -83,30 +83,33 @@ public class UIData extends UI
    
   private void populateTableDataR0() {
     ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();
-    String sqlNewCasesToday = "select date, sum(new_cases) as sumNewCasesToday from data where fk_country = # group by date order by date desc".replace("#", String.valueOf(idData));
-    String sqlSumNewCasesYesterday = "select date, sum(new_cases) as sumNewCasesYesterday from data where fk_country = # group by date order by date desc".replace("#", String.valueOf(idData));
-    Cursor cSumNewCasesToday = db.rawQuery(sqlNewCasesToday, null);
-    Cursor cSumNewCasesYesterday = db.rawQuery(sqlSumNewCasesYesterday, null);
-    cSumNewCasesYesterday.moveToFirst();
-    cSumNewCasesYesterday.moveToNext();
-    cSumNewCasesToday.moveToFirst();
+    String sqlNewCases = "select date, sum(new_cases) as sumNewCases from data where fk_country = # group by date order by date desc".replace("#", String.valueOf(idData));
+    Cursor cSumNewCases = db.rawQuery(sqlNewCases, null);
+    Long dayX = 1L;
+    Long prevX = 1L;
+    cSumNewCases.moveToFirst();
     do {
       TableKeyValue tkv = new TableKeyValue();
-      tkv.subClass = Constants.UIData;
-      Long sumNewCasesToday = cSumNewCasesToday.getLong(cSumNewCasesToday.getColumnIndex("sumNewCasesToday"));
-      Long sumNewCasesYesterday = cSumNewCasesYesterday.getLong(cSumNewCasesYesterday.getColumnIndex("sumNewCasesYesterday"));
-      tkv.key = cSumNewCasesYesterday.getString(cSumNewCasesYesterday.getColumnIndex("date"));
-      if(sumNewCasesToday == 0) {
-        tkv.value = String.valueOf(0);
-       } else {
-        tkv.value = String.valueOf(formatter.format(sumNewCasesYesterday.doubleValue()/sumNewCasesToday));
-       }
+      tkv.subClass = Constants.UITerraData;
+      tkv.key = cSumNewCases.getString(cSumNewCases.getColumnIndex("date"));
+      tkv.value = String.valueOf(cSumNewCases.getLong(cSumNewCases.getColumnIndex("sumNewCases")));
       tkvs.add(tkv);
-      cSumNewCasesToday.moveToNext();
-     } while(cSumNewCasesYesterday.moveToNext());
+     } while(cSumNewCases.moveToNext());
+    double delay = 0.0;
+    for(int i = 1; i < tkvs.size() - 2; i++) {
+      prevX = Long.parseLong(tkvs.get(i - 1).value);
+      dayX = Long.parseLong(tkvs.get(i).value);
+      if(prevX == 0) prevX = 1L;
+      if(dayX == 0) dayX = 1L;
+      delay = prevX.doubleValue() / dayX + 1;
+      if(i > 2)
+       tkvs.get(i - 2).value = String.valueOf(formatter.format(delay));
+     }
+    tkvs.remove(0); // ignore the first value
+    tkvs.remove(tkvs.size() - 1); // ignore the initial date
     setTableLayout(getTableRows(tkvs));
-  }
-
+   }
+   
   private void populateTableData() {
     ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();
     String sql = "select date, $ from data where fk_country = # order by date desc".replace("$", field).replace("#", String.valueOf(idData));

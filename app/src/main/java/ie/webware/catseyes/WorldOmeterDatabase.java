@@ -79,7 +79,7 @@ public class WorldOmeterDatabase
    }
 
   private void downloadJSON() throws IOException {
-    notificationMessage("Checking " + Constants.worldOmeterURL + " for new data.");
+    notificationMessage("Downloading " + Constants.worldOmeterURL);
     String filePath = context.getFilesDir().getPath().toString() + Constants.jsonPath;
     File file = new File(filePath);
     if(file.exists()) file.delete();
@@ -93,7 +93,7 @@ public class WorldOmeterDatabase
    }
 
   private void speedReadJSON() throws Exception {
-    notificationMessage("Building new data.");
+    notificationMessage("Speedreading JSON");
     String filePath = context.getFilesDir().getPath().toString() + Constants.jsonPath;
     BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath));
     ArrayList<String> rows = new ArrayList<String>();
@@ -152,7 +152,7 @@ public class WorldOmeterDatabase
     bufferedReader.close();
     // Copy json & db to application download because tablet and phone not rooted
     copyDBtoDownload();
-    notificationMessage("All updates finished. Touch in the grey area to continue.");
+    notificationMessage("Finished: Touch the grey area to continue");
    }
 
   private boolean serializeCountry(ArrayList<String> rows, String countryCode) {

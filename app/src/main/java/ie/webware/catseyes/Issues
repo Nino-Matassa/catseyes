@@ -6,4 +6,6 @@
  Remove any duplicates from the data table
  
  Dismissing AlertDialog.Builder is proving to be a challenge
+ 
+ Still not sure about the R0 calculation for both average and by day
 */
