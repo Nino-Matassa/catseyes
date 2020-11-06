@@ -64,7 +64,7 @@ public class UIData extends UI
             populateTableData();
             break;
            case "R0":
-            fieldDescription = "R0";
+            fieldDescription = "∄";//"R0";
             populateTableDataR0();
             break;
            default:

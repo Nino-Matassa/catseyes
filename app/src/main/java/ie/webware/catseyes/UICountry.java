@@ -188,7 +188,7 @@ public class UICountry extends UI
 
     Double R0 = existingCases.doubleValue()/sumNewCases;
 
-    tkv.key = "R0";
+    tkv.key = "∄";//"R0";
     tkv.value = String.valueOf(formatter.format(populateR0Average()));
     tkvs.add(tkv);
     tkv.tableId = idCountry;
