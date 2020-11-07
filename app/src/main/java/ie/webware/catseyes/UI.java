@@ -146,7 +146,6 @@ class UI extends AsyncTask<Void, Void, Void>
       if(tkv.subClass.equals(Constants.UICountry) && tkv.key.equals("Population"))
        return;
       Double.parseDouble(tkv.value.replace(",", "").replace("%", ""));
-      //vibrator.vibrate(100);
       if(tkv.subClass.equals(Constants.UITerra)) {
         if(tkv.key.equals(Constants.UITerraPopulation)) {
           new UIContinents(context, tkv.tableId);
@@ -158,7 +157,7 @@ class UI extends AsyncTask<Void, Void, Void>
        } else if(tkv.subClass.equals(Constants.UIRegion)) {
         new UICountry(context, tkv.tableId);
        } else if(tkv.subClass.equals(Constants.UICountry)) {
-        new UIData(context, tkv.tableId, tkv.field); 
+        new UICountryData(context, tkv.tableId, tkv.field); 
        }} catch(Exception e) {
       Log.d("UI", e.toString());
      } finally {

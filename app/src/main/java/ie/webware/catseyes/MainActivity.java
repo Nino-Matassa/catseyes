@@ -100,7 +100,7 @@ public class MainActivity extends Activity
         case Constants.UICountry:
          new UICountry(info.context, info.id);
          break;
-        case Constants.UIData:
+        case Constants.UICountryData:
          // Error
          break;
         default:

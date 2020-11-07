@@ -79,7 +79,7 @@ public class UITerraData extends UI
             populateTerraDetails();
             break;
            case "R0":
-            fieldDescription = "∄";//"R0";
+            fieldDescription = "R0"; //"∄";//
             populateTerraDetailsR0();
             break;
           }
@@ -118,60 +118,23 @@ public class UITerraData extends UI
     setTableLayout(getTableRows(tkvs));
    }
 
-//  private void populateTerraDetailsR0() {
-//    ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();
-//    String sqlNewCases = "select date, sum(new_cases) as sumNewCases from data group by date order by date desc";
-//    Cursor cSumNewCases = db.rawQuery(sqlNewCases, null);
-//    Long dayX = 1L;
-//    Long prevX = 1L;
-//    cSumNewCases.moveToFirst();
-//    do {
-//      TableKeyValue tkv = new TableKeyValue();
-//      tkv.subClass = Constants.UITerraData;
-//      tkv.key = cSumNewCases.getString(cSumNewCases.getColumnIndex("date"));
-//      tkv.value = String.valueOf(cSumNewCases.getLong(cSumNewCases.getColumnIndex("sumNewCases")));
-//      tkvs.add(tkv);
-//     } while(cSumNewCases.moveToNext());
-//    double delay = 0.0;
-//    for(int i = 1; i < tkvs.size() - 2; i++) {
-//      prevX = Long.parseLong(tkvs.get(i - 1).value);
-//      dayX = Long.parseLong(tkvs.get(i).value);
-//      if(prevX == 0) prevX = 1L;
-//      if(dayX == 0) dayX = 1L;
-//      delay = prevX.doubleValue() / dayX + 1;
-//      if(i > 2)
-//       tkvs.get(i - 2).value = String.valueOf(formatter.format(delay));
-//     }
-//    tkvs.remove(0); // ignore the first value
-//    tkvs.remove(tkvs.size() - 1); // ignore the initial date
-//    setTableLayout(getTableRows(tkvs));
-//   }
   private void populateTerraDetailsR0() {
     ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();
     String sqlNewCases = "select date, sum(new_cases) as sumNewCases from data group by date order by date desc";
     Cursor cSumNewCases = db.rawQuery(sqlNewCases, null);
-    Long dayX = 0L;
-    Long prevX = 0L;
+    Long dayX = 1L;
+    Long prevX = 1L;
     cSumNewCases.moveToLast();
     do {
       TableKeyValue tkv = new TableKeyValue();
       tkv.subClass = Constants.UITerraData;
       tkv.key = cSumNewCases.getString(cSumNewCases.getColumnIndex("date"));
       dayX += cSumNewCases.getLong(cSumNewCases.getColumnIndex("sumNewCases"));
-      tkv.value = String.valueOf(dayX);
+      tkv.value = String.valueOf(formatter.format(dayX.doubleValue() / prevX));
       tkvs.add(tkv);
+      prevX = dayX;
      } while(cSumNewCases.moveToPrevious());
     Collections.reverse(tkvs);
-    double rNought = 0.0;
-    for(int i = 1; i < tkvs.size() - 1; i++) {
-      prevX = Long.parseLong(tkvs.get(i - 1).value);
-      dayX = Long.parseLong(tkvs.get(i).value);
-      rNought = dayX.doubleValue() / prevX + 1;
-      if(i > 1)
-       tkvs.get(i - 2).value = String.valueOf(formatter.format(rNought));
-     }
-    tkvs.remove(0); // ignore the first value
-    tkvs.remove(tkvs.size() - 1); // ignore the initial date
     setTableLayout(getTableRows(tkvs));
    }
  }

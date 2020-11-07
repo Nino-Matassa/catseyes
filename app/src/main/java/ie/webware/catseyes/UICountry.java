@@ -188,7 +188,7 @@ public class UICountry extends UI
 
     Double R0 = existingCases.doubleValue()/sumNewCases;
 
-    tkv.key = "∄";//"R0";
+    tkv.key = "R0"; //"∄";//
     tkv.value = String.valueOf(formatter.format(populateR0Average()));
     tkvs.add(tkv);
     tkv.tableId = idCountry;
@@ -204,20 +204,18 @@ public class UICountry extends UI
     Double R0 = 0.0;
     String sqlNewCases = "select date, sum(new_cases) as sumNewCases from data where fk_country = # group by date order by date desc".replace("#", String.valueOf(idCountry));
     Cursor cSumNewCases = db.rawQuery(sqlNewCases, null);
-    long dayX = 1L;
-    long prevX = 1L;
-    int nDays = 0;
+    Long dayX = 0L;
+    Long prevX = 1L;
     cSumNewCases.moveToFirst();
     do {
       try {
+        prevX = dayX;
         dayX += cSumNewCases.getLong(cSumNewCases.getColumnIndex("sumNewCases"));
        } catch(Exception e) {
-        Log.d("UITerra", e.toString());
+        Log.d("UICountry", e.toString());
        }
-      R0 += prevX / dayX;
-      prevX = dayX;
-      nDays++;
      } while(cSumNewCases.moveToNext());
-    return R0 / nDays + 1;
+    R0 = dayX.doubleValue() / prevX.doubleValue();
+    return R0;
    }
  }
