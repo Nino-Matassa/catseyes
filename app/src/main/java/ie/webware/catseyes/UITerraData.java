@@ -17,6 +17,7 @@ public class UITerraData extends UI
   String sql = null;
   boolean bPerMillion = false;
   Long sumPopulation = 0L;
+  int nCountry = 0;
 
   public UITerraData(Context _context, long _idData, String _field) {
     super(_context, _idData);
@@ -30,6 +31,10 @@ public class UITerraData extends UI
 
 
   private void uiHandler() {
+    sql = "select count(id) as nCountry from country";
+    Cursor cursor = db.rawQuery(sql, null);
+    cursor.moveToFirst();
+    nCountry = cursor.getInt(cursor.getColumnIndex("nCountry"));
     Handler handler = new Handler(Looper.getMainLooper());
     handler.post(new Runnable() {
        @Override
@@ -74,9 +79,9 @@ public class UITerraData extends UI
             populateTerraDetails();
             break;
            case "positive_rate":
-            fieldDescription = "Positivity Rate";
-            sql = "select date, sum(positive_rate) as positive_rate from data group by date order by date desc";
-            populateTerraDetails();
+            fieldDescription = "Positivity Rate%";
+            //sql = "select date, sum(positive_rate) as positive_rate from data group by date order by date desc";
+            populatePositivityDetails();
             break;
            case "R0":
             fieldDescription = "R0"; //"∄";//
@@ -135,6 +140,24 @@ public class UITerraData extends UI
       prevX = dayX;
      } while(cSumNewCases.moveToPrevious());
     Collections.reverse(tkvs);
+    setTableLayout(getTableRows(tkvs));
+   }
+
+  private void populatePositivityDetails() {
+    ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();
+    String sqlPositivityRate = "select date, sum(positive_rate) as positive_rate from data group by date order by date";
+    Cursor cPositivityRate = db.rawQuery(sqlPositivityRate, null);
+    Double dayX = 0.0;
+    int nDay = 1;
+    cPositivityRate.moveToLast();
+    do {
+      TableKeyValue tkv = new TableKeyValue();
+      tkv.subClass = Constants.UITerraData;
+      tkv.key = cPositivityRate.getString(cPositivityRate.getColumnIndex("date"));
+      dayX += cPositivityRate.getDouble(cPositivityRate.getColumnIndex("positive_rate"));
+      tkv.value = String.valueOf(formatter.format((dayX/nCountry/nDay++)*100));
+      tkvs.add(tkv);
+     } while(cPositivityRate.moveToPrevious());
     setTableLayout(getTableRows(tkvs));
    }
  }

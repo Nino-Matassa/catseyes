@@ -136,7 +136,7 @@ public class UITerra extends UI
     tkv.subClass = Constants.UITerra;
     tkv = new TableKeyValue();
 
-    positivityRate = positivityRate.doubleValue() / nCountry;
+    positivityRate = positivityRate / nCountry;
 
     tkv.key = "Test Positive Rate";
     tkv.value = String.valueOf(formatter.format(positivityRate)) + "%";
@@ -162,15 +162,11 @@ public class UITerra extends UI
     String sqlNewCases = "select date, sum(new_cases) as sumNewCases from data group by date";
     Cursor cSumNewCases = db.rawQuery(sqlNewCases, null);
     Long dayX = 0L;
-    Long prevX = 1L;
+    Long prevX = 0L;
     cSumNewCases.moveToFirst();
     do {
-      try {
         prevX = dayX;
         dayX += cSumNewCases.getLong(cSumNewCases.getColumnIndex("sumNewCases"));
-       } catch(Exception e) {
-        Log.d("UITerra", e.toString());
-       }
      } while(cSumNewCases.moveToNext());
     R0 = dayX.doubleValue() / prevX.doubleValue();
     return R0;

@@ -205,15 +205,11 @@ public class UICountry extends UI
     String sqlNewCases = "select date, sum(new_cases) as sumNewCases from data where fk_country = # group by date order by date desc".replace("#", String.valueOf(idCountry));
     Cursor cSumNewCases = db.rawQuery(sqlNewCases, null);
     Long dayX = 0L;
-    Long prevX = 1L;
+    Long prevX = 0L;
     cSumNewCases.moveToFirst();
     do {
-      try {
         prevX = dayX;
         dayX += cSumNewCases.getLong(cSumNewCases.getColumnIndex("sumNewCases"));
-       } catch(Exception e) {
-        Log.d("UICountry", e.toString());
-       }
      } while(cSumNewCases.moveToNext());
     R0 = dayX.doubleValue() / prevX.doubleValue();
     return R0;
