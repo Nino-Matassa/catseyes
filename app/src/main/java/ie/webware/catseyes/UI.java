@@ -137,8 +137,8 @@ class UI extends AsyncTask<Void, Void, Void>
      }
    }
 
-  protected void registerOnStack(String _TV, Context _context, long _id) {
-    MainActivity.stack.push(new UIStackInfo(_TV, _context, _id));
+  protected void registerOnStack(String _TableView, Context _context, long _id) {
+    MainActivity.stack.push(new UIStackInfo(_TableView, _context, _id));
    }
 
   private void onClickListenerFired(View p1, TableKeyValue tkv) {
