@@ -64,7 +64,7 @@ public class UICountryData extends UI
             populatePositivityDetails();
             break;
            case "R0":
-            fieldDescription = "R0"; //"∄";//
+            fieldDescription = "∄";//
             populateTableDataR0();
             break;
            default:
@@ -102,15 +102,20 @@ public class UICountryData extends UI
     Cursor cSumNewCases = db.rawQuery(sqlNewCases, null);
     Long dayX = 1L;
     Long prevX = 1L;
+    Long difference = 1L;
+    Long prevDifference = 1L;
     cSumNewCases.moveToLast();
     do {
       TableKeyValue tkv = new TableKeyValue();
       tkv.subClass = Constants.UITerraData;
       tkv.key = cSumNewCases.getString(cSumNewCases.getColumnIndex("date"));
       dayX += cSumNewCases.getLong(cSumNewCases.getColumnIndex("sumNewCases"));
-      tkv.value = String.valueOf(formatter.format(dayX.doubleValue() / prevX));
+      difference = dayX - prevX;
+      //tkv.value = String.valueOf(formatter.format(dayX.doubleValue() / prevX.doubleValue()));
+      tkv.value = String.valueOf(formatter.format(difference.doubleValue()/prevDifference));
       tkvs.add(tkv);
       prevX = dayX;
+      prevDifference = difference;
      } while(cSumNewCases.moveToPrevious());
     Collections.reverse(tkvs);
     setTableLayout(getTableRows(tkvs));
@@ -118,7 +123,6 @@ public class UICountryData extends UI
    
   private void populatePositivityDetails() {
     ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();
-    //String sqlPositivityRate = "select date, sum(new_cases) as cases, sum(new_tests) as tests from data where fk_country = # and new_tests > 0 and new_cases > 0 group by date order by date".replace("#", String.valueOf(idData));
     String sqlPositivityRate = "select date, sum(new_cases) as cases, sum(new_tests) as tests from data where fk_country = # group by date order by date".replace("#", String.valueOf(idData));
     Cursor cPositivityRate = db.rawQuery(sqlPositivityRate, null);
     Double dayX = 0.0;

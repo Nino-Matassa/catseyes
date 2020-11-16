@@ -146,7 +146,7 @@ public class UITerra extends UI
     tkv.subClass = Constants.UITerra;
     tkv = new TableKeyValue();
 
-    tkv.key = "R0"; //"∄";//
+    tkv.key = "∄";//
     tkv.value = String.valueOf(formatter.format(populateR0Average(nCountry)));
     tkvs.add(tkv);
     tkv.tableId = 0l;

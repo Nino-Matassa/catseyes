@@ -84,7 +84,7 @@ public class UITerraData extends UI
             populatePositivityDetails();
             break;
            case "R0":
-            fieldDescription = "R0"; //"∄";//
+            fieldDescription = "∄";//
             populateTerraDetailsR0();
             break;
           }
@@ -129,38 +129,26 @@ public class UITerraData extends UI
     Cursor cSumNewCases = db.rawQuery(sqlNewCases, null);
     Long dayX = 1L;
     Long prevX = 1L;
+    Long difference = 1L;
+    Long prevDifference = 1L;
+    Double rNought = 0.0;
     cSumNewCases.moveToLast();
     do {
       TableKeyValue tkv = new TableKeyValue();
       tkv.subClass = Constants.UITerraData;
       tkv.key = cSumNewCases.getString(cSumNewCases.getColumnIndex("date"));
       dayX += cSumNewCases.getLong(cSumNewCases.getColumnIndex("sumNewCases"));
-      tkv.value = String.valueOf(formatter.format(dayX.doubleValue() / prevX));
+      difference = dayX - prevX;
+      //tkv.value = String.valueOf(formatter.format(dayX.doubleValue() / prevX));
+      tkv.value = String.valueOf(formatter.format(difference.doubleValue()/prevDifference));
       tkvs.add(tkv);
       prevX = dayX;
+      prevDifference = difference;
      } while(cSumNewCases.moveToPrevious());
     Collections.reverse(tkvs);
     setTableLayout(getTableRows(tkvs));
    }
 
-//  private void populatePositivityDetails() {
-//    ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();
-//    String sqlPositivityRate = "select date, sum(positive_rate) as positive_rate from data group by date order by date";
-//    Cursor cPositivityRate = db.rawQuery(sqlPositivityRate, null);
-//    Double dayX = 0.0;
-//    int nDay = 1;
-//    cPositivityRate.moveToLast();
-//    do {
-//      TableKeyValue tkv = new TableKeyValue();
-//      tkv.subClass = Constants.UITerraData;
-//      tkv.key = cPositivityRate.getString(cPositivityRate.getColumnIndex("date"));
-//      dayX += cPositivityRate.getDouble(cPositivityRate.getColumnIndex("positive_rate"));
-//      tkv.value = String.valueOf(formatter.format((dayX/nCountry/nDay++)*100));
-//      tkvs.add(tkv);
-//     } while(cPositivityRate.moveToPrevious());
-//    setTableLayout(getTableRows(tkvs));
-//   }
-   
   private void populatePositivityDetails() {
     ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();
     String sqlPositivityRate = "select date, sum(new_cases) as cases, sum(new_tests) as tests from data where new_tests > 0 and new_cases > 0 group by date order by date";

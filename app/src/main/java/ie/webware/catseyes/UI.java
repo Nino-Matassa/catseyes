@@ -79,7 +79,7 @@ class UI extends AsyncTask<Void, Void, Void>
       textViewKey.setOnClickListener(new OnClickListener() {
          @Override
          public void onClick(View p1) {
-           onClickListenerFired(p1, tkv);
+           //onClickListenerFired(p1, tkv);
           }
         });
       textViewValue.setOnClickListener(new OnClickListener() {

@@ -32,16 +32,16 @@ public class WorldOmeterDatabase
       populateTableColumnNames();
      }
 
-     if(readJSONfromURL()) {
-       try {
-         notificationMessage("Updating the database.");
-         speedReadJSON();
-        } catch(Exception e) {}
-      }
+    if(readJSONfromURL()) {
+      try {
+        notificationMessage("Updating the database.");
+        speedReadJSON();
+       } catch(Exception e) {}
+     }
    }
-   
-   private boolean readJSONfromURL() {
-   boolean downloaded = false;
+
+  private boolean readJSONfromURL() {
+    boolean downloaded = false;
     // If there is no json file or it's old read it
     String jsonFilePath = context.getFilesDir().getPath().toString() + Constants.jsonPath;
     File jsonFile = new File(jsonFilePath);
@@ -66,8 +66,8 @@ public class WorldOmeterDatabase
      } catch(Exception e) {
       Log.d("WorldOmeterDatabase", e.toString());
      }
-   return downloaded;
-  }
+    return downloaded;
+   }
 
   private void populateTableColumnNames() {
     Cursor cCountryCols = db.query(Constants.tblCountry, null, null, null, null, null, null);
