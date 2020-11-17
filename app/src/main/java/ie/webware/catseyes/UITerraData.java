@@ -125,30 +125,32 @@ public class UITerraData extends UI
 
   private void populateTerraDetailsR0() {
     ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();
-    String sqlNewCases = "select date, sum(new_cases) as sumNewCases from data group by date order by date asc";
+    String sqlNewCases = "select date, sum(new_cases) as sumNewCases from data where new_cases > 0 group by date order by date asc";
     Cursor cSumNewCases = db.rawQuery(sqlNewCases, null);
     Long dayX = 0L;
-    Long prevX = 0L;
-    cSumNewCases.moveToLast();
+    Long prevX = 1L;
+    cSumNewCases.moveToFirst();
     do {
       TableKeyValue tkv = new TableKeyValue();
       tkv.subClass = Constants.UITerraData;
       tkv.key = cSumNewCases.getString(cSumNewCases.getColumnIndex("date"));
-      dayX += cSumNewCases.getLong(cSumNewCases.getColumnIndex("sumNewCases"));
+      dayX = cSumNewCases.getLong(cSumNewCases.getColumnIndex("sumNewCases"));
       tkv.value = String.valueOf(formatter.format(dayX.doubleValue() / prevX.doubleValue()));
       tkvs.add(tkv);
       prevX = dayX;
-     } while(cSumNewCases.moveToPrevious());
+     } while(cSumNewCases.moveToNext());
+     Collections.reverse(tkvs);
     setTableLayout(getTableRows(tkvs));
    }
 
   private void populatePositivityDetails() {
     ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();
-    String sqlPositivityRate = "select date, sum(new_cases) as cases, sum(new_tests) as tests from data where new_tests > 0 and new_cases > 0 group by date order by date";
+    //String sqlPositivityRate = "select date, sum(new_cases) as cases, sum(new_tests) as tests from data where new_tests > 0 and new_cases > 0 group by date order by date";
+    String sqlPositivityRate = "select date, sum(new_cases) as cases, sum(new_tests) as tests from data group by date order by date";
     Cursor cPositivityRate = db.rawQuery(sqlPositivityRate, null);
     Double dayX = 0.0;
-    Long cases = 0L;
-    Long tests = 0L;
+    Long cases = 1L;
+    Long tests = 1L;
     cPositivityRate.moveToLast();
     do {
       TableKeyValue tkv = new TableKeyValue();

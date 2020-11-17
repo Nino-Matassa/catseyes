@@ -121,8 +121,8 @@ public class UICountryData extends UI
     String sqlPositivityRate = "select date, sum(new_cases) as cases, sum(new_tests) as tests from data where fk_country = # group by date order by date".replace("#", String.valueOf(idData));
     Cursor cPositivityRate = db.rawQuery(sqlPositivityRate, null);
     Double dayX = 0.0;
-    Long cases = 0L;
-    Long tests = 0L;
+    Long cases = 1L;
+    Long tests = 1L;
     cPositivityRate.moveToLast();
     do {
       TableKeyValue tkv = new TableKeyValue();
