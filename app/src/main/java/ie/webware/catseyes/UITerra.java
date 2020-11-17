@@ -159,14 +159,14 @@ public class UITerra extends UI
 
   private double populateR0Average(int nCountry) {
     Double R0 = 0.0;
-    String sqlNewCases = "select date, sum(new_cases) as sumNewCases from data group by date";
+    String sqlNewCases = "select date, sum(new_cases) as sumNewCases from data group by date asc";
     Cursor cSumNewCases = db.rawQuery(sqlNewCases, null);
     Long dayX = 0L;
     Long prevX = 0L;
     cSumNewCases.moveToFirst();
     do {
-        prevX = dayX;
-        dayX += cSumNewCases.getLong(cSumNewCases.getColumnIndex("sumNewCases"));
+      prevX = dayX;
+      dayX += cSumNewCases.getLong(cSumNewCases.getColumnIndex("sumNewCases"));
      } while(cSumNewCases.moveToNext());
     R0 = dayX.doubleValue() / prevX.doubleValue();
     return R0;

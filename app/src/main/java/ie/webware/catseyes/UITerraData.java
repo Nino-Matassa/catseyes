@@ -125,27 +125,20 @@ public class UITerraData extends UI
 
   private void populateTerraDetailsR0() {
     ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();
-    String sqlNewCases = "select date, sum(new_cases) as sumNewCases from data group by date order by date desc";
+    String sqlNewCases = "select date, sum(new_cases) as sumNewCases from data group by date order by date asc";
     Cursor cSumNewCases = db.rawQuery(sqlNewCases, null);
-    Long dayX = 1L;
-    Long prevX = 1L;
-    Long difference = 1L;
-    Long prevDifference = 1L;
-    Double rNought = 0.0;
+    Long dayX = 0L;
+    Long prevX = 0L;
     cSumNewCases.moveToLast();
     do {
       TableKeyValue tkv = new TableKeyValue();
       tkv.subClass = Constants.UITerraData;
       tkv.key = cSumNewCases.getString(cSumNewCases.getColumnIndex("date"));
       dayX += cSumNewCases.getLong(cSumNewCases.getColumnIndex("sumNewCases"));
-      difference = dayX - prevX;
-      //tkv.value = String.valueOf(formatter.format(dayX.doubleValue() / prevX));
-      tkv.value = String.valueOf(formatter.format(difference.doubleValue()/prevDifference));
+      tkv.value = String.valueOf(formatter.format(dayX.doubleValue() / prevX.doubleValue()));
       tkvs.add(tkv);
       prevX = dayX;
-      prevDifference = difference;
      } while(cSumNewCases.moveToPrevious());
-    Collections.reverse(tkvs);
     setTableLayout(getTableRows(tkvs));
    }
 

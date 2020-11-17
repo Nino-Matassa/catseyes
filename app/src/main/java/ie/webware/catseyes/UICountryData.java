@@ -100,22 +100,17 @@ public class UICountryData extends UI
     ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();
     String sqlNewCases = "select date, sum(new_cases) as sumNewCases from data where fk_country = # group by date order by date desc".replace("#", String.valueOf(idData));
     Cursor cSumNewCases = db.rawQuery(sqlNewCases, null);
-    Long dayX = 1L;
-    Long prevX = 1L;
-    Long difference = 1L;
-    Long prevDifference = 1L;
+    Long dayX = 0L;
+    Long prevX = 0L;
     cSumNewCases.moveToLast();
     do {
       TableKeyValue tkv = new TableKeyValue();
       tkv.subClass = Constants.UITerraData;
       tkv.key = cSumNewCases.getString(cSumNewCases.getColumnIndex("date"));
       dayX += cSumNewCases.getLong(cSumNewCases.getColumnIndex("sumNewCases"));
-      difference = dayX - prevX;
-      //tkv.value = String.valueOf(formatter.format(dayX.doubleValue() / prevX.doubleValue()));
-      tkv.value = String.valueOf(formatter.format(difference.doubleValue()/prevDifference));
+      tkv.value = String.valueOf(formatter.format(dayX.doubleValue() / prevX.doubleValue()));
       tkvs.add(tkv);
       prevX = dayX;
-      prevDifference = difference;
      } while(cSumNewCases.moveToPrevious());
     Collections.reverse(tkvs);
     setTableLayout(getTableRows(tkvs));
