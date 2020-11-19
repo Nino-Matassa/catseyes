@@ -65,7 +65,7 @@ public class UICountryData extends UI
             break;
            case "R0":
             fieldDescription = "∄";//
-            populateTableDataR0();
+            populateCountryDetailsR0();
             break;
            default:
           }
@@ -96,26 +96,6 @@ public class UICountryData extends UI
     setTableLayout(getTableRows(tkvs));
    }
    
-  private void populateTableDataR0() {
-    ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();
-    String sqlNewCases = "select date, sum(new_cases) as sumNewCases from data where fk_country = # group by date order by date desc".replace("#", String.valueOf(idData));
-    Cursor cSumNewCases = db.rawQuery(sqlNewCases, null);
-    Long dayX = 0L;
-    Long prevX = 0L;
-    cSumNewCases.moveToLast();
-    do {
-      TableKeyValue tkv = new TableKeyValue();
-      tkv.subClass = Constants.UITerraData;
-      tkv.key = cSumNewCases.getString(cSumNewCases.getColumnIndex("date"));
-      dayX += cSumNewCases.getLong(cSumNewCases.getColumnIndex("sumNewCases"));
-      tkv.value = String.valueOf(formatter.format(dayX.doubleValue() / prevX.doubleValue()));
-      tkvs.add(tkv);
-      prevX = dayX;
-     } while(cSumNewCases.moveToPrevious());
-    Collections.reverse(tkvs);
-    setTableLayout(getTableRows(tkvs));
-   }
-   
   private void populatePositivityDetails() {
     ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();
     String sqlPositivityRate = "select date, sum(new_cases) as cases, sum(new_tests) as tests from data where fk_country = # group by date order by date".replace("#", String.valueOf(idData));
@@ -134,6 +114,29 @@ public class UICountryData extends UI
       tkv.value = String.valueOf(formatter.format(dayX));
       tkvs.add(tkv);
      } while(cPositivityRate.moveToPrevious());
+    setTableLayout(getTableRows(tkvs));
+   }
+   
+  private void populateCountryDetailsR0() {
+    ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();
+    String sqlNewCases = "select date, sum(new_cases) as sumNewCases from data where new_cases > 0 and fk_country = # group by date order by date asc".replace("#", String.valueOf(idData));
+    Cursor cSumNewCases = db.rawQuery(sqlNewCases, null);
+    Long dayX = 0L;
+    Long prevX = 1L;
+    int nDays = 1;
+    Double r0avg = 0.0;
+    cSumNewCases.moveToFirst();
+    do {
+      TableKeyValue tkv = new TableKeyValue();
+      tkv.subClass = Constants.UITerraData;
+      tkv.key = cSumNewCases.getString(cSumNewCases.getColumnIndex("date"));
+      dayX = cSumNewCases.getLong(cSumNewCases.getColumnIndex("sumNewCases"));
+      r0avg += dayX.doubleValue() / prevX.doubleValue();
+      tkv.value = String.valueOf(formatter.format(r0avg/nDays++));
+      tkvs.add(tkv);
+      prevX = dayX;
+     } while(cSumNewCases.moveToNext());
+    Collections.reverse(tkvs);
     setTableLayout(getTableRows(tkvs));
    }
  }
