@@ -201,7 +201,7 @@ public class UICountry extends UI
    }
 
   private double populateR0Average() {
-    String sqlNewCases = "select date, sum(new_cases) as sumNewCases from data where new_cases > 0 and fk_country = # group by date order by date asc".replace("#", String.valueOf(idCountry));
+    String sqlNewCases = "select date, sum(new_cases) as sumNewCases from data where fk_country = # group by date order by date asc".replace("#", String.valueOf(idCountry));
     Cursor cSumNewCases = db.rawQuery(sqlNewCases, null);
     Long dayX = 0L;
     Long prevX = 1L;
@@ -210,8 +210,10 @@ public class UICountry extends UI
     cSumNewCases.moveToFirst();
     do {
       dayX = cSumNewCases.getLong(cSumNewCases.getColumnIndex("sumNewCases"));
-      r0avg += dayX.doubleValue() / prevX.doubleValue();
-      prevX = dayX;
+      if(dayX > 0) {
+        r0avg += dayX.doubleValue() / prevX.doubleValue();
+        prevX = dayX;
+      }
       nDays++;
      } while(cSumNewCases.moveToNext());
     return r0avg/nDays;
