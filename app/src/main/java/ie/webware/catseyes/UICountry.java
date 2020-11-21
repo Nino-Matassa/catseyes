@@ -188,7 +188,7 @@ public class UICountry extends UI
 
     Double R0 = existingCases.doubleValue() / sumNewCases;
 
-    tkv.key = "∄";//
+    tkv.key = "Estimated Growth";//
     tkv.value = String.valueOf(formatter.format(populateR0Average()));
     tkvs.add(tkv);
     tkv.tableId = idCountry;
@@ -211,7 +211,7 @@ public class UICountry extends UI
     do {
       dayX = cSumNewCases.getLong(cSumNewCases.getColumnIndex("sumNewCases"));
       if(dayX > 0) {
-        r0avg += dayX.doubleValue() / prevX.doubleValue();
+        r0avg += dayX.doubleValue() / prevX.doubleValue() * Constants.lossModifier;
         prevX = dayX;
       }
       nDays++;

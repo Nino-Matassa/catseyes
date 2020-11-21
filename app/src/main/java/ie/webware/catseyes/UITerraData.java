@@ -84,7 +84,7 @@ public class UITerraData extends UI
             populatePositivityDetails();
             break;
            case "R0":
-            fieldDescription = "∄";//
+            fieldDescription = "Estimated Growth";//
             populateTerraDetailsR0();
             break;
           }
@@ -160,7 +160,7 @@ public class UITerraData extends UI
       tkv.key = cSumNewCases.getString(cSumNewCases.getColumnIndex("date"));
       dayX = cSumNewCases.getLong(cSumNewCases.getColumnIndex("sumNewCases"));
       if(dayX > 0) {
-        r0avg += dayX.doubleValue() / prevX.doubleValue();
+        r0avg += dayX.doubleValue() / prevX.doubleValue() * Constants.lossModifier;
         tkv.value = String.valueOf(formatter.format(r0avg/nDays));
         tkvs.add(tkv);
         prevX = dayX;

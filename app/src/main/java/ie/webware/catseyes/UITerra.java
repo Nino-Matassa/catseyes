@@ -146,7 +146,7 @@ public class UITerra extends UI
     tkv.subClass = Constants.UITerra;
     tkv = new TableKeyValue();
 
-    tkv.key = "∄";//
+    tkv.key = "Estimated Growth";//
     tkv.value = String.valueOf(formatter.format(populateR0Average(nCountry)));
     tkvs.add(tkv);
     tkv.tableId = 0l;
@@ -168,7 +168,7 @@ public class UITerra extends UI
     do {
       dayX = cSumNewCases.getLong(cSumNewCases.getColumnIndex("sumNewCases"));
       if(dayX > 0) {
-        r0avg += dayX.doubleValue() / prevX.doubleValue();
+        r0avg += dayX.doubleValue() / prevX.doubleValue() * Constants.lossModifier;
         prevX = dayX;
       }
       nDays++;

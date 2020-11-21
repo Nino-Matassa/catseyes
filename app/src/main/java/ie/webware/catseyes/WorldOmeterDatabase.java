@@ -27,6 +27,7 @@ public class WorldOmeterDatabase
     context = _context;
     db = Database.getInstance(context);
     view = ((Activity)context).findViewById(R.id.mainTextID);
+    notificationMessage("Checking for updates.");
     // If the database already exists populate the country and data column name lists
     if(Database.isExistingDatabase) {
       populateTableColumnNames();
@@ -38,6 +39,7 @@ public class WorldOmeterDatabase
         speedReadJSON();
        } catch(Exception e) {}
      }
+    adb.dismiss();
    }
 
   private boolean readJSONfromURL() {
@@ -119,8 +121,10 @@ public class WorldOmeterDatabase
           if(rows.size() > 1) {
             serializeCountry(rows, countryCode);
             toast("Serializing " + countryCode, Toast.LENGTH_SHORT, context);
+            notificationMessage("Serializing " + countryCode);
            } else {
             toast("No update for " + countryCode, Toast.LENGTH_SHORT, context);
+            notificationMessage("Serializing " + countryCode);
            }
 
           rows = new ArrayList<String>();
@@ -348,11 +352,15 @@ public class WorldOmeterDatabase
         }
       });
    }
+  AlertDialog adb = new AlertDialog.Builder(context).create();
   public void notificationMessage(final String msg) {
     MainActivity.activity.runOnUiThread(new Runnable() {
        @Override
        public void run() {
-         new AlertDialog.Builder(context).setMessage(msg).show();
+         //new AlertDialog.Builder(context).setMessage(msg).show();
+         adb.setMessage(msg);
+         adb.show();
+         //adb.dismiss();
         }
       });
    }
