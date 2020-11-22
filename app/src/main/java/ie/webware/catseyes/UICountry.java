@@ -62,8 +62,8 @@ public class UICountry extends UI
     country = cursor.getString(cursor.getColumnIndex("location"));
     population = cursor.getLong(cursor.getColumnIndex("population"));
 
-    sql = "select date, sum(positive_rate) as positivity_rate, sum(new_cases) as total_cases, sum(new_deaths) as total_deaths, sum(new_tests) as total_tests " +
-     "from data where fk_country = # order by total_cases desc limit 1".replace("#", String.valueOf(idCountry));
+    sql = "select date, sum(new_cases) as total_cases, sum(new_deaths) as total_deaths, sum(new_tests) as total_tests " +
+     "from data where fk_country = #".replace("#", String.valueOf(idCountry));
     cursor = db.rawQuery(sql, null);
     cursor.moveToFirst();
 
@@ -81,7 +81,7 @@ public class UICountry extends UI
     deathPerMillion = sumNewDeaths.doubleValue() / population * Constants.oneMillion;
     sumNewTests = cursor.getLong(cursor.getColumnIndex("total_tests"));
     testPerMillion = sumNewTests.doubleValue() / population * Constants.oneMillion;
-    positivityRate = cursor.getDouble(cursor.getColumnIndex("positivity_rate"));
+    positivityRate = sumNewCases.doubleValue() / sumNewTests.doubleValue() * 100;
 
     TableKeyValue tkv = new TableKeyValue();
     tkv.key = "Country Code";

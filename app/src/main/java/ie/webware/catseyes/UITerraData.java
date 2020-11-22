@@ -125,8 +125,7 @@ public class UITerraData extends UI
 
   private void populatePositivityDetails() {
     ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();
-    //String sqlPositivityRate = "select date, sum(new_cases) as cases, sum(new_tests) as tests from data where new_tests > 0 and new_cases > 0 group by date order by date";
-    String sqlPositivityRate = "select date, sum(new_cases) as cases, sum(new_tests) as tests from data group by date order by date";
+    String sqlPositivityRate = "select date, sum(new_cases) as cases, sum(new_tests) as tests from data where new_tests > 0 group by date order by date";
     Cursor cPositivityRate = db.rawQuery(sqlPositivityRate, null);
     Double dayX = 0.0;
     Long cases = 1L;

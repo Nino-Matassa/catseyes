@@ -98,7 +98,7 @@ public class UICountryData extends UI
    
   private void populatePositivityDetails() {
     ArrayList<TableKeyValue> tkvs = new ArrayList<TableKeyValue>();
-    String sqlPositivityRate = "select date, sum(new_cases) as cases, sum(new_tests) as tests from data where fk_country = # group by date order by date".replace("#", String.valueOf(idData));
+    String sqlPositivityRate = "select date, sum(new_cases) as cases, sum(new_tests) as tests from data where new_tests > 0 and fk_country = # group by date order by date".replace("#", String.valueOf(idData));
     Cursor cPositivityRate = db.rawQuery(sqlPositivityRate, null);
     Double dayX = 0.0;
     Long cases = 1L;

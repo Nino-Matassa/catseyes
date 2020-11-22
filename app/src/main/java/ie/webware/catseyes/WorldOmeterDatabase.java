@@ -357,10 +357,8 @@ public class WorldOmeterDatabase
     MainActivity.activity.runOnUiThread(new Runnable() {
        @Override
        public void run() {
-         //new AlertDialog.Builder(context).setMessage(msg).show();
          adb.setMessage(msg);
          adb.show();
-         //adb.dismiss();
         }
       });
    }
