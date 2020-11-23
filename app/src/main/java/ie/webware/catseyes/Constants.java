@@ -23,8 +23,7 @@ public final class Constants
   public static final String UICountryData = "UICountryData";
   public static final String UITerraData = "UITerraData";
   public static final String UITerraPopulation = "Population";
-  public static final String rNought = "R0";
   public static final int oneMillion = 1000000;
-  public static final Double lossModifier = 1.3;
+  public static final Double lossModifier = 1.0;
  }
 

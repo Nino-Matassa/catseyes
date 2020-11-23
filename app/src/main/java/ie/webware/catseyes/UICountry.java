@@ -173,7 +173,10 @@ public class UICountry extends UI
     tkv = new TableKeyValue();
 
     tkv.key = "Test Positive Rate";
-    tkv.value = String.valueOf(formatter.format(positivityRate)) + "%";
+    if(!positivityRate.isInfinite())
+     tkv.value = String.valueOf(formatter.format(positivityRate)) + "%";
+    else
+     tkv.value = String.valueOf(formatter.format(positivityRate));
     tkvs.add(tkv);
     tkv.tableId = idCountry;
     tkv.field = "positive_rate";
@@ -213,9 +216,9 @@ public class UICountry extends UI
       if(dayX > 0) {
         r0avg += dayX.doubleValue() / prevX.doubleValue() * Constants.lossModifier;
         prevX = dayX;
-      }
-      nDays++;
+        nDays++;
+       }
      } while(cSumNewCases.moveToNext());
-    return r0avg/nDays;
+    return r0avg / nDays;
    }
  }
