@@ -1,11 +1,9 @@
 /*
 
- The tablet is waking up to it's previous state and not restarting like the phone which is causing
- an issue with the updates.
+Worldometer class failing for error:
+
+e = java.lang.NullPointerException: Attempt to invoke virtual method 'android.content.res.Resources$Theme android.content.Context.getTheme()' on a null object reference
+
+No idea why yet. 
  
- Remove any duplicates from the data table
- 
- Dismissing AlertDialog.Builder is proving to be a challenge
- 
- Still not sure about the R0 calculation for both average and by day
 */

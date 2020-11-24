@@ -22,7 +22,7 @@ public class MainActivity extends Activity
     activity = this;
     setContentView(R.layout.main);
     view = findViewById(R.id.mainTextID);
-    String displayText = "\n\n\n\n\nSARS-COV-2 Statistical Analysis, Aug 7, 2020\n" + 
+    String displayText = "\n\n\n\n\n\n\nSARS-COV-2 Statistical Analysis, Aug 7, 2020\n" + 
      "Nino Matassa MBCS\n" +
     "https://github.com/Nino-Matassa/catseyes\n";
     view.setText(displayText);

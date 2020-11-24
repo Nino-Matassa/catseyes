@@ -3,7 +3,8 @@ package ie.webware.catseyes;
 public final class Constants
  {
   private Constants() {}
-  public static final String worldOmeterURL = "https://covid.ourworldindata.org/data/owid-covid-data.json";
+  //public static final String worldOmeterURL = "https://covid.ourworldindata.org/data/owid-covid-data.json";
+  public static final String worldOmeterURL = "https://github.com/owid/covid-19-data/tree/master/public/data/owid-covid-data.json";
   public static final String jsonPath = "/worldometer.json";
   public static final String dbName = "worldometer.db";
   public static final String pkId = "ID";
@@ -24,6 +25,5 @@ public final class Constants
   public static final String UITerraData = "UITerraData";
   public static final String UITerraPopulation = "Population";
   public static final int oneMillion = 1000000;
-  public static final Double lossModifier = 1.0;
  }
 

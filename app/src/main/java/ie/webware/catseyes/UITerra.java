@@ -136,8 +136,6 @@ public class UITerra extends UI
     tkv.subClass = Constants.UITerra;
     tkv = new TableKeyValue();
 
-    //positivityRate = positivityRate / nCountry;
-
     tkv.key = "Test Positive Rate";
     tkv.value = String.valueOf(formatter.format(positivityRate)) + "%";
     tkvs.add(tkv);
@@ -167,11 +165,12 @@ public class UITerra extends UI
     cSumNewCases.moveToFirst();
     do {
       dayX = cSumNewCases.getLong(cSumNewCases.getColumnIndex("sumNewCases"));
+      if(dayX == 0 && r0avg == 0) continue;
       if(dayX > 0) {
-        r0avg += dayX.doubleValue() / prevX.doubleValue() * Constants.lossModifier;
+        r0avg += dayX.doubleValue() / prevX.doubleValue();
         prevX = dayX;
-        nDays++;
       }
+      nDays++;
      } while(cSumNewCases.moveToNext());
     return r0avg/nDays;
    }

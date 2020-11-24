@@ -131,12 +131,14 @@ public class UICountryData extends UI
       tkv.subClass = Constants.UITerraData;
       tkv.key = cSumNewCases.getString(cSumNewCases.getColumnIndex("date"));
       dayX = cSumNewCases.getLong(cSumNewCases.getColumnIndex("sumNewCases"));
+      if(dayX == 0 && r0avg == 0) continue;
       if(dayX > 0) {
-        r0avg += dayX.doubleValue() / prevX.doubleValue() * Constants.lossModifier;
-        tkv.value = String.valueOf(formatter.format(r0avg/nDays++));
+        r0avg += dayX.doubleValue() / prevX.doubleValue();
+        tkv.value = String.valueOf(formatter.format(r0avg/nDays));
         tkvs.add(tkv);
         prevX = dayX;
       }
+      nDays++;
      } while(cSumNewCases.moveToNext());
     Collections.reverse(tkvs);
     setTableLayout(getTableRows(tkvs));
