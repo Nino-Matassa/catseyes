@@ -352,8 +352,10 @@ public class OWIDDatabase
         }
       });
    }
-//  AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+  //AlertDialog alertDialog = null;
   public void notificationMessage(final String msg) {
+   //if(alertDialog == null)
+     //alertDialog = new AlertDialog.Builder(context).create();
 //    MainActivity.activity.runOnUiThread(new Runnable() {
 //       @Override
 //       public void run() {
