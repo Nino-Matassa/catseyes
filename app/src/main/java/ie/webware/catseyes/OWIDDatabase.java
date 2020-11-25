@@ -15,7 +15,7 @@ import java.util.*;
 
 import java.util.Date;
 
-public class WorldOmeterDatabase
+public class OWIDDatabase
  {
   private SQLiteDatabase db = null;
   private Context context = null;
@@ -23,7 +23,7 @@ public class WorldOmeterDatabase
   ArrayList<String> listOfDataColumns = new ArrayList<String>();  // complete list of column names
   TextView view = null;
 
-  public WorldOmeterDatabase(Context _context) throws IOException {
+  public OWIDDatabase(Context _context) throws Exception {
     context = _context;
     db = Database.getInstance(context);
     view = ((Activity)context).findViewById(R.id.mainTextID);
@@ -39,7 +39,7 @@ public class WorldOmeterDatabase
         speedReadJSON();
        } catch(Exception e) {}
      }
-    adb.dismiss();
+    //alertDialog.dismiss();
    }
 
   private boolean readJSONfromURL() {
@@ -352,15 +352,15 @@ public class WorldOmeterDatabase
         }
       });
    }
-  AlertDialog adb = new AlertDialog.Builder(context).create();
+//  AlertDialog alertDialog = new AlertDialog.Builder(context).create();
   public void notificationMessage(final String msg) {
-    MainActivity.activity.runOnUiThread(new Runnable() {
-       @Override
-       public void run() {
-         adb.setMessage(msg);
-         adb.show();
-        }
-      });
+//    MainActivity.activity.runOnUiThread(new Runnable() {
+//       @Override
+//       public void run() {
+//         alertDialog.setMessage(msg);
+//         alertDialog.show();
+//        }
+//      });
    }
  }
  

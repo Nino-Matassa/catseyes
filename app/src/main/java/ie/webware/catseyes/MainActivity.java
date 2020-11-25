@@ -13,7 +13,6 @@ public class MainActivity extends Activity
   public static Stack<UIStackInfo> stack = new Stack<UIStackInfo>();
   private TextView view = null;
   public static Activity activity = null;
-  private Thread thread = null;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -22,25 +21,45 @@ public class MainActivity extends Activity
     activity = this;
     setContentView(R.layout.main);
     view = findViewById(R.id.mainTextID);
-    String displayText = "\n\n\n\n\n\n\nSARS-COV-2 Statistical Analysis, Aug 7, 2020\n" + 
+    String displayText = "\n\n\n\n\n\n\n\n\nSARS-COV-2 Statistical Analysis, Aug 7, 2020\n" + 
      "Nino Matassa MBCS\n" +
-    "https://github.com/Nino-Matassa/catseyes\n";
+     "https://github.com/Nino-Matassa/catseyes\n";
     view.setText(displayText);
     //Delay, to allow the ui to draw it self first
     Handler handler = new Handler();
     handler.postDelayed(new Runnable() {
        public void run() {
-         buildDatabase(listener);
+         buildDatabase(owidListener);
         }
       }, 500);
    }
-   
-  WorldOmeterDatabaseListener listener = new WorldOmeterDatabaseListener() {
+
+  public interface OWIDListener { public void OWIDThreadFinished(); }
+  OWIDListener owidListener = new OWIDListener() {
     @Override
-    public void WorldOmeterDatabasethreadFinished() {
+    public void OWIDThreadFinished() {
       openTerra();
      }
    };
+
+  private Thread thread = null;
+  public void buildDatabase(final OWIDListener listener) {
+    if(!(thread == null)) {
+      return;
+     }
+    thread = new Thread(new Runnable() {
+       @Override 
+       public void run() {
+         try {
+           new OWIDDatabase(MainActivity.this);
+          } catch(Exception e) {
+           Log.d("MainActivity", e.toString());
+          }
+         listener.OWIDThreadFinished();
+        }
+      });
+    thread.start();
+   }
 
   private void openTerra() {
     Handler handler = new Handler(Looper.getMainLooper());
@@ -56,28 +75,6 @@ public class MainActivity extends Activity
       });
    }
 
-  public interface WorldOmeterDatabaseListener
-   {
-    public void WorldOmeterDatabasethreadFinished();
-   }
-
-  public void buildDatabase(final WorldOmeterDatabaseListener listener) {
-    if(!(thread == null)) {
-      return;
-     }
-    thread = new Thread(new Runnable() {
-       @Override 
-       public void run() {
-         try {
-           new WorldOmeterDatabase(MainActivity.this);
-          } catch(Exception e) {
-           Log.d("MainActivity", e.toString());
-          }
-         listener.WorldOmeterDatabasethreadFinished();
-        }
-      });
-    thread.start();
-   }
 
   @Override
   public void onBackPressed() {
