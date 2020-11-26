@@ -19,9 +19,9 @@ public class OWIDDatabase
  {
   private SQLiteDatabase db = null;
   private Context context = null;
-  ArrayList<String> listOfCountryColumns = new ArrayList<String>(); // complete list of column names
-  ArrayList<String> listOfDataColumns = new ArrayList<String>();  // complete list of column names
-  TextView view = null;
+  private ArrayList<String> listOfCountryColumns = new ArrayList<String>(); // complete list of column names
+  private ArrayList<String> listOfDataColumns = new ArrayList<String>();  // complete list of column names
+  private TextView view = null;
 
   public OWIDDatabase(Context _context) throws Exception {
     context = _context;
@@ -39,7 +39,6 @@ public class OWIDDatabase
         speedReadJSON();
        } catch(Exception e) {}
      }
-    //alertDialog.dismiss();
    }
 
   private boolean readJSONfromURL() {
@@ -352,17 +351,16 @@ public class OWIDDatabase
         }
       });
    }
-  //AlertDialog alertDialog = null;
   public void notificationMessage(final String msg) {
-   //if(alertDialog == null)
-     //alertDialog = new AlertDialog.Builder(context).create();
-//    MainActivity.activity.runOnUiThread(new Runnable() {
-//       @Override
-//       public void run() {
-//         alertDialog.setMessage(msg);
-//         alertDialog.show();
-//        }
-//      });
+    MainActivity.activity.runOnUiThread(new Runnable() {
+       @Override
+       public void run() {
+         AlertDialog.Builder builder = new AlertDialog.Builder(context);
+         builder.setMessage(msg);
+         AlertDialog alertDialog = builder.create();
+         alertDialog.show();
+        }
+      });
    }
  }
  
