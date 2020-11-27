@@ -39,7 +39,11 @@ public class OWIDDatabase
         speedReadJSON();
        } catch(Exception e) {}
      }
+     //speedReadJSON(); // debugging
+     notificationMessage("Finished: Hit the grey area to continue.");
+     alertDialog.dismiss();
    }
+   
 
   private boolean readJSONfromURL() {
     boolean downloaded = false;
@@ -120,8 +124,10 @@ public class OWIDDatabase
           if(rows.size() > 1) {
             serializeCountry(rows, countryCode);
             toast("Serializing " + countryCode, Toast.LENGTH_SHORT, context);
+             notificationMessage("Serializing " + countryCode);
            } else {
             toast("No update for " + countryCode, Toast.LENGTH_SHORT, context);
+             notificationMessage("Serializing " + countryCode);
            }
 
           rows = new ArrayList<String>();
@@ -349,13 +355,21 @@ public class OWIDDatabase
         }
       });
    }
-  public void notificationMessage(final String msg) {
+  
+  static AlertDialog.Builder builder = null;
+  static AlertDialog alertDialog = null;
+  
+   public void notificationMessage(final String msg) {
     MainActivity.activity.runOnUiThread(new Runnable() {
        @Override
        public void run() {
-         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-         builder.setMessage(msg);
-         AlertDialog alertDialog = builder.create();
+        if(builder == null) {
+          builder = new AlertDialog.Builder(context);
+          alertDialog = builder.create();
+        } else {
+         alertDialog.dismiss(); // It's already been run
+        }
+         alertDialog.setMessage(msg);
          alertDialog.show();
         }
       });
