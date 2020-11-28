@@ -124,10 +124,8 @@ public class OWIDDatabase
           if(rows.size() > 1) {
             serializeCountry(rows, countryCode);
             toast("Serializing " + countryCode, Toast.LENGTH_SHORT, context);
-             notificationMessage("Serializing " + countryCode);
            } else {
             toast("No update for " + countryCode, Toast.LENGTH_SHORT, context);
-             notificationMessage("Serializing " + countryCode);
            }
 
           rows = new ArrayList<String>();

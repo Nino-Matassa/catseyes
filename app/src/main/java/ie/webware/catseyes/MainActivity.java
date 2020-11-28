@@ -79,10 +79,12 @@ public class MainActivity extends Activity
   @Override
   public void onBackPressed() {
     UIStackInfo infoPeek = stack.peek();
-    if(stack.size() == 2)
+    if(infoPeek.UI == Constants.UITerra)
      Toast.makeText(MainActivity.this, "Hit back button again to exit.", Toast.LENGTH_LONG);
-    if(stack.empty() || stack.size() == 1 || infoPeek.UI == Constants.UITerra) {
-      super.onBackPressed();
+    if(infoPeek.UI == Constants.UITerra) {
+      //super.onBackPressed();
+      finishAffinity();
+      System.exit(0);
      } else {
       stack.pop();
       UIStackInfo info = stack.pop();
