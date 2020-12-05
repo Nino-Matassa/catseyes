@@ -14,8 +14,15 @@ import android.text.style.*;
 import android.graphics.*;
 import android.os.*;
 
-class UI extends AsyncTask<Void, Void, Void>
- {
+interface StackTraceRegister { void registerOnStack(String _TableView, Context _context, long _id); }
+
+class UI extends AsyncTask<Void, Void, Void> implements StackTraceRegister {
+
+	@Override
+	public void registerOnStack(String _TableView, Context _context, long _id) {
+		MainActivity.stack.push(new UIStackInfo(_TableView, _context, _id));
+	}
+	
   private Context context = null;
   private TableLayout tableLayout = null;
   private TableLayout tableLayoutHeader = null;
@@ -135,10 +142,6 @@ class UI extends AsyncTask<Void, Void, Void>
     for(TableRow tableRow: tableRows) {
       tableLayout.addView(tableRow);
      }
-   }
-
-  protected void registerOnStack(String _TableView, Context _context, long _id) {
-    MainActivity.stack.push(new UIStackInfo(_TableView, _context, _id));
    }
 
   private void onClickListenerFired(View p1, TableKeyValue tkv) {
