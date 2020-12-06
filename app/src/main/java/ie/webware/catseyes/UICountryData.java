@@ -90,6 +90,15 @@ public class UICountryData extends UI
       TableKeyValue tkv = new TableKeyValue();
       tkv.subClass = Constants.UICountryData;
       tkv.key = cursor.getString(cursor.getColumnIndex("date"));
+		String strDate = cursor.getString(cursor.getColumnIndex("date"));
+		try {
+			strDate = new SimpleDateFormat("yyyy-MM-dd").parse(strDate).toString();
+			String[] arrDate = strDate.split(" ");
+			strDate = arrDate[0];
+			tkv.key +=  " " + strDate.charAt(0);
+		} catch(ParseException e) {
+			Log.d(Constants.UICountryData, e.toString());
+		}
       tkv.value = String.valueOf(formatter.format(cursor.getDouble(cursor.getColumnIndex(field))));
       tkvs.add(tkv);
      } while(cursor.moveToNext());
