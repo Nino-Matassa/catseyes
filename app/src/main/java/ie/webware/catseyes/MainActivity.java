@@ -21,17 +21,18 @@ public class MainActivity extends Activity
     activity = this;
     setContentView(R.layout.main);
     view = findViewById(R.id.mainTextID);
-    String displayText = "\n\n\n\n\n\n\n\n\nSARS-COV-2 Statistical Analysis, Aug 7, 2020\n" + 
+    String displayText = "Prototype of statistical analysis (webware)\n" +
+	 "\n\n\n\n\n\n\n\n\nSARS-COV-2 Statistical Analysis, Aug 7, 2020\n" + 
      "Nino Matassa MBCS\n" +
      "https://github.com/Nino-Matassa/catseyes\n";
     view.setText(displayText);
-    //Delay, to allow the ui to draw it self first
-    Handler handler = new Handler();
+    
+	Handler handler = new Handler();
     handler.postDelayed(new Runnable() {
        public void run() {
          buildDatabase(owidListener);
         }
-      }, 500);
+      }, 500); // half a sec!
    }
 
   public interface OWIDListener { public void OWIDThreadFinished(); }
