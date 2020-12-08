@@ -1,9 +1,5 @@
 /*
 
-Worldometer class failing for error:
-
-e = java.lang.NullPointerException: Attempt to invoke virtual method 'android.content.res.Resources$Theme android.content.Context.getTheme()' on a null object reference
-
-No idea why yet. 
+The deaths/million from the Western Sahara is insane. Is the source the data or the app?
  
 */

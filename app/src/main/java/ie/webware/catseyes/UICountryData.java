@@ -95,7 +95,7 @@ public class UICountryData extends UI
 			strDate = new SimpleDateFormat("yyyy-MM-dd").parse(strDate).toString();
 			String[] arrDate = strDate.split(" ");
 			strDate = arrDate[0];
-			tkv.key +=  " " + strDate.charAt(0);
+			tkv.key +=  " " + strDate; //.charAt(0);
 		} catch(ParseException e) {
 			Log.d(Constants.UICountryData, e.toString());
 		}
