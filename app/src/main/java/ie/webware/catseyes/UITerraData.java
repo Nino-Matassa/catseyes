@@ -79,7 +79,7 @@ public class UITerraData extends UI
             populateTerraDetails();
             break;
            case "positive_rate":
-            fieldDescription = "Positivity Rate%";
+            fieldDescription = "Test Positivie Rate %";
             //sql = "select date, sum(positive_rate) as positive_rate from data group by date order by date desc";
             populatePositivityDetails();
             break;

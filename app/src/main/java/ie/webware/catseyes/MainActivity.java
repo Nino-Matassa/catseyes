@@ -8,107 +8,109 @@ import android.view.*;
 import android.widget.*;
 import java.util.*;
 
-public class MainActivity extends Activity
- {
-  public static Stack<UIStackInfo> stack = new Stack<UIStackInfo>();
-  private TextView view = null;
-  public static Activity activity = null;
+public class MainActivity extends Activity {
+	public static Stack<UIStackInfo> stack = new Stack<UIStackInfo>();
+	private TextView view = null;
+	public static Activity activity = null;
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 
-    activity = this;
-    setContentView(R.layout.main);
-    view = findViewById(R.id.mainTextID);
-    String displayText = "Prototype of statistical analysis (webware)\n" +
-	 "\n\n\n\n\n\n\n\n\nSARS-COV-2 Statistical Analysis, Aug 7, 2020\n" + 
-     "Nino Matassa MBCS\n" +
-     "https://github.com/Nino-Matassa/catseyes\n";
-    view.setText(displayText);
-    
-	Handler handler = new Handler();
-    handler.postDelayed(new Runnable() {
-       public void run() {
-         buildDatabase(owidListener);
-        }
-      }, 500); // half a sec!
-   }
+		activity = this;
+		setContentView(R.layout.main);
+		view = findViewById(R.id.mainTextID);
+		String displayText = "Prototype of statistical analysis (webware)\n" +
+			"\n\n\n\n\n\n\n\n\nSARS-COV-2 Statistical Analysis, Aug 7, 2020\n" + 
+			"Nino Matassa MBCS\n" +
+			"https://github.com/Nino-Matassa/catseyes\n";
+		view.setText(displayText);
+		
+		Handler handler = new Handler();
+		handler.postDelayed(new Runnable() {
+				public void run() {
+					buildDatabase(owidListener);
+				}
+			}, 500);
+	}
 
-  public interface OWIDListener { public void OWIDThreadFinished(); }
-  OWIDListener owidListener = new OWIDListener() {
-    @Override
-    public void OWIDThreadFinished() {
-      openTerra();
-     }
-   };
+	@Override
+	protected void onResume() {
+		// TODO: 
+		super.onResume();
+	}
 
-  private Thread thread = null;
-  public void buildDatabase(final OWIDListener listener) {
-    if(!(thread == null)) {
-      return;
-     }
-    thread = new Thread(new Runnable() {
-       @Override 
-       public void run() {
-         try {
-           new OWIDDatabase(MainActivity.this);
-          } catch(Exception e) {
-           Log.d("MainActivity", e.toString());
-          }
-         listener.OWIDThreadFinished();
-        }
-      });
-    thread.start();
-   }
+	public interface OWIDListener { public void OWIDThreadFinished(); }
+	OWIDListener owidListener = new OWIDListener() {
+		@Override
+		public void OWIDThreadFinished() {
+			openTerra();
+		}
+	};
 
-  private void openTerra() {
-    Handler handler = new Handler(Looper.getMainLooper());
-    handler.post(new Runnable() {
-       @Override
-       public void run() {
-         try {
-           new UITerra(MainActivity.this, 0);
-          } catch(Exception e) {
-           Log.d("MainActivity", e.toString());
-          }
-        }     
-      });
-   }
+	private Thread thread = null;
+	public void buildDatabase(final OWIDListener listener) {
+		if(!(thread == null)) {
+			return;
+		}
+		thread = new Thread(new Runnable() {
+				@Override 
+				public void run() {
+					try {
+						new OWIDDatabase(MainActivity.this);
+					}
+					catch(Exception e) {
+						Log.d("MainActivity", e.toString());
+					}
+					listener.OWIDThreadFinished();
+				}
+			});
+		thread.start();
+	}
+
+	private void openTerra() {
+		Handler handler = new Handler(Looper.getMainLooper());
+		handler.post(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						new UITerra(MainActivity.this, 0);
+					}
+					catch(Exception e) {
+						Log.d("MainActivity", e.toString());
+					}
+				}     
+			});
+	}
 
 
-  @Override
-  public void onBackPressed() {
-    UIStackInfo infoPeek = stack.peek();
-    if(infoPeek.UI == Constants.UITerra)
-     Toast.makeText(MainActivity.this, "Hit back button again to exit.", Toast.LENGTH_LONG);
-    if(infoPeek.UI == Constants.UITerra) {
-      //super.onBackPressed();
-      finishAffinity();
-      System.exit(0);
-     } else {
-      stack.pop();
-      UIStackInfo info = stack.pop();
-      switch(info.UI) {
-        case Constants.UITerra:
-         new UITerra(info.context, info.id);
-         break;
-        case Constants.UIContinent:
-         new UIContinents(info.context, info.id);
-         break;
-        case Constants.UIRegion:
-         new UIRegion(info.context, info.id);
-         break;
-        case Constants.UICountry:
-         new UICountry(info.context, info.id);
-         break;
-        case Constants.UICountryData:
-         // Error
-         break;
-        default:
-       }
-     }
-   }
- }
+	@Override
+	public void onBackPressed() {
+		if(stack.size() == 1) {
+			super.onBackPressed();
+		} else {
+			stack.pop();
+			UIStackInfo info = stack.pop();
+			switch(info.UI) {
+				case Constants.UITerra:
+					new UITerra(info.context, info.id);
+					break;
+				case Constants.UIContinent:
+					new UIContinents(info.context, info.id);
+					break;
+				case Constants.UIRegion:
+					new UIRegion(info.context, info.id);
+					break;
+				case Constants.UICountry:
+					new UICountry(info.context, info.id);
+					break;
+				case Constants.UICountryData:
+					// Error
+					break;
+				default:
+			}
+		}
+	}
+}
  
 

@@ -60,7 +60,7 @@ public class UICountryData extends UI
             populateTableData();
             break;
            case "positive_rate":
-            fieldDescription = "Positivity Rate%";
+			fieldDescription = "Test Positivie Rate %";
             populatePositivityDetails();
             break;
            case "R0":
